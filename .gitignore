@@ -1,0 +1,13 @@
+node_modules
+dist
+.next
+.env*
+!.env.example
+.vercel
+herramientas/fotos/modelos/
+herramientas/fotos/renders/
+*.log
+__pycache__/
+graphify-out/
+.claude/settings.local.json
+herramientas/fuentes/
