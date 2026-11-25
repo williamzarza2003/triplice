@@ -1,0 +1,21 @@
+.esqueleto { display: grid; grid-template-columns: 240px 1fr; gap: var(--e-6); margin-top: var(--e-5); }
+.esqueleto span, .ficha span { display: block; background: var(--linea-2); border-radius: var(--r-tarjeta); }
+.lateral { display: grid; gap: var(--e-4); align-content: start; }
+.lateral span { height: 96px; }
+.titulo { height: 36px; width: 40%; margin-bottom: var(--e-4); }
+.grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px, 1fr)); gap: var(--e-3); }
+.grilla span { aspect-ratio: 3 / 4.6; }
+.ficha { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: var(--e-6); margin-top: var(--e-6); }
+.foto { aspect-ratio: 1; }
+.lineas { display: grid; gap: var(--e-3); align-content: start; }
+.lineas span { height: 24px; }
+.lineas span:first-child { height: 64px; }
+@media (max-width: 860px) {
+  .esqueleto, .ficha { grid-template-columns: 1fr; }
+  .lateral { display: none; }
+  .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-2); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .esqueleto span, .ficha span { animation: latir 1.4s ease-in-out infinite; }
+  @keyframes latir { 50% { opacity: .55; } }
+}
