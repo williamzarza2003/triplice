@@ -204,3 +204,16 @@ Pruebas de esta fase:
 - **Vitest** sobre PGlite: búsqueda con errores, acentos y en tres idiomas; facetas que suman; ficha; RLS (un producto de una tienda pendiente no aparece ni en la búsqueda ni en las sugerencias).
 - **Vitest** de `lib/precios.ts` y `lib/busqueda.ts`: conversión, redondeo por moneda, montos con los separadores de cada país.
 - **Playwright** (`e2e/`) contra el build de producción, en escritorio y celular.
+
+## Fase 2: cómo quedó implementado
+
+| Tema | Plan | Lo que se hizo y por qué |
+| --- | --- | --- |
+| Impuestos | `reglas_impuesto` por país y categoría | Igual, con la regla más específica primero (subcategoría → categoría → general). **Los precios llevan el impuesto incluido** en Paraguay, Brasil y Argentina (es lo que se acostumbra en la región) y en "Internacional" no hay impuestos locales. La web aplica la tasa con `lib/compra/impuestos.ts` sobre la categoría que trae cada tarjeta; la búsqueda filtra y ordena con el mismo precio (`tasa_impuesto` en SQL). |
+| Redondeo | Cada renglón al paso de la moneda, total = suma de lo que se ve | Igual. Como el precio ya incluye el impuesto, el desglose **informa** el impuesto incluido ("Incluye IVA 10 %: ₲ 70.000"), calculado sobre lo que se cobra después del cupón. Así el total del carrito es la suma de los precios que el comprador vio en las tarjetas. |
+| Carrito | `carritos` con usuario o token de invitado | El de **invitado vive en una cookie** (solo ids de oferta y cantidades; precios, stock e impuestos se leen de la base cada vez). La vista previa sin Supabase abre una copia de la base por instancia: guardar el carrito ahí se perdería entre pedidos. El de la cuenta está en `carritos`/`carrito_items` con RLS y `fusionar_carrito` (misma regla que `fusionar()` en TypeScript) para la fase 3. |
+| Envío | `zonas_envio` por región y peso | Zona de la frontera (más barata y rápida) y resto del país, por kilo cobrable (al medio kilo, como las transportadoras), **por tienda**: cada vendedor despacha lo suyo y el envío gratis de una tienda no regala el de otra. |
+| Retiro | Puntos de retiro con mapa | `puntos_retiro` (el local de cada tienda). El mapa es un SVG propio de la triple frontera con los locales numerados igual que la lista: sin mosaicos de terceros (ni cookies ni peticiones a otro servidor). |
+| Pago | Server Action + Stripe | Stripe Checkout **solo en modo de prueba** (una clave `sk_live_` se rechaza), en la moneda de la región, con un solo renglón por el total calculado en el servidor. Si el total que vio el comprador no es el que se va a cobrar, se avisa. Sin claves, un **simulador de prueba** (no pide datos de tarjeta) permite recorrer el flujo. |
+| Pedidos | Los crea el webhook | `registrar_pedido` (al pagar, todo congelado, estado `pendiente_pago`) y `confirmar_pago` (descuenta stock, cuenta el cupón, idempotente), las dos solo con el rol de servicio. Confirman el webhook (con firma) y la vuelta de Stripe (verifica con la API). El comprobante se guarda además en una **cookie firmada** (HMAC): sin Supabase, es lo que permite mostrarlo aunque el pago se confirme en otra instancia. |
+| Rendimiento | | next-intl solo en el servidor (en el navegador, `lib/i18n/formato.ts`, probado contra next-intl), fotos de las vidrieras pedidas al acercarse (`FotoDiferida`) y fuentes recortadas al rango de pesos que se usa. |

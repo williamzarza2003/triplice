@@ -99,3 +99,14 @@ Rendimiento / Accesibilidad / Buenas prácticas / SEO. "Celular" es la configura
 
 - **SEO 63 en la búsqueda es a propósito:** los resultados de búsqueda llevan `noindex` (recomendación de Google para no indexar búsquedas internas). Las categorías, que son el contenido indexable, dan 100.
 - **Rendimiento en el celular por debajo de 95:** el LCP *observado* es de 0,3 a 0,8 s, pero la simulación lo estima en 3,5 s por el trabajo de JavaScript de la hidratación (TBT de 250 a 420 ms con la limitación real). Lo que ya se hizo: CSS incrustado, `content-visibility` en lo que está fuera de pantalla, la animación del río limitada a dos vueltas, prioridad de imágenes solo donde el LCP es una foto y fuentes con `display: optional`. Lo que falta: reducir el JavaScript del cliente (ver la autocrítica en INFORME.md).
+
+## Fase 2: compra (25/11/2026)
+
+### Rondas de crítica
+- **Ronda 1:** el cupón aplicado quedaba apretado en una columna, con el ícono diminuto; en el resumen se colaba el cero con barra de Atkinson ("IVA 1Ø %"); la línea del total no cruzaba todo el ancho; el pie decía "Fase 1"; el mapa de retiro era casi todo campo vacío, sin ciudades y con "Puente de la Amistad" cortado.
+- **Ronda 2:** en el celular los nombres del mapa medían 6 px y se pisaban con el río; faltaban los países y Puerto Iguazú; el botón "Pagar ₲ 5.496.ØØØ" usaba la fuente con el cero tachado.
+- **Bugs que encontró la prueba de punta a punta:** el contador del carrito seguía en 1 después de pagar (solo releía la cookie al cargar); el texto "Carrito: {n} unidades" rompía next-intl en el servidor; la carga diferida tocaba el DOM antes de la hidratación.
+
+### Contra Amazon y Mercado Libre
+- **Mejor:** el precio de la tarjeta es el que se paga (impuesto incluido y la misma cifra en el carrito); el carrito agrupa por vendedor y dice qué envío cobra cada uno; el retiro en el local muestra en un mapa dónde queda cada tienda y en cuántas horas está listo; los errores del formulario dicen cómo arreglarlos (CEP de 8 números, código postal argentino).
+- **Todavía no:** no hay cuotas ni otros medios de pago (transferencia, Pix); el comprobante vive en el navegador hasta que haya cuentas (fase 3); el envío no se puede programar por franja horaria.
