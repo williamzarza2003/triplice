@@ -8,6 +8,7 @@ import { PaisesPortada } from '@/components/inicio/PaisesPortada'
 import { contexto, precio, ruta } from '@/lib/contexto'
 import { categorias, inicio } from '@/lib/datos/consultas'
 import { foto } from '@/lib/imagenes'
+import { textoSobre } from '@/lib/color'
 import { descuento } from '@/lib/precios'
 import s from './inicio.module.css'
 
@@ -19,8 +20,10 @@ export default async function Inicio() {
     inicio(ctx.idioma, ctx.region),
     categorias(ctx.idioma),
   ])
-  const destacada = datos.ofertas[0]
-  const ofertas = datos.ofertas.slice(1, 7)
+  // la portada muestra la mayor rebaja entre productos con peso (más de US$ 40 y bien calificados): una caja de plástico
+  // con 26 % menos es una oferta, pero no una vidriera
+  const destacada = datos.ofertas.find((x) => x.precio >= 4000 && Number(x.promedio) >= 4.2) ?? datos.ofertas[0]
+  const ofertas = datos.ofertas.filter((x) => x.id !== destacada?.id).slice(0, 6)
   const r = (camino: string) => ruta(ctx.idioma, camino)
 
   return (
@@ -38,7 +41,7 @@ export default async function Inicio() {
           <article className={s.destacada} aria-labelledby="titulo-destacada">
             <h2 id="titulo-destacada">{t('ofertaDelDia')}</h2>
             {destacada.imagen && (
-              <Image src={foto(destacada.imagen)} alt="" width={480} height={480} sizes="(max-width: 860px) 60vw, 300px" priority />
+              <Image src={foto(destacada.imagen)} alt="" width={480} height={480} sizes="(max-width: 860px) 60vw, 300px" loading="eager" />
             )}
             <div>
               <p className={s.destacadaTitulo}><Link href={r(`/p/${destacada.slug}`)}>{destacada.titulo}</Link></p>
@@ -66,10 +69,10 @@ export default async function Inicio() {
           <h2 id="t-ofertas">{t('ofertas')}</h2>
           <Link href={r('/buscar?ofertas=1')}>{t('verOfertas')}</Link>
         </div>
-        <Grilla items={ofertas} ctx={ctx} fila prioridad={6} />
+        <Grilla items={ofertas} ctx={ctx} fila prioridad={2} sinAlta />
       </section>
 
-      <section className="seccion" aria-labelledby="t-vendidos">
+      <section className="seccion fuera-de-pantalla" aria-labelledby="t-vendidos">
         <div className="seccion__cabeza">
           <h2 id="t-vendidos">{t('vendidos')}</h2>
           <Link href={r('/buscar?orden=vendidos')}>{t('verVendidos')}</Link>
@@ -77,7 +80,7 @@ export default async function Inicio() {
         <Grilla items={datos.vendidos.slice(0, 6)} ctx={ctx} fila />
       </section>
 
-      <section className="seccion" aria-labelledby="t-cerca">
+      <section className="seccion fuera-de-pantalla" aria-labelledby="t-cerca">
         <div className="seccion__cabeza">
           <h2 id="t-cerca">{ctx.region === 'XX' ? t('cercaInternacional') : t('cerca', { pais: tc(`paises.${ctx.region}`) })}</h2>
           <Link href={r('/buscar?orden=calificacion')}>{t('verCerca')}</Link>
@@ -85,13 +88,13 @@ export default async function Inicio() {
         <Grilla items={datos.cerca.slice(0, 6)} ctx={ctx} fila />
       </section>
 
-      <section className="seccion" aria-labelledby="t-tiendas">
+      <section className="seccion fuera-de-pantalla" aria-labelledby="t-tiendas">
         <div className="seccion__cabeza"><h2 id="t-tiendas">{t('tiendas')}</h2></div>
         <ul className={s.tiendas}>
           {datos.tiendas.map((x) => (
             <li key={x.slug}>
               <Link href={r(`/tienda/${x.slug}`)} className={s.tienda}>
-                <span className={s.logoTienda} style={{ background: x.color }} aria-hidden="true">
+                <span className={s.logoTienda} style={{ background: x.color, color: textoSobre(x.color) }} aria-hidden="true">
                   {x.nombre.split(' ').map((w) => w[0]).slice(0, 2).join('')}
                 </span>
                 <span>
@@ -105,7 +108,7 @@ export default async function Inicio() {
         </ul>
       </section>
 
-      <section className="seccion" aria-labelledby="t-novedades">
+      <section className="seccion fuera-de-pantalla" aria-labelledby="t-novedades">
         <div className="seccion__cabeza">
           <h2 id="t-novedades">{t('novedades')}</h2>
           <Link href={r('/buscar?orden=novedades')}>{t('verNovedades')}</Link>
@@ -113,7 +116,7 @@ export default async function Inicio() {
         <Grilla items={datos.novedades.slice(0, 6)} ctx={ctx} fila />
       </section>
 
-      <section className={s.confianza} aria-label={t('confianza')}>
+      <section className={`${s.confianza} fuera-de-pantalla`} aria-label={t('confianza')}>
         <div><Icono nombre="tienda" tam={28} /><span><b>{t('confianza1Titulo')}</b><p>{t('confianza1')}</p></span></div>
         <div><Icono nombre="globo" tam={28} /><span><b>{t('confianza2Titulo')}</b><p>{t('confianza2')}</p></span></div>
         <div><Icono nombre="conversa" tam={28} /><span><b>{t('confianza3Titulo')}</b><p>{t('confianza3')}</p></span></div>

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useTranslations } from 'next-intl'
 import COLORES from '@/lib/catalogo/colores.json'
 import type { Idioma } from '@/lib/i18n/idiomas'
+import { textoSobre } from '@/lib/color'
 import { foto } from '@/lib/imagenes'
 import { Icono } from '../Icono'
 import s from './Compra.module.css'
@@ -32,9 +33,11 @@ const NOMBRE_COLOR = COLORES as Record<string, { hex: string; es: string; pt: st
 export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
   const t = useTranslations('ficha')
   const tp = useTranslations('precio')
-  const inicial = variantes.findIndex((v) => v.ofertas.some((o) => o.stock > 0))
-  const [vi, setVi] = useState(Math.max(0, inicial))
-  const [oi, setOi] = useState(0)
+  // la oferta elegida por defecto es la más barata que tiene stock (están ordenadas por precio)
+  const primeraConStock = (x: VarianteVista) => Math.max(0, x.ofertas.findIndex((o) => o.stock > 0))
+  const inicial = Math.max(0, variantes.findIndex((v) => v.ofertas.some((o) => o.stock > 0)))
+  const [vi, setVi] = useState(inicial)
+  const [oi, setOi] = useState(() => primeraConStock(variantes[inicial]))
   const [foto_, setFoto] = useState(0)
   const [aviso, setAviso] = useState(false)
   const v = variantes[vi]
@@ -45,12 +48,12 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
     const sku = new URLSearchParams(window.location.search).get('v')
     const i = variantes.findIndex((x) => x.sku === sku)
     if (i < 0) return
-    const cuadro = requestAnimationFrame(() => setVi(i))
+    const cuadro = requestAnimationFrame(() => { setVi(i); setOi(primeraConStock(variantes[i])) })
     return () => cancelAnimationFrame(cuadro)
   }, [variantes])
 
   function elegirVariante(i: number) {
-    setVi(i); setOi(0); setFoto(0)
+    setVi(i); setOi(primeraConStock(variantes[i])); setFoto(0)
     const u = new URL(window.location.href)
     u.searchParams.set('v', variantes[i].sku)
     window.history.replaceState(window.history.state, '', u)
@@ -91,7 +94,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
           <Lupa src={foto(v.imagenes[foto_] ?? v.imagenes[0])} alt={titulo} etiqueta={t('ampliar')} descuento={oferta?.descuento ?? 0} />
           <div className={s.carrusel}>
             {v.imagenes.map((img, i) => (
-              <Image key={img} src={foto(img)} alt={i === 0 ? titulo : ''} width={480} height={480} sizes="88vw" priority={i === 0} />
+              <Image key={img} src={foto(img)} alt={i === 0 ? titulo : ''} width={480} height={480} sizes="88vw" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} />
             ))}
           </div>
         </section>
@@ -174,7 +177,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
               {v.ofertas.map((o, i) => (
                 <tr key={o.id} aria-current={i === oi ? 'true' : undefined}>
                   <td>
-                    <span className={s.logoTienda} style={{ background: o.tienda.color }} aria-hidden="true">{o.tienda.nombre[0]}</span>
+                    <span className={s.logoTienda} style={{ background: o.tienda.color, color: textoSobre(o.tienda.color) }} aria-hidden="true">{o.tienda.nombre[0]}</span>
                     <span>
                       <Link href={`/${idioma}/tienda/${o.tienda.slug}`}><b>{o.tienda.nombre}</b></Link>
                       <small>{o.tienda.ciudad}{o.tienda.recomendacion !== null && ` · ${t('recomienda', { n: o.tienda.recomendacion })}`}</small>
@@ -213,7 +216,7 @@ function Lupa({ src, alt, etiqueta, descuento }: { src: string; alt: string; eti
         const r = e.currentTarget.getBoundingClientRect()
         setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 })
       }}>
-      <Image src={src} alt={alt} width={800} height={800} sizes="(max-width: 1100px) 45vw, 520px" priority
+      <Image src={src} alt={alt} width={800} height={800} sizes="(max-width: 1100px) 45vw, 520px" loading="eager" fetchPriority="high"
         style={zoom ? { transform: 'scale(1.9)', transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined} />
       {descuento > 0 && <span className="sello sello--oferta">−{descuento} %</span>}
       <span className={s.lupa} aria-hidden="true" title={etiqueta}><Icono nombre="buscar" tam={18} /></span>

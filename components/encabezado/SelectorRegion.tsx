@@ -46,10 +46,10 @@ export function SelectorRegion({ idioma, region, moneda }: { idioma: Idioma; reg
 
   return (
     <>
-      <button type="button" className={s.boton} onClick={abrir} aria-haspopup="dialog"
-        aria-label={te('regionBoton', { region: tc(`paises.${region}`), moneda, idioma: NOMBRE_IDIOMA[idioma] })}>
+      <button type="button" className={s.boton} onClick={abrir} aria-haspopup="dialog">
         <span className={s.pais}>{tc(`paises.${region}`)}</span>
         <span className={s.moneda}>{REGLAS[moneda].simbolo} {moneda} · {idioma.toUpperCase()}</span>
+        <span className="sr-only">{te('regionAclaracion')}</span>
         <Icono nombre="abajo" tam={16} className={s.flecha} />
       </button>
 

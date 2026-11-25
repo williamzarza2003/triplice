@@ -161,12 +161,12 @@ async function Contenido({ params }: Props) {
         </div>
       </div>
 
-      <section id="opiniones" className="seccion" aria-labelledby="t-opiniones">
+      <section id="opiniones" className="seccion fuera-de-pantalla" aria-labelledby="t-opiniones">
         <div className="seccion__cabeza"><h2 id="t-opiniones">{t('opinionesTitulo')}</h2></div>
         <Opiniones idioma={ctx.idioma} resenas={f.resenas} resumen={f.resumen} paises={paises} />
       </section>
 
-      <section id="preguntas" className="seccion" aria-labelledby="t-preguntas">
+      <section id="preguntas" className="seccion fuera-de-pantalla" aria-labelledby="t-preguntas">
         <div className="seccion__cabeza"><h2 id="t-preguntas">{t('preguntasTitulo')}</h2></div>
         <p className={s.nota}><Icono nombre="info" tam={16} />{t('preguntasLectura')}</p>
         {f.preguntas.length === 0 ? <p className={s.vacio}>{t('sinPreguntas')}</p> : (
@@ -187,7 +187,7 @@ async function Contenido({ params }: Props) {
       </section>
 
       {f.relacionados.length > 0 && (
-        <section className="seccion" aria-labelledby="t-relacionados">
+        <section className="seccion fuera-de-pantalla" aria-labelledby="t-relacionados">
           <div className="seccion__cabeza">
             <h2 id="t-relacionados">{t('relacionados', { categoria: f.categoria.nombre })}</h2>
             <Link href={r(`/c/${f.categoria.slug}`)}>{tc('verTodo')}</Link>

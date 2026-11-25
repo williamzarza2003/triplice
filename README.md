@@ -14,9 +14,13 @@ Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil 
 | --- | --- |
 | ![Ficha con variantes, caja de compra y comparación de vendedores](docs/capturas/f1-ficha-escritorio.webp) | ![Resultados con corrección de tipeo](docs/capturas/f1-buscar-celular.webp) |
 
+| Categoría con filtros | Página de tienda |
+| --- | --- |
+| ![Muebles con facetas y contadores](docs/capturas/f1-categoria-escritorio.webp) | ![Casa Nubla con su reputación](docs/capturas/f1-tienda-escritorio.webp) |
+
 ## Qué hay en la fase 1
 
-- **Catálogo de 365 productos** en 15 rubros, con variantes de color y medida, 15 tiendas de la frontera, 6.395 opiniones y 482 preguntas, en español, portugués e inglés.
+- **Catálogo de 337 productos** en 15 rubros, con variantes de color y medida, 15 tiendas de la frontera, 5.932 opiniones y 429 preguntas, en español, portugués e inglés.
 - **Búsqueda instantánea tolerante a errores**: "pava electirca" encuentra la pava eléctrica, "cosina" corrige a "cocina", "chaleira" busca en portugués. Todo en PostgreSQL (`tsvector` + vocabulario del catálogo + `pg_trgm`).
 - **Filtros por facetas con contadores**: categoría, precio en tu moneda, marca, atributos propios de cada rubro (material, potencia, tapizado…), opiniones, envío gratis y condición. Son enlaces: funcionan sin JavaScript y la URL se comparte.
 - **Ficha completa**: galería con lupa, variantes, especificaciones tipadas, qué trae la caja, **comparación de vendedores** (precio, entrega y reputación), opiniones con filtro por estrellas e idioma original, y preguntas.
@@ -54,7 +58,7 @@ blender -b --factory-startup --python herramientas/fotos/fotografiar.py -- --mue
 npm run fotos:web                     # WebP en 240, 480 y 800 px
 ```
 
-**Lighthouse (build de producción, local):** ver la tabla en `docs/critica.md`.
+**Lighthouse (build de producción, local):** escritorio 99 a 100 en Rendimiento y 100 en Accesibilidad, Buenas prácticas y SEO; en el celular, 100 en Accesibilidad y Buenas prácticas y 87 a 98 en Rendimiento (el LCP observado es de 0,3 a 0,8 s; lo que baja el número es el JavaScript de hidratación). La búsqueda tiene `noindex` a propósito (SEO 63). Tabla completa en [`docs/critica.md`](docs/critica.md).
 
 ## Créditos
 
@@ -71,7 +75,7 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 
 **Status: phase 1** — catalog, search and product page (phase 0, with brand, design system, mockups and architecture, lives on the `fase-0` branch).
 
-- **365 products** across 15 departments with color and size variants, 15 border stores, 6,395 reviews and 482 Q&As in Spanish, Portuguese and English.
+- **337 products** across 15 departments with color and size variants, 15 border stores, 5,932 reviews and 429 Q&As in Spanish, Portuguese and English.
 - **Typo-tolerant instant search** in PostgreSQL: weighted `tsvector` in three languages, prefix matching while you type, spelling correction from the catalog vocabulary ("cosina" → "cocina") and `pg_trgm` as a last resort. A materialized view took each search from ~350 ms to ~6 ms.
 - **Faceted filters with counts** (category, price in your currency, brand, per-department attributes, rating, free shipping, condition). Filters are plain links: they work without JavaScript and the URL is shareable.
 - **Full product page:** zoomable gallery, variants kept in the URL, typed specifications, what's in the box, **seller comparison** (price, delivery, rating), reviews filterable by stars and shown in their original language, and Q&A.
@@ -79,5 +83,7 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 - **One database, two engines:** the Supabase migrations also run on **PGlite** (Postgres in WebAssembly). Without Supabase keys the site serves an embedded copy, and tests hit real Postgres without Docker. Always as the `anon` role, so **RLS** decides what is visible.
 - **Integer money** and per-currency rounding in a pure, tested module.
 - **No stock photos:** 228 CC0 Poly Haven 3D models shot in one Blender studio, with color variants tinted only where it makes sense (a hue/saturation mask paints the upholstery, not the wood).
+
+**Lighthouse (local production build):** desktop 99–100 Performance and 100 in Accessibility, Best Practices and SEO; mobile 100 Accessibility and Best Practices, 87–98 Performance (observed LCP 0.3–0.8 s; client-side hydration JavaScript is what drags the simulated score). Search results are `noindex` on purpose.
 
 Run it: `npm install && npm run dev`. Tests: `npm test` (Vitest) and `npm run build && npm run test:e2e` (Playwright). Supabase setup: [`docs/supabase.md`](docs/supabase.md).

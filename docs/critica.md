@@ -48,3 +48,54 @@ Comparación contra Amazon y Mercado Libre, mirando las mismas pantallas en 1440
 - **Precios fijos en el HTML:** algunos importes de ejemplo (ofertas de otros vendedores, cuotas del checkout) están escritos a mano para Paraguay; si cambiás de región, solo se recalculan las tarjetas, la ficha y el desglose.
 - **Rendimiento del carrito en el celular:** entre 93 y 95 según la corrida; el elemento más grande es la franja del aviso de demo y la demora viene del servidor de prueba (`http.server` de Python). En un hosting estático debería quedar arriba de 95.
 - **Accesibilidad sin auditar con lectores de pantalla:** hay foco visible, etiquetas y roles, pero falta probar con NVDA y TalkBack.
+
+---
+
+## Fase 1: la tienda programada (25/11/2026)
+
+### Rondas de crítica
+
+**Ronda 1 (sin fotos todavía)**
+1. En el celular, el precio y el botón de compra quedaban debajo de las viñetas, casi en la segunda pantalla. Ahora van justo después de las opciones (la grilla de la ficha usa áreas distintas en escritorio y celular).
+2. El botón **Filtrar** del celular quedaba al final de la página (un `order` de la grilla). Pasó a la barra de resultados, al lado de Ordenar.
+3. La portada en el celular ocupaba casi dos pantallas; los botones de país se partían en dos líneas.
+4. La barra de categorías no entra entera en 1440 px y se cortaba seca: ahora se desvanece al borde.
+5. Las migas repetían el título del producto en el celular.
+
+**Ronda 2 (con las 690 fotos)**
+1. En la página de una tienda, las tarjetas mostraban el precio y el nombre de **otro** vendedor (el más barato). Ahora muestran la oferta de esa tienda.
+2. El nombre de la tienda quedaba encima de la franja de color, ilegible.
+3. Tres productos no coincidían con su foto (marcos vacíos vendidos como "cuadro de paisaje"): renombrados.
+4. 19 modelos tenían variantes de color que casi no se distinguían (cuero oscuro, metal, madera): se sacaron. Mejor 337 productos que fotos que no muestran lo que dice el nombre.
+5. "La oferta más grande de hoy" mostraba una caja de plástico gris: ahora elige la mayor rebaja entre productos de más de US$ 40 y bien calificados.
+6. La ficha arrancaba en una oferta sin stock (la más barata) y con el botón desactivado: ahora arranca en la más barata con stock.
+7. El logo de las tiendas con colores claros (amarillo ipê, celeste) tenía texto blanco con contraste 1,96:1: el texto se elige según el contraste.
+
+### Contra Amazon y Mercado Libre
+
+| | Tríplice | Amazon | Mercado Libre |
+| --- | --- | --- | --- |
+| Tolerancia a errores de tipeo | Corrige y **avisa** qué buscó | Corrige, a veces sin avisar | Corrige |
+| Comparar vendedores del mismo producto | En la ficha, con un clic cambia la caja de compra | "Otros vendedores", en otra pantalla | Solo en algunos productos (catálogo) |
+| Precio en otra moneda | Equivalencia en las otras tres monedas en la ficha | No | No |
+| Opiniones en otro idioma | Se muestran en el original con el idioma marcado | Traducción automática | No aplica |
+| Filtros sin JavaScript / URL compartible | Sí | Sí | Sí |
+| Volumen y fotos reales de vendedores | 337 productos de ejemplo, fotos de estudio | Millones | Millones |
+| Rendimiento en el celular (Lighthouse simulado) | 87 a 98 | Variable, en general menor | Variable |
+
+Todavía no: carrito, impuestos por país, pago, cuentas, escribir opiniones y preguntas (fases 2 y 3), y la etiqueta de frontera con impuestos (fase 2).
+
+### Lighthouse (build de producción, local)
+
+Rendimiento / Accesibilidad / Buenas prácticas / SEO. "Celular" es la configuración por defecto de Lighthouse 12 (simulación de 4G lento y CPU 4× más lenta); "celular real" aplica esa misma limitación de verdad con DevTools.
+
+| Página | Escritorio | Celular | Celular real (LCP) |
+| --- | --- | --- | --- |
+| Inicio | 99 / 100 / 100 / 100 | 87 / 100 / 100 / 100 | 94 (1,6 s) |
+| Categoría | 100 / 100 / 100 / 100 | 90 / 100 / 100 / 100 | 93 (1,9 s) |
+| Búsqueda | 100 / 100 / 100 / 63 | 90 / 100 / 100 / 63 | 91 (2,0 s) |
+| Ficha | 100 / 100 / 100 / 100 | 88 / 100 / 100 / 100 | 91 (2,0 s) |
+| Tienda | 100 / 100 / 100 / 100 | 90 a 98 / 100 / 100 / 100 | 89 (1,5 s) |
+
+- **SEO 63 en la búsqueda es a propósito:** los resultados de búsqueda llevan `noindex` (recomendación de Google para no indexar búsquedas internas). Las categorías, que son el contenido indexable, dan 100.
+- **Rendimiento en el celular por debajo de 95:** el LCP *observado* es de 0,3 a 0,8 s, pero la simulación lo estima en 3,5 s por el trabajo de JavaScript de la hidratación (TBT de 250 a 420 ms con la limitación real). Lo que ya se hizo: CSS incrustado, `content-visibility` en lo que está fuera de pantalla, la animación del río limitada a dos vueltas, prioridad de imágenes solo donde el LCP es una foto y fuentes con `display: optional`. Lo que falta: reducir el JavaScript del cliente (ver la autocrítica en INFORME.md).

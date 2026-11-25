@@ -18,6 +18,8 @@ const nextConfig: NextConfig = {
     loaderFile: './lib/imagenes.ts',
   },
   poweredByHeader: false,
+  // el CSS de todo el sitio pesa ~8 KB comprimido: incrustado en el HTML, el primer pintado no espera otro archivo
+  experimental: { inlineCss: true },
 }
 
 export default conIntl(nextConfig)

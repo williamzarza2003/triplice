@@ -2,7 +2,8 @@
 // la abra en milisegundos (se corre en el build: ver "prebuild" en package.json).
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { construirBase, VOLCADO } from '../lib/datos/pglite.ts'
+import { construirBase } from '../lib/datos/construir.ts'
+import { VOLCADO } from '../lib/datos/pglite.ts'
 
 const inicio = Date.now()
 const db = await construirBase()

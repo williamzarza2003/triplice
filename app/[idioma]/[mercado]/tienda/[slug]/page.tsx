@@ -10,6 +10,7 @@ import { Resultados } from '@/components/resultados/Resultados'
 import { conParametro, leerFiltros, valorDe } from '@/lib/busqueda'
 import { contexto, ruta } from '@/lib/contexto'
 import { buscar, slugsTiendas, tienda } from '@/lib/datos/consultas'
+import { colorSobreBlanco } from '@/lib/color'
 import { LOCALE } from '@/lib/i18n/idiomas'
 import s from './tienda.module.css'
 
@@ -67,7 +68,7 @@ async function Contenido({ params, searchParams }: Props) {
         </svg>
       </div>
       <div className={s.cabeza}>
-        <span className={s.logo} style={{ color: x.color }} aria-hidden="true">{iniciales}</span>
+        <span className={s.logo} style={{ color: colorSobreBlanco(x.color) }} aria-hidden="true">{iniciales}</span>
         <div>
           <h1>{x.nombre}</h1>
           <p className={s.lema}>{x.lema}</p>

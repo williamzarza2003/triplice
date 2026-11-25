@@ -21,7 +21,7 @@ export async function Encabezado({ ctx }: { ctx: Contexto }) {
       <div className={`contenedor ${s.fila}`}>
         <MenuCategorias etiqueta={t('abrirCategorias')} />
         <Link className={s.logo} href={ruta(ctx.idioma)} aria-label={t('inicioMarca')}>
-          <Image src="/marca/logotipo-claro.svg" alt="" width={132} height={37} priority unoptimized />
+          <Image src="/marca/logotipo-claro.svg" alt="" width={132} height={37} loading="eager" unoptimized />
         </Link>
         <Buscador idioma={ctx.idioma} moneda={ctx.moneda} tasas={ctx.tasas} />
         <SelectorRegion idioma={ctx.idioma} region={ctx.region} moneda={ctx.moneda} />

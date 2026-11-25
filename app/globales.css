@@ -67,6 +67,8 @@ main { display: block; padding-bottom: var(--e-14); min-height: 60vh; }
 
 /* ---------------------------------------------------------------- secciones */
 .seccion { margin-top: var(--e-10); }
+/* lo que está fuera de pantalla no se calcula ni se pinta hasta acercarse (el celular lo agradece) */
+.fuera-de-pantalla { content-visibility: auto; contain-intrinsic-size: auto 520px; }
 .seccion__cabeza { display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); margin-bottom: var(--e-4); }
 .seccion__cabeza h2 { font-size: var(--t-23); }
 .seccion__cabeza a { font-size: var(--t-14); font-weight: 700; white-space: nowrap; }

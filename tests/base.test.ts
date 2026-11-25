@@ -2,7 +2,7 @@
 // como usuario anónimo, igual que la web en producción.
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { PGlite } from '@electric-sql/pglite'
-import { construirBase } from '@/lib/datos/pglite'
+import { construirBase } from '@/lib/datos/construir'
 
 let db: PGlite
 type Json = Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any

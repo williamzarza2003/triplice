@@ -21,7 +21,7 @@ En el proyecto nuevo → **SQL Editor** → **New query**, pegá y ejecutá, **e
 
 1. `supabase/migrations/20261125000100_catalogo.sql` (tablas, índices, búsqueda y RLS)
 2. `supabase/migrations/20261125000200_funciones.sql` (las funciones que usa la web)
-3. `supabase/seed.sql` (365 productos, 15 tiendas, 6.400 reseñas; pesa 2,9 MB: si el editor se queja del tamaño,
+3. `supabase/seed.sql` (337 productos, 15 tiendas, 5.900 reseñas; pesa 2,7 MB: si el editor se queja del tamaño,
    usá la opción B)
 
 Opción B, desde tu PC (sin pegar archivos grandes): en el proyecto → **Connect** → copiá la *connection string* de
@@ -37,7 +37,7 @@ npx -y supabase db push --db-url $env:SUPABASE_DB_URL --include-seed
 Para comprobar que quedó bien, en el SQL Editor:
 
 ```sql
-select count(*) from public.productos;              -- 365
+select count(*) from public.productos;              -- 337
 select public.buscar('{"q":"pava electirca"}') ->> 'corregido';  -- pava electrica
 ```
 

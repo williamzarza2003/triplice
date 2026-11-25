@@ -51,13 +51,13 @@ test('los filtros de una categoría cuentan y se pueden sacar', async ({ page, i
 
 test('cambiar a Brasil muestra reales, y el idioma cambia la URL', async ({ page }) => {
   await page.goto('/es')
-  await page.getByRole('button', { name: /^Comprás desde Paraguay, precios en PYG/ }).click()
+  await page.getByRole('button', { name: /^Paraguay.*PYG.*Cambiar región/ }).click()
   const dialogo = page.getByRole('dialog', { name: '¿Dónde comprás?' })
   await dialogo.getByRole('radio', { name: /Brasil/ }).check()
   await dialogo.getByRole('button', { name: 'Ver precios en esta región' }).click()
   await expect(page.locator('main .precio').first()).toContainText('R$')
 
-  await page.getByRole('button', { name: /^Comprás desde Brasil, precios en BRL/ }).click()
+  await page.getByRole('button', { name: /^Brasil.*BRL.*Cambiar región/ }).click()
   await page.getByRole('dialog').getByLabel('Idioma').selectOption('pt')
   await page.getByRole('dialog').getByRole('button', { name: 'Ver precios en esta región' }).click()
   await expect(page).toHaveURL(/\/pt$/)

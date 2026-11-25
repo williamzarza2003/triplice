@@ -44,7 +44,8 @@
     "masVendidos": "Mais vendidos",
     "tiendas": "Lojas",
     "regionBoton": "Comprando do(a) {region}, preços em {moneda}, idioma {idioma}. Alterar",
-    "carrito": "Carrinho"
+    "carrito": "Carrinho",
+    "regionAclaracion": "Mudar região, moeda ou idioma"
   },
   "sugerencias": {
     "enCategoria": "em {categoria}",

@@ -36,7 +36,7 @@
 
 @media (max-width: 860px) {
   .boton { margin-left: auto; padding: 2px 26px 2px 8px; }
-  .pais { display: none; }
+  .pais { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 }
 @media (max-width: 420px) {
   .regiones, .selects { grid-template-columns: 1fr; }

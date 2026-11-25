@@ -11,7 +11,7 @@ import { Icono } from '../Icono'
 import { Estrellas } from '../Estrellas'
 import s from './Tarjeta.module.css'
 
-type Props = { p: TarjetaDatos; ctx: Contexto; nivel?: 2 | 3 | 4; prioridad?: boolean }
+type Props = { p: TarjetaDatos; ctx: Contexto; nivel?: 2 | 3 | 4; prioridad?: 'alta' | 'eager' | false }
 
 export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false }: Props) {
   const t = await getTranslations({ locale: ctx.idioma, namespace: 'tarjeta' })
@@ -26,7 +26,8 @@ export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false }: Props) {
       <Link className={s.foto} href={href} tabIndex={-1} aria-hidden="true">
         {p.imagen && (
           <Image src={foto(p.imagen)} alt="" width={240} height={240}
-            sizes="(max-width: 860px) 46vw, (max-width: 1100px) 23vw, 200px" priority={prioridad} />
+            sizes="(max-width: 860px) 46vw, (max-width: 1100px) 23vw, 200px"
+            loading={prioridad ? 'eager' : 'lazy'} fetchPriority={prioridad === 'alta' ? 'high' : 'auto'} />
         )}
         {desc > 0 && <span className={`sello sello--oferta ${s.sello}`}>−{desc} %</span>}
         {p.condicion !== 'nuevo' && <span className={`sello sello--neutro ${s.condicion}`}>{tc(`condicion.${p.condicion}`)}</span>}

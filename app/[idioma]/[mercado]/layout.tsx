@@ -10,10 +10,11 @@ import { TODOS_LOS_MERCADOS } from '@/lib/region'
 import '@/tokens/tokens.css'
 import '../../globales.css'
 
-// Fuentes servidas desde el repo (subconjunto latino, fase 0). next/font arma el respaldo con las mismas
+// Fuentes servidas desde el repo (subconjunto latino, fase 0). display optional: si la fuente no llegó en el
+// primer instante se usa el respaldo en esa visita (el LCP no espera la fuente). next/font arma el respaldo con las mismas
 // métricas, así el texto no salta cuando termina de cargar la fuente.
-const titulo = localFont({ src: '../../../tokens/fuentes/schibsted.woff2', variable: '--fuente-titulo', weight: '400 900', display: 'swap' })
-const texto = localFont({ src: '../../../tokens/fuentes/atkinson.woff2', variable: '--fuente-texto', weight: '200 800', display: 'swap' })
+const titulo = localFont({ src: '../../../tokens/fuentes/schibsted.woff2', variable: '--fuente-titulo', weight: '400 900', display: 'optional' })
+const texto = localFont({ src: '../../../tokens/fuentes/atkinson.woff2', variable: '--fuente-texto', weight: '200 800', display: 'optional' })
 
 export function generateStaticParams() {
   return IDIOMAS.flatMap((idioma) => TODOS_LOS_MERCADOS.map((mercado) => ({ idioma, mercado })))

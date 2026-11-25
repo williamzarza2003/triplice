@@ -1,8 +1,8 @@
 .mapa { position: absolute; right: -56px; top: -20px; width: 400px; height: auto; }
 .paises { font-family: var(--f-titulo); font-size: 15px; fill: #cfe2df; }
 .ciudades { font-family: var(--f-texto); font-size: 12px; fill: #fff; }
-/* el agua corre despacio: el único movimiento del inicio */
-.corriente { animation: correr 6s linear infinite; }
+/* el agua corre despacio al entrar (el único movimiento del inicio) y se queda quieta: no repinta sin fin */
+.corriente { animation: correr 4s cubic-bezier(.3, .6, .4, 1) 2; }
 @keyframes correr { to { stroke-dashoffset: -44; } }
 @media (max-width: 860px) {
   .mapa { width: 290px; right: -34px; top: -36px; }
