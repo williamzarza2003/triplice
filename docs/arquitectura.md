@@ -187,3 +187,20 @@ triplice/
 | Flujo completo | **Playwright** | Buscar → ficha → elegir variante → carrito → checkout con la tarjeta de prueba `4242…` → pedido confirmado con su línea de tiempo. Lo mismo en región Brasil (BRL). Tarjeta rechazada (`4000 0000 0000 0002`) con el mensaje de ayuda. Todo con teclado. |
 | Accesibilidad | Playwright + axe-core | Cero violaciones serias en las 7 páginas principales. |
 | Rendimiento | Lighthouse CI en cada PR | ≥ 95 en las cuatro categorías en inicio, búsqueda y ficha. |
+
+## Fase 1: cómo quedó implementado (y qué cambió respecto del plan)
+
+| Tema | Plan de la fase 0 | Lo que se hizo y por qué |
+| --- | --- | --- |
+| Datos | Supabase | Las **mismas migraciones** corren en Supabase y en **PGlite** (Postgres compilado a WebAssembly). Sin variables de Supabase, el servidor abre una copia embebida de la base (`.datos/triplice.tar.gz`, se arma en `prebuild`). Así la vista previa funciona antes de crear el proyecto y las pruebas usan Postgres de verdad, sin Docker. Ver [`supabase.md`](supabase.md). |
+| Acceso | Server Actions y cliente de Supabase | La web solo llama funciones SQL (`buscar`, `sugerir`, `ficha`, `inicio`, `tienda`, `categorias_arbol`, `cotizaciones_vigentes`) con un único `jsonb` de entrada y salida, **como rol `anon`**: el RLS decide qué se ve en los dos modos (`lib/datos/fuente.ts`). |
+| Tarjetas | Vista | **Vista materializada** `tarjetas` (precio mínimo con stock, tiendas distintas, promedio de reseñas). Calculado al vuelo bajo RLS costaba ~350 ms por búsqueda; leído de la vista, ~6 ms. Solo contiene lo público, así que no necesita RLS. Se refresca con `refrescar_catalogo()` (`security definer`, sin permiso para `anon`). |
+| Búsqueda | `websearch_to_tsquery` + trigramas | Prefijos en todas las palabras (sirve para buscar mientras se escribe). Si no hay resultados, se corrige cada palabra con el **vocabulario del catálogo** (`ts_stat` sobre las tarjetas públicas: una palabra de un producto oculto nunca aparece como sugerencia) y, si tampoco, trigramas con umbral 0,4. La página avisa qué buscó. |
+| Región y moneda | Selector en el encabezado | Cookie + **segmento interno** `/es/py-pyg/…` que agrega `proxy.ts`. La URL pública no cambia y cada combinación (3 idiomas × 4 regiones × 4 monedas) se cachea por separado: el precio sale del servidor ya convertido, sin parpadeo. |
+| Caché | ISR | Next.js 16 con **Cache Components**: consultas con `'use cache'` y `cacheLife`; layout y fichas prearmados; búsqueda y categorías con prerender parcial (la parte que depende de los filtros llega en streaming). Idioma y mercado se leen con `next/root-params`, nunca con `headers()`. |
+| Impuestos | En la fase 1 | Quedan para la fase 2, como dice el plan de fases: los precios se muestran **sin impuestos** y la ficha muestra la equivalencia en las otras tres monedas. |
+
+Pruebas de esta fase:
+- **Vitest** sobre PGlite: búsqueda con errores, acentos y en tres idiomas; facetas que suman; ficha; RLS (un producto de una tienda pendiente no aparece ni en la búsqueda ni en las sugerencias).
+- **Vitest** de `lib/precios.ts` y `lib/busqueda.ts`: conversión, redondeo por moneda, montos con los separadores de cada país.
+- **Playwright** (`e2e/`) contra el build de producción, en escritorio y celular.

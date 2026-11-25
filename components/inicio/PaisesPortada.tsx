@@ -32,7 +32,7 @@ export function PaisesPortada({ region, nombres, textos }: {
             <button type="button" className={actual ? `${s.pais} ${s.actual}` : s.pais} aria-pressed={actual}
               onClick={() => !actual && elegir(p)}>
               <small>{actual ? textos.actual : textos.otro}</small>
-              <b>{nombres[p]} · {REGLAS[moneda].simbolo}</b>
+              <b>{nombres[p]}<span className={s.simbolo}>{REGLAS[moneda].simbolo}</span></b>
             </button>
           </li>
         )

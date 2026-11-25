@@ -5,6 +5,6 @@
 .corriente { animation: correr 6s linear infinite; }
 @keyframes correr { to { stroke-dashoffset: -44; } }
 @media (max-width: 860px) {
-  .mapa { width: 290px; right: -34px; top: -54px; }
+  .mapa { width: 290px; right: -34px; top: -36px; }
 }
 @media (prefers-reduced-motion: reduce) { .corriente { animation: none; } }

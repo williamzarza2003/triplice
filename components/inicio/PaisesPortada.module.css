@@ -9,13 +9,16 @@
 .pais:focus-visible { box-shadow: var(--foco-oscuro); }
 .pais small { color: #cfe2df; font-size: var(--t-13); }
 .pais b { font-family: var(--f-titulo); font-variant-numeric: tabular-nums; }
+.simbolo::before { content: ' · '; }
 .actual { background: #fff; color: var(--agua-900); cursor: default; }
 .actual small { color: var(--tinta-2); }
 .actual:hover { background: #fff; }
 @media (max-width: 860px) {
   .paises { flex-wrap: nowrap; gap: 6px; }
   .paises li { flex: 1 1 0; min-width: 0; }
-  .pais { min-width: 0; flex: 1; padding: 8px 10px; }
-  .pais small { font-size: var(--t-11); }
-  .pais b { font-size: var(--t-14); }
+  .pais { min-width: 0; flex: 1; padding: 10px 8px; text-align: center; }
+  .pais small { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .pais b { font-size: var(--t-14); display: grid; }
+  .simbolo::before { content: none; }
+  .simbolo { font-size: var(--t-13); opacity: .85; }
 }

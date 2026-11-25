@@ -27,6 +27,11 @@ async function baseLocal() {
   return local
 }
 
+/** Empieza a abrir la base embebida apenas arranca el servidor (ver instrumentation.ts). */
+export function precalentar() {
+  if (origenDatos === 'pglite') void baseLocal()
+}
+
 export async function rpc<T>(funcion: Funcion, p: object = {}): Promise<T> {
   if (url && clave) {
     supabase ??= createClient(url, clave, { auth: { persistSession: false } })

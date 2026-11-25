@@ -10,7 +10,7 @@ import { formatear, precioEn, REGLAS } from '@/lib/precios'
 import { Grilla } from '../grilla/Grilla'
 import { Icono } from '../Icono'
 import { Orden } from './Orden'
-import { PanelFiltros } from './PanelFiltros'
+import { BotonFiltros, PanelFiltros } from './PanelFiltros'
 import s from './Resultados.module.css'
 
 type Props = {
@@ -170,7 +170,7 @@ export async function Resultados({ ctx, datos, base, params, titulo, enlaceCateg
 
   return (
     <div className={s.resultados}>
-      <PanelFiltros titulo={t('filtros')} abrir={t('verFiltros')} cerrar={t('verResultados', { n: datos.total })} activos={chips.length}>
+      <PanelFiltros titulo={t('filtros')} cerrar={t('verResultados', { n: datos.total })}>
         {filtros}
       </PanelFiltros>
 
@@ -180,6 +180,7 @@ export async function Resultados({ ctx, datos, base, params, titulo, enlaceCateg
             <H id="titulo-resultados" className={s.titulo}>{titulo}</H>
             <p className={s.cuenta}>{t('resultados', { n: datos.total })}{q && ` ${t('para', { q })}`}</p>
           </div>
+          <BotonFiltros texto={t('verFiltros')} activos={chips.length} />
           <Orden actual={valorDe(params.orden) || 'relevancia'} etiqueta={t('ordenar')} aplicar={t('aplicarOrden')}
             opciones={(['relevancia', 'vendidos', 'precio_asc', 'precio_desc', 'calificacion', 'novedades'] as const).map((o) => ({ valor: o, texto: t(`orden.${o}`) }))}
             base={base} params={params} />

@@ -118,7 +118,6 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
               </div>
             </fieldset>
           ))}
-          {detalles}
         </div>
 
         {/* ---------------------------------------------------------------- caja de compra */}
@@ -157,6 +156,9 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
             </>
           ) : <p className={s.sinStock}>{t('sinStock')}</p>}
         </aside>
+
+        {/* viñetas: debajo de las opciones en escritorio, después del precio en el celular */}
+        {detalles && <div className={s.detalles}>{detalles}</div>}
       </div>
 
       {/* ---------------------------------------------------------------- comparar vendedores */}

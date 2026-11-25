@@ -4,10 +4,27 @@ import { useEffect, useState } from 'react'
 import { Icono } from '../Icono'
 import s from './Resultados.module.css'
 
-type Props = { titulo: string; abrir: string; cerrar: string; activos: number; children: React.ReactNode }
+const EVENTO = 'triplice:abrir-filtros'
 
-export function PanelFiltros({ titulo, abrir, cerrar, activos, children }: Props) {
+/** Botón "Filtrar" del celular (va en la barra de resultados, lejos del panel: se avisan con un evento). */
+export function BotonFiltros({ texto, activos }: { texto: string; activos: number }) {
+  return (
+    <button type="button" className={`boton boton--sec ${s.botonFiltros}`} aria-controls="filtros"
+      onClick={() => window.dispatchEvent(new Event(EVENTO))}>
+      <Icono nombre="filtro" tam={18} />{texto}{activos > 0 && <span className={s.contador}>{activos}</span>}
+    </button>
+  )
+}
+
+type Props = { titulo: string; cerrar: string; children: React.ReactNode }
+
+export function PanelFiltros({ titulo, cerrar, children }: Props) {
   const [abierto, setAbierto] = useState(false)
+  useEffect(() => {
+    const abrir = () => setAbierto(true)
+    window.addEventListener(EVENTO, abrir)
+    return () => window.removeEventListener(EVENTO, abrir)
+  }, [])
   // cada filtro elegido navega y la hoja queda abierta para seguir filtrando, con el total al día
   useEffect(() => {
     document.body.style.overflow = abierto ? 'hidden' : ''
@@ -22,11 +39,8 @@ export function PanelFiltros({ titulo, abrir, cerrar, activos, children }: Props
 
   return (
     <>
-      <button type="button" className={`boton boton--sec ${s.botonFiltros}`} aria-expanded={abierto} aria-controls="filtros"
-        onClick={() => setAbierto(true)}>
-        <Icono nombre="filtro" tam={18} />{abrir}{activos > 0 && <span className={s.contador}>{activos}</span>}
-      </button>
-      <aside id="filtros" className={s.filtros} data-abierto={abierto} aria-label={titulo}>
+      <aside id="filtros" className={s.filtros} data-abierto={abierto} aria-label={titulo}
+        role={abierto ? 'dialog' : undefined} aria-modal={abierto || undefined}>
         <div className={s.filtrosCabeza}>
           <h2>{titulo}</h2>
           <button type="button" className={s.cerrarFiltros} onClick={() => setAbierto(false)} aria-label={cerrar}>

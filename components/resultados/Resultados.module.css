@@ -67,7 +67,8 @@
   .resultados { grid-template-columns: minmax(0, 1fr); margin-top: var(--e-3); }
   .titulo { font-size: var(--t-23); }
   .barra { align-items: center; }
-  .botonFiltros { display: inline-flex; order: 2; }
+  .barra > div:first-child { flex: 1 1 100%; }
+  .botonFiltros { display: inline-flex; min-height: 40px; }
   .orden { margin-left: 0; }
   .orden label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .filtros { display: none; }

@@ -8,6 +8,10 @@
 .categorias { background: #144a4b; }
 .categoriasFila { display: flex; gap: var(--e-1); overflow-x: auto; scrollbar-width: none; height: 42px; align-items: center; }
 .categoriasFila::-webkit-scrollbar { display: none; }
+/* las categorías no entran todas: el borde derecho se desvanece para mostrar que se desliza */
+@media (min-width: 861px) {
+  .categoriasFila { mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); padding-right: 40px; }
+}
 .categorias a {
   color: #e3efed; text-decoration: none; font-size: var(--t-14); white-space: nowrap; padding: 6px 10px;
   border-radius: var(--r-control); display: flex; align-items: center; gap: 6px;
