@@ -66,11 +66,7 @@
   "zoom": 1.3
  },
  "caged_hanging_light": {
-  "colores": [
-   "rojo",
-   "ipe"
-  ],
-  "modo": "saturado"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "Camera_01": {
   "giro": 210,
@@ -82,8 +78,7 @@
  "cassette_player": {
   "giro": 30,
   "colores": [
-   "rojo",
-   "grafito"
+   "rojo"
   ],
   "modo": "claro",
   "umbral_s": [
@@ -93,22 +88,10 @@
  },
  "ceiling_fan": {
   "elev": 28,
-  "colores": [
-   "grafito",
-   "arena"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "ceramic_pot": {
-  "colores": [
-   "agua",
-   "terracota"
-  ],
-  "modo": "claro",
-  "umbral_s": [
-   0.3,
-   0.5
-  ]
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "ceramic_vase_01": {
   "colores": [
@@ -159,18 +142,12 @@
  },
  "coffee_table_round_01": {
   "colores": [
-   "grafito",
-   "arena"
+   "grafito"
   ],
   "modo": "claro"
  },
  "CoffeeTable_01": {
-  "colores": [
-   "rojo",
-   "monte"
-  ],
-  "modo": "todo",
-  "fuerza": 0.8
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "combination_wrench": {
   "elev": 55,
@@ -178,15 +155,7 @@
  },
  "concrete_cat_statue": {
   "giro": 30,
-  "colores": [
-   "terracota",
-   "agua"
-  ],
-  "modo": "claro",
-  "umbral_s": [
-   0.3,
-   0.5
-  ]
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "croissant": {
   "elev": 35
@@ -217,12 +186,7 @@
  },
  "dining_chair_02": {
   "giro": 30,
-  "colores": [
-   "marino",
-   "monte",
-   "rojo"
-  ],
-  "modo": "saturado"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "Drill_01": {
   "giro": 110,
@@ -356,11 +320,7 @@
   "zoom": 1.2
  },
  "hanging_industrial_lamp": {
-  "colores": [
-   "monte",
-   "grafito"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "hanging_picture_frame_01": {
   "giro": 30
@@ -399,11 +359,7 @@
   "modo": "saturado"
  },
  "industrial_pipe_lamp": {
-  "colores": [
-   "grafito",
-   "agua"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "industrial_wall_lamp": {
   "giro": 30
@@ -426,12 +382,7 @@
  },
  "measuring_tape_01": {
   "zoom": 1.25,
-  "colores": [
-   "ipe",
-   "rojo",
-   "agua"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "Megaphone_01": {
   "colores": [
@@ -453,11 +404,7 @@
  },
  "metal_office_desk": {
   "giro": 30,
-  "colores": [
-   "agua",
-   "grafito"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "metal_stool_01": {
   "colores": [
@@ -506,11 +453,7 @@
   "giro": 30
  },
  "modern_coffee_table_01": {
-  "colores": [
-   "terracota",
-   "grafito"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "modified_thermos": {
   "colores": [
@@ -573,11 +516,7 @@
   "modo": "claro"
  },
  "painted_wooden_chair_02": {
-  "colores": [
-   "ipe",
-   "rosa"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "painted_wooden_nightstand": {
   "colores": [
@@ -691,12 +630,7 @@
   "descartado": true
  },
  "pot_enamel_01": {
-  "colores": [
-   "rojo",
-   "agua",
-   "marino"
-  ],
-  "modo": "saturado"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "propane_torch": {
   "colores": [
@@ -717,16 +651,7 @@
   "zoom": 1.3
  },
  "rubber_boots": {
-  "colores": [
-   "ipe",
-   "rojo",
-   "marino"
-  ],
-  "modo": "saturado",
-  "tono": [
-   0.38,
-   0.12
-  ]
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "rubber_duck_toy": {
   "colores": [
@@ -783,8 +708,7 @@
  },
  "sledgehammer_01": {
   "colores": [
-   "rojo",
-   "naranja"
+   "rojo"
   ],
   "modo": "saturado"
  },
@@ -801,13 +725,8 @@
   "giro": 30
  },
  "sofa_02": {
-  "colores": [
-   "terracota",
-   "marino"
-  ],
-  "modo": "todo",
-  "fuerza": 0.75,
-  "giro": 30
+  "giro": 30,
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "sofa_03": {
   "descartado": true
@@ -905,12 +824,7 @@
   "modo": "saturado"
  },
  "vintage_microwave": {
-  "colores": [
-   "rojo",
-   "menta",
-   "cielo"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "vintage_stapler": {
   "colores": [
@@ -921,19 +835,10 @@
   "modo": "saturado"
  },
  "vintage_suitcase": {
-  "colores": [
-   "marino",
-   "rojo",
-   "terracota"
-  ],
-  "modo": "saturado"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "wall_clock": {
-  "colores": [
-   "rojo",
-   "grafito"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "watering_can_metal_01": {
   "colores": [
@@ -962,11 +867,7 @@
   "zoom": 1.3
  },
  "wooden_stool_01": {
-  "colores": [
-   "agua",
-   "rosa"
-  ],
-  "modo": "claro"
+  "sin_tinte": "el tinte casi no se nota en este material (revisión de la etapa 4)"
  },
  "wooden_stool_02": {
   "colores": [
