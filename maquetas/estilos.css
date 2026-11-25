@@ -150,7 +150,8 @@ main { display: block; padding-bottom: var(--e-14); }
 .mapa-portada svg.mapa { position: absolute; right: -56px; top: -20px; width: 400px; height: auto; }
 .mapa-portada h1 { font-size: var(--t-40); max-width: 13ch; position: relative; }
 .mapa-portada p { color: #cfe2df; max-width: 42ch; margin-top: var(--e-3); position: relative; }
-.paises { display: flex; flex-wrap: wrap; gap: var(--e-2); margin-top: var(--e-5); position: relative; }
+.paises { display: flex; flex-wrap: wrap; gap: var(--e-2); margin: var(--e-5) 0 0; padding: 0; list-style: none; position: relative; }
+.paises li { flex: 0 1 auto; display: flex; }
 .pais { display: grid; background: rgb(255 255 255 / .07); border: 1px solid rgb(255 255 255 / .16); border-radius: var(--r-tarjeta); padding: 10px 14px; color: #fff; text-decoration: none; min-width: 150px; }
 .pais:hover { background: rgb(255 255 255 / .14); color: #fff; }
 .pais:focus-visible { box-shadow: var(--foco-oscuro); }
@@ -366,7 +367,8 @@ main { display: block; padding-bottom: var(--e-14); }
   .mapa-portada { padding: var(--e-5); min-height: 0; padding-top: 180px; }
   .mapa-portada svg.mapa { width: 320px; right: -30px; top: -40px; }
   .mapa-portada h1 { font-size: var(--t-33); }
-  .pais { min-width: 0; flex: 1 1 40%; }
+  .paises li { flex: 1 1 40%; }
+  .pais { min-width: 0; flex: 1; }
   .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-2); }
   .tarjeta__cuerpo { padding: 10px 10px 12px; }
   .precio { font-size: var(--t-16); }
@@ -401,7 +403,7 @@ main { display: block; padding-bottom: var(--e-14); }
   .lateral { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--linea); padding: 8px; }
   .lateral a { white-space: nowrap; }
   .escritorio { padding: var(--e-4) 16px; }
-  .grafico { height: 160px; }
+  .grafico { height: auto; }
   .tabla--responsiva thead { display: none; }
   .tabla--responsiva tr { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--linea-2); }
   .tabla--responsiva td { border: 0; padding: 0; }

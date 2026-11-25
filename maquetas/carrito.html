@@ -95,6 +95,17 @@
   </div>
 </main>
 
+<div class="compra-fija" aria-label="Total del carrito">
+  <p><small style="display:block;font-size:var(--t-13);color:var(--tinta-2)">Total con IVA</small><span class="precio" data-total-fijo></span></p>
+  <a class="boton boton--accion" href="checkout.html">Ir a pagar</a>
+</div>
+
 <footer class="pie" data-pie></footer>
+<script>
+  window.addEventListener('load', () => {
+    const t = document.querySelector('.resumen dd.total')
+    document.querySelector('[data-total-fijo]').textContent = t ? t.textContent : ''
+  })
+</script>
 </body>
 </html>

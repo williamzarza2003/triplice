@@ -40,11 +40,11 @@
       </svg>
       <h1 id="titulo-portada">Los tres mercados de la frontera, en una sola tienda.</h1>
       <p>El precio en tu moneda, con los impuestos de tu país y el día en que llega a tu casa. Comparalo con los otros dos lados del río con un toque.</p>
-      <div class="paises" role="list">
-        <a class="pais pais--actual" role="listitem" href="?region=PY"><small>Comprás desde</small><b>Paraguay · ₲</b></a>
-        <a class="pais" role="listitem" href="?region=BR"><small>Comprar desde</small><b>Brasil · R$</b></a>
-        <a class="pais" role="listitem" href="?region=AR"><small>Comprar desde</small><b>Argentina · $</b></a>
-      </div>
+      <ul class="paises" aria-label="Elegí desde qué país comprás">
+        <li><a class="pais pais--actual" href="?region=PY" aria-current="true"><small>Comprás desde</small><b>Paraguay · ₲</b></a></li>
+        <li><a class="pais" href="?region=BR"><small>Comprar desde</small><b>Brasil · R$</b></a></li>
+        <li><a class="pais" href="?region=AR"><small>Comprar desde</small><b>Argentina · $</b></a></li>
+      </ul>
     </div>
 
     <article class="oferta-dia" aria-labelledby="titulo-oferta">

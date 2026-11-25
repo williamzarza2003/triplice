@@ -139,7 +139,7 @@ function encabezado() {
     <a class="logo" href="index.html" aria-label="${NOMBRE}, inicio"><img src="../marca/logotipo-claro.svg" alt="" width="132" height="37"></a>
     <form class="buscador" role="search" action="buscar.html">
       <label class="sr-only" for="q">Buscar en ${NOMBRE}</label>
-      <input id="q" name="q" type="search" placeholder="Buscá productos, marcas o tiendas" autocomplete="off" aria-controls="sugerencias" aria-autocomplete="list" aria-expanded="false">
+      <input id="q" name="q" type="search" role="combobox" placeholder="Buscá productos, marcas o tiendas" autocomplete="off" aria-controls="sugerencias" aria-autocomplete="list" aria-expanded="false">
       <button class="buscador__boton" type="submit" aria-label="Buscar">${icono('buscar')}</button>
       <ul id="sugerencias" class="sugerencias" role="listbox" hidden></ul>
     </form>

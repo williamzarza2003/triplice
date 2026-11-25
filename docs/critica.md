@@ -31,13 +31,13 @@ Comparación contra Amazon y Mercado Libre, mirando las mismas pantallas en 1440
 2. En el celular, el nombre de la tienda quedaba oscuro sobre la portada oscura. La cabecera de la tienda baja debajo de la portada.
 3. El panel del vendedor no tenía margen lateral en el celular.
 4. Sin desborde horizontal en ninguna de las 7 páginas (medido con `scrollWidth` en 390 px).
+5. En el celular, el total del carrito quedaba al final de todo. Ahora hay una barra fija con el total y "Ir a pagar", como la de la ficha.
+6. El gráfico del panel en el celular tenía 30 barras ilegibles: ahora muestra los últimos 14 días, más alto.
 
 ## En qué todavía no
 
 - **Fotos:** son modelos 3D de estudio (CC0). Una tienda real necesita fotos de cada vendedor, con fondos distintos; la fase 1 tiene que definir cómo se normalizan (recorte automático y fondo neutro).
 - **Contenido escaso:** 20 productos de ejemplo. Amazon y ML se sienten "infinitos"; con el seed de 400 productos de la fase 1 se va a notar si la grilla aguanta.
-- **Gráfico del panel en el celular:** con 30 barras queda chico. Conviene mostrar 14 días en el celular.
-- **Carrito en el celular:** el resumen queda al final. Falta una barra fija con el total y "Ir a pagar", como la de la ficha.
 - **Idiomas:** las maquetas están en español. El selector de idioma existe, pero los textos en portugués e inglés llegan en la fase 1 (con next-intl).
 - **Precios fijos en el HTML:** algunos importes de ejemplo (ofertas de otros vendedores, cuotas del checkout) están escritos a mano para Paraguay; si cambiás de región, solo se recalculan las tarjetas, la ficha y el desglose.
 - **Accesibilidad sin auditar con lectores de pantalla:** hay foco visible, etiquetas y roles, pero falta probar con NVDA y TalkBack.
