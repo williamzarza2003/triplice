@@ -7,6 +7,7 @@ import { precio, ruta, type Contexto } from '@/lib/contexto'
 import type { TarjetaDatos } from '@/lib/datos/tipos'
 import { ANCHOS, foto } from '@/lib/imagenes'
 import { descuento } from '@/lib/precios'
+import { FotoDiferida } from '../FotoDiferida'
 import { Icono } from '../Icono'
 import { Estrellas } from '../Estrellas'
 import s from './Tarjeta.module.css'
@@ -28,12 +29,7 @@ export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false, diferida =
     <article className={s.tarjeta}>
       <Link className={s.foto} href={href} tabIndex={-1} aria-hidden="true">
         {p.imagen && diferida && (
-          <>
-            {/* eslint-disable-next-line @next/next/no-img-element -- carga diferida propia (ImagenesDiferidas) */}
-            <img alt="" width={240} height={240} sizes={TAMANOS} data-diferida="" data-src={`${foto(p.imagen)}-480.webp`} data-srcset={juego(p.imagen)} />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <noscript><img alt="" width={240} height={240} sizes={TAMANOS} src={`${foto(p.imagen)}-480.webp`} srcSet={juego(p.imagen)} /></noscript>
-          </>
+          <FotoDiferida width={240} height={240} sizes={TAMANOS} src={`${foto(p.imagen)}-480.webp`} srcSet={juego(p.imagen)} />
         )}
         {p.imagen && !diferida && (
           <Image src={foto(p.imagen)} alt="" width={240} height={240} sizes={TAMANOS}

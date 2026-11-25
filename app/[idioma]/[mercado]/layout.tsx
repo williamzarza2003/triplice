@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Encabezado } from '@/components/encabezado/Encabezado'
-import { ImagenesDiferidas } from '@/components/ImagenesDiferidas'
 import { Pie } from '@/components/Pie'
 import { contexto } from '@/lib/contexto'
 import { IDIOMAS, LOCALE } from '@/lib/i18n/idiomas'
@@ -53,7 +52,6 @@ export default async function Raiz({ children }: LayoutProps<'/[idioma]/[mercado
           <Encabezado ctx={ctx} />
           {children}
           <Pie ctx={ctx} />
-          <ImagenesDiferidas />
         </Textos>
       </body>
     </html>

@@ -9,6 +9,7 @@ import COLORES from '@/lib/catalogo/colores.json'
 import type { Idioma } from '@/lib/i18n/idiomas'
 import { textoSobre } from '@/lib/color'
 import { foto } from '@/lib/imagenes'
+import { FotoDiferida } from '../FotoDiferida'
 import { Icono } from '../Icono'
 import s from './Compra.module.css'
 
@@ -98,10 +99,9 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
           <div className={s.carrusel}>
             {v.imagenes.map((img, i) => i === 0
               ? <Image key={img} src={foto(img)} alt={titulo} width={480} height={480} sizes="88vw" loading="eager" fetchPriority="high" />
-              // las siguientes se piden al deslizar el carrusel (components/ImagenesDiferidas.tsx)
-              // eslint-disable-next-line @next/next/no-img-element
-              : <img key={img} alt="" width={480} height={480} sizes="88vw" data-diferida="" data-src={`${foto(img)}-480.webp`}
-                  data-srcset={`${foto(img)}-480.webp 480w, ${foto(img)}-800.webp 800w`} />)}
+              // las siguientes se piden al deslizar el carrusel
+              : <FotoDiferida key={img} width={480} height={480} sizes="88vw" src={`${foto(img)}-480.webp`}
+                  srcSet={`${foto(img)}-480.webp 480w, ${foto(img)}-800.webp 800w`} />)}
           </div>
         </section>
 

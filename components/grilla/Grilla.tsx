@@ -6,7 +6,7 @@ import s from './Grilla.module.css'
 
 /**
  * prioridad: cuántas fotos cargar sin esperar; la primera pide prioridad alta salvo que sinAlta (cuando el LCP es un texto).
- * diferirDesde: desde qué tarjeta la foto se pide recién al acercarse a la pantalla (components/ImagenesDiferidas.tsx).
+ * diferirDesde: desde qué tarjeta la foto se pide recién al acercarse a la pantalla (components/FotoDiferida.tsx).
  */
 type Props = { items: TarjetaDatos[]; ctx: Contexto; nivel?: 2 | 3 | 4; fila?: boolean; prioridad?: number; sinAlta?: boolean; diferirDesde?: number }
 
