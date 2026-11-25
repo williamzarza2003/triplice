@@ -209,7 +209,7 @@ export async function Resultados({ ctx, datos, base, params, titulo, enlaceCateg
         {arriba}
 
         {datos.items.length > 0 ? (
-          <Grilla items={datos.items} ctx={ctx} nivel={nivelTitulo === 1 ? 2 : 3} prioridad={4} />
+          <Grilla items={datos.items} ctx={ctx} nivel={nivelTitulo === 1 ? 2 : 3} prioridad={2} diferirDesde={2} />
         ) : (
           <div className={`panel ${s.vacio}`}>
             <p className={s.vacioTitulo}>{t('sinResultados')}</p>

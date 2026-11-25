@@ -1,9 +1,9 @@
 'use client'
-import { useTranslations } from 'next-intl'
+import { useTextos } from '@/lib/i18n/textos'
 
 // Error de una página: se explica qué pasó y se ofrece reintentar sin perder el resto del sitio.
 export default function ErrorDePagina({ retry }: { error: Error & { digest?: string }; retry: () => void }) {
-  const t = useTranslations('error')
+  const t = useTextos('error')
   return (
     <main id="contenido" className="contenedor" style={{ paddingTop: 'var(--e-10)' }}>
       <div className="panel" role="alert" style={{ maxWidth: 620, display: 'grid', gap: 'var(--e-4)', justifyItems: 'start' }}>

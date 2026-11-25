@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
-import { getTranslations } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { EstrellasCompletas } from '@/components/Estrellas'
 import { Compra, type VarianteVista } from '@/components/ficha/Compra'
 import { Opiniones } from '@/components/ficha/Opiniones'
@@ -15,6 +15,7 @@ import { contexto, precio, ruta, type Contexto } from '@/lib/contexto'
 import { ficha, slugsProductos } from '@/lib/datos/consultas'
 import type { Ficha } from '@/lib/datos/tipos'
 import { esIdioma, LOCALE } from '@/lib/i18n/idiomas'
+import { Textos } from '@/lib/i18n/textos'
 import { masBarata, ordenarOfertas } from '@/lib/ofertas'
 import { descuento, formatear, precioEn } from '@/lib/precios'
 import { mercadoPredeterminado, MONEDAS, segmentoMercado } from '@/lib/region'
@@ -92,10 +93,13 @@ async function Contenido({ params }: Props) {
   const [{ slug }, ctx] = await Promise.all([params, contexto()])
   const f = await ficha(slug, ctx.idioma)
   if (!f) notFound()
-  const [t, tc] = await Promise.all([
+  const [t, tc, mensajes] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'ficha' }),
     getTranslations({ locale: ctx.idioma, namespace: 'comun' }),
+    getMessages({ locale: ctx.idioma }),
   ])
+  // textos de la compra y de las opiniones para el navegador (solo en la ficha)
+  const textosFicha = { ficha: mensajes.ficha, precio: mensajes.precio, comun: { paises: mensajes.comun.paises, idiomaDe: mensajes.comun.idiomaDe } }
   const r = (c: string) => ruta(ctx.idioma, c)
   const numero = new Intl.NumberFormat(LOCALE[ctx.idioma])
   const promedio = Number(f.resumen.promedio)
@@ -147,7 +151,9 @@ async function Contenido({ params }: Props) {
         { texto: f.titulo },
       ]} />
 
-      <Compra idioma={ctx.idioma} titulo={f.titulo} variantes={vistas(f, ctx)} info={info} detalles={detalles} />
+      <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
+        <Compra idioma={ctx.idioma} titulo={f.titulo} variantes={vistas(f, ctx)} info={info} detalles={detalles} />
+      </Textos>
 
       <div className={s.bloques}>
         <section aria-labelledby="t-specs">
@@ -172,7 +178,9 @@ async function Contenido({ params }: Props) {
 
       <section id="opiniones" className="seccion fuera-de-pantalla" aria-labelledby="t-opiniones">
         <div className="seccion__cabeza"><h2 id="t-opiniones">{t('opinionesTitulo')}</h2></div>
-        <Opiniones idioma={ctx.idioma} resenas={f.resenas} resumen={f.resumen} paises={paises} />
+        <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
+          <Opiniones idioma={ctx.idioma} resenas={f.resenas} resumen={f.resumen} paises={paises} />
+        </Textos>
       </section>
 
       <section id="preguntas" className="seccion fuera-de-pantalla" aria-labelledby="t-preguntas">
@@ -201,7 +209,7 @@ async function Contenido({ params }: Props) {
             <h2 id="t-relacionados">{t('relacionados', { categoria: f.categoria.nombre })}</h2>
             <Link href={r(`/c/${f.categoria.slug}`)}>{tc('verTodo')}</Link>
           </div>
-          <Grilla items={f.relacionados.slice(0, 6)} ctx={ctx} fila />
+          <Grilla items={f.relacionados.slice(0, 6)} ctx={ctx} fila diferirDesde={0} />
         </section>
       )}
     </>

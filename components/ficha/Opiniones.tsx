@@ -1,7 +1,7 @@
 'use client'
 // Lista de opiniones con filtro por estrellas (las barras del resumen son los botones del filtro).
 import { useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useTextos } from '@/lib/i18n/textos'
 import type { Resena } from '@/lib/datos/tipos'
 import type { Idioma } from '@/lib/i18n/idiomas'
 import { LOCALE } from '@/lib/i18n/idiomas'
@@ -17,8 +17,8 @@ type Props = {
 }
 
 export function Opiniones({ idioma, resenas, resumen, paises }: Props) {
-  const t = useTranslations('ficha')
-  const tc = useTranslations('comun')
+  const t = useTextos('ficha')
+  const tc = useTextos('comun')
   const [filtro, setFiltro] = useState<number | null>(null)
   const [todas, setTodas] = useState(false)
   const lista = resenas.filter((r) => filtro === null || r.estrellas === filtro)

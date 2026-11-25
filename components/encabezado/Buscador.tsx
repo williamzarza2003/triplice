@@ -5,7 +5,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTextos } from '@/lib/i18n/textos'
 import type { Sugerencias } from '@/lib/datos/tipos'
 import type { Idioma } from '@/lib/i18n/idiomas'
 import { foto } from '@/lib/imagenes'
@@ -17,8 +17,8 @@ import s from './Buscador.module.css'
 type Opcion = { href: string; clave: string }
 
 export function Buscador({ idioma, moneda, tasas }: { idioma: Idioma; moneda: Moneda; tasas: Tasas }) {
-  const t = useTranslations('encabezado')
-  const ts = useTranslations('sugerencias')
+  const t = useTextos('encabezado')
+  const ts = useTextos('sugerencias')
   const router = useRouter()
   const id = useId()
   const [q, setQ] = useState('')

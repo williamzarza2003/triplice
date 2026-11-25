@@ -3,7 +3,7 @@
 // los precios salen del servidor ya convertidos, nunca se recalculan en el navegador.
 import { useRef, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useTextos } from '@/lib/i18n/textos'
 import { IDIOMAS, NOMBRE_IDIOMA, type Idioma } from '@/lib/i18n/idiomas'
 import { guardarPreferencias } from '@/lib/preferencias'
 import { MONEDA_DE, MONEDAS, REGIONES, type Moneda, type Region } from '@/lib/region'
@@ -12,9 +12,9 @@ import { Icono } from '../Icono'
 import s from './SelectorRegion.module.css'
 
 export function SelectorRegion({ idioma, region, moneda }: { idioma: Idioma; region: Region; moneda: Moneda }) {
-  const t = useTranslations('region')
-  const tc = useTranslations('comun')
-  const te = useTranslations('encabezado')
+  const t = useTextos('region')
+  const tc = useTextos('comun')
+  const te = useTextos('encabezado')
   const dialogo = useRef<HTMLDialogElement>(null)
   const router = useRouter()
   const camino = usePathname()

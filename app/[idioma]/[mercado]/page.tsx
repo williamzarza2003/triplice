@@ -41,7 +41,7 @@ export default async function Inicio() {
           <article className={s.destacada} aria-labelledby="titulo-destacada">
             <h2 id="titulo-destacada">{t('ofertaDelDia')}</h2>
             {destacada.imagen && (
-              <Image src={foto(destacada.imagen)} alt="" width={480} height={480} sizes="(max-width: 860px) 60vw, 300px" loading="eager" />
+              <Image src={foto(destacada.imagen)} alt="" width={480} height={480} sizes="(max-width: 860px) 210px, 300px" loading="eager" />
             )}
             <div>
               <p className={s.destacadaTitulo}><Link href={r(`/p/${destacada.slug}`)}>{destacada.titulo}</Link></p>
@@ -64,12 +64,14 @@ export default async function Inicio() {
         <Link className={s.atajo} href={r('/buscar')}><Icono nombre="menu" tam={26} />{tc('verTodo')}</Link>
       </nav>
 
-      <section className="seccion" aria-labelledby="t-ofertas">
+      {/* fuera-de-pantalla: en el celular las vidrieras quedan debajo del primer pantallazo y no piden sus fotos
+          hasta acercarse (content-visibility); en escritorio se ven enseguida y cargan igual */}
+      <section className="seccion fuera-de-pantalla" aria-labelledby="t-ofertas">
         <div className="seccion__cabeza">
           <h2 id="t-ofertas">{t('ofertas')}</h2>
           <Link href={r('/buscar?ofertas=1')}>{t('verOfertas')}</Link>
         </div>
-        <Grilla items={ofertas} ctx={ctx} fila prioridad={2} sinAlta />
+        <Grilla items={ofertas} ctx={ctx} fila diferirDesde={0} />
       </section>
 
       <section className="seccion fuera-de-pantalla" aria-labelledby="t-vendidos">
@@ -77,7 +79,7 @@ export default async function Inicio() {
           <h2 id="t-vendidos">{t('vendidos')}</h2>
           <Link href={r('/buscar?orden=vendidos')}>{t('verVendidos')}</Link>
         </div>
-        <Grilla items={datos.vendidos.slice(0, 6)} ctx={ctx} fila />
+        <Grilla items={datos.vendidos.slice(0, 6)} ctx={ctx} fila diferirDesde={0} />
       </section>
 
       <section className="seccion fuera-de-pantalla" aria-labelledby="t-cerca">
@@ -85,7 +87,7 @@ export default async function Inicio() {
           <h2 id="t-cerca">{ctx.region === 'XX' ? t('cercaInternacional') : t('cerca', { pais: tc(`paises.${ctx.region}`) })}</h2>
           <Link href={r('/buscar?orden=calificacion')}>{t('verCerca')}</Link>
         </div>
-        <Grilla items={datos.cerca.slice(0, 6)} ctx={ctx} fila />
+        <Grilla items={datos.cerca.slice(0, 6)} ctx={ctx} fila diferirDesde={0} />
       </section>
 
       <section className="seccion fuera-de-pantalla" aria-labelledby="t-tiendas">
@@ -113,7 +115,7 @@ export default async function Inicio() {
           <h2 id="t-novedades">{t('novedades')}</h2>
           <Link href={r('/buscar?orden=novedades')}>{t('verNovedades')}</Link>
         </div>
-        <Grilla items={datos.novedades.slice(0, 6)} ctx={ctx} fila />
+        <Grilla items={datos.novedades.slice(0, 6)} ctx={ctx} fila diferirDesde={0} />
       </section>
 
       <section className={`${s.confianza} fuera-de-pantalla`} aria-label={t('confianza')}>

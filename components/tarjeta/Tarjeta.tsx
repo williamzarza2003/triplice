@@ -5,15 +5,18 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { precio, ruta, type Contexto } from '@/lib/contexto'
 import type { TarjetaDatos } from '@/lib/datos/tipos'
-import { foto } from '@/lib/imagenes'
+import { ANCHOS, foto } from '@/lib/imagenes'
 import { descuento } from '@/lib/precios'
 import { Icono } from '../Icono'
 import { Estrellas } from '../Estrellas'
 import s from './Tarjeta.module.css'
 
-type Props = { p: TarjetaDatos; ctx: Contexto; nivel?: 2 | 3 | 4; prioridad?: 'alta' | 'eager' | false }
+type Props = { p: TarjetaDatos; ctx: Contexto; nivel?: 2 | 3 | 4; prioridad?: 'alta' | 'eager' | false; diferida?: boolean }
 
-export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false }: Props) {
+const TAMANOS = '(max-width: 860px) 46vw, (max-width: 1100px) 23vw, 200px'
+const juego = (img: string) => ANCHOS.map((a) => `${foto(img)}-${a}.webp ${a}w`).join(', ')
+
+export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false, diferida = false }: Props) {
   const t = await getTranslations({ locale: ctx.idioma, namespace: 'tarjeta' })
   const tc = await getTranslations({ locale: ctx.idioma, namespace: 'comun' })
   const tp = await getTranslations({ locale: ctx.idioma, namespace: 'precio' })
@@ -24,9 +27,16 @@ export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false }: Props) {
   return (
     <article className={s.tarjeta}>
       <Link className={s.foto} href={href} tabIndex={-1} aria-hidden="true">
-        {p.imagen && (
-          <Image src={foto(p.imagen)} alt="" width={240} height={240}
-            sizes="(max-width: 860px) 46vw, (max-width: 1100px) 23vw, 200px"
+        {p.imagen && diferida && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- carga diferida propia (ImagenesDiferidas) */}
+            <img alt="" width={240} height={240} sizes={TAMANOS} data-diferida="" data-src={`${foto(p.imagen)}-480.webp`} data-srcset={juego(p.imagen)} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <noscript><img alt="" width={240} height={240} sizes={TAMANOS} src={`${foto(p.imagen)}-480.webp`} srcSet={juego(p.imagen)} /></noscript>
+          </>
+        )}
+        {p.imagen && !diferida && (
+          <Image src={foto(p.imagen)} alt="" width={240} height={240} sizes={TAMANOS}
             loading={prioridad ? 'eager' : 'lazy'} fetchPriority={prioridad === 'alta' ? 'high' : 'auto'} />
         )}
         {desc > 0 && <span className={`sello sello--oferta ${s.sello}`}>−{desc} %</span>}

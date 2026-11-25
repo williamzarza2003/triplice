@@ -4,7 +4,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useTranslations } from 'next-intl'
+import { useTextos } from '@/lib/i18n/textos'
 import COLORES from '@/lib/catalogo/colores.json'
 import type { Idioma } from '@/lib/i18n/idiomas'
 import { textoSobre } from '@/lib/color'
@@ -33,8 +33,8 @@ type Props = { idioma: Idioma; titulo: string; variantes: VarianteVista[]; info:
 const NOMBRE_COLOR = COLORES as Record<string, { hex: string; es: string; pt: string; en: string }>
 
 export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
-  const t = useTranslations('ficha')
-  const tp = useTranslations('precio')
+  const t = useTextos('ficha')
+  const tp = useTextos('precio')
   // la oferta elegida por defecto es la primera con stock: vienen ordenadas por precio y, con el mismo precio,
   // por la entrega más rápida (lib/ofertas.ts)
   const primeraConStock = (x: VarianteVista) => Math.max(0, x.ofertas.findIndex((o) => o.stock > 0))
@@ -96,9 +96,12 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
           </div>
           <Lupa src={foto(v.imagenes[foto_] ?? v.imagenes[0])} alt={titulo} etiqueta={t('ampliar')} descuento={oferta?.descuento ?? 0} />
           <div className={s.carrusel}>
-            {v.imagenes.map((img, i) => (
-              <Image key={img} src={foto(img)} alt={i === 0 ? titulo : ''} width={480} height={480} sizes="88vw" loading={i === 0 ? 'eager' : 'lazy'} fetchPriority={i === 0 ? 'high' : 'auto'} />
-            ))}
+            {v.imagenes.map((img, i) => i === 0
+              ? <Image key={img} src={foto(img)} alt={titulo} width={480} height={480} sizes="88vw" loading="eager" fetchPriority="high" />
+              // las siguientes se piden al deslizar el carrusel (components/ImagenesDiferidas.tsx)
+              // eslint-disable-next-line @next/next/no-img-element
+              : <img key={img} alt="" width={480} height={480} sizes="88vw" data-diferida="" data-src={`${foto(img)}-480.webp`}
+                  data-srcset={`${foto(img)}-480.webp 480w, ${foto(img)}-800.webp 800w`} />)}
           </div>
         </section>
 
@@ -219,7 +222,8 @@ function Lupa({ src, alt, etiqueta, descuento }: { src: string; alt: string; eti
         const r = e.currentTarget.getBoundingClientRect()
         setZoom({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 })
       }}>
-      <Image src={src} alt={alt} width={800} height={800} sizes="(max-width: 1100px) 45vw, 520px" loading="eager" fetchPriority="high"
+      {/* lazy: en el celular esta foto está oculta (se usa el carrusel) y no se descarga; en escritorio entra apenas se arma la página */}
+      <Image src={src} alt={alt} width={800} height={800} sizes="(max-width: 1100px) 45vw, 520px" loading="lazy" fetchPriority="high"
         style={zoom ? { transform: 'scale(1.9)', transformOrigin: `${zoom.x}% ${zoom.y}%` } : undefined} />
       {descuento > 0 && <span className="sello sello--oferta">−{descuento} %</span>}
       <span className={s.lupa} aria-hidden="true" title={etiqueta}><Icono nombre="buscar" tam={18} /></span>
