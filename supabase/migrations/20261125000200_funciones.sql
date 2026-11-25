@@ -316,7 +316,7 @@ begin
             'tienda', jsonb_build_object('slug', t.slug, 'nombre', t.nombre, 'color', t.color, 'pais', t.pais, 'ciudad', t.ciudad,
                                          'recomendacion', r.recomendacion, 'opiniones', r.opiniones, 'a_tiempo', r.a_tiempo,
                                          'respuesta_min', r.respuesta_min)
-          ) order by o.precio_usd_cent)
+          ) order by o.precio_usd_cent, o.preparacion_h)
             from ofertas o join tiendas t on t.id = o.tienda_id left join reputacion_tiendas r on r.tienda_id = t.id
            where o.variante_id = v.id and o.activa), '[]')
       ) order by v.orden)

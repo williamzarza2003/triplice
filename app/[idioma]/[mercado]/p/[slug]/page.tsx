@@ -15,6 +15,7 @@ import { contexto, precio, ruta, type Contexto } from '@/lib/contexto'
 import { ficha, slugsProductos } from '@/lib/datos/consultas'
 import type { Ficha } from '@/lib/datos/tipos'
 import { esIdioma, LOCALE } from '@/lib/i18n/idiomas'
+import { masBarata, ordenarOfertas } from '@/lib/ofertas'
 import { descuento, formatear, precioEn } from '@/lib/precios'
 import { mercadoPredeterminado, MONEDAS, segmentoMercado } from '@/lib/region'
 import s from './ficha.module.css'
@@ -60,23 +61,31 @@ function tiempoRespuesta(min: number | undefined, idioma: Contexto['idioma']) {
 /** Precios de cada oferta, ya convertidos y formateados para el navegador. */
 function vistas(f: Ficha, ctx: Contexto): VarianteVista[] {
   const otras = MONEDAS.filter((m) => m !== ctx.moneda)
-  return f.variantes.map((v) => ({
-    id: v.id, sku: v.sku, opciones: v.opciones, imagenes: v.imagenes,
-    ofertas: v.ofertas.map((o) => ({
-      id: o.id,
-      precio: precio(ctx, o.precio),
-      lista: o.precio_lista ? precio(ctx, o.precio_lista) : null,
-      descuento: descuento(o.precio, o.precio_lista),
-      equivalencias: otras.map((m) => formatear(precioEn(o.precio, m, ctx.tasas), m)).join(' · '),
-      stock: o.stock, envioGratis: o.envio_gratis, preparacionH: o.preparacion_h, cerca: o.tienda.pais === ctx.region,
-      tienda: {
-        slug: o.tienda.slug, nombre: o.tienda.nombre, ciudad: o.tienda.ciudad, color: o.tienda.color,
-        recomendacion: o.tienda.recomendacion !== undefined ? Number(o.tienda.recomendacion) : null,
-        opiniones: o.tienda.opiniones ?? null, aTiempo: o.tienda.a_tiempo !== undefined ? Number(o.tienda.a_tiempo) : null,
-        respuesta: tiempoRespuesta(o.tienda.respuesta_min, ctx.idioma),
-      },
-    })),
-  }))
+  return f.variantes.map((v) => {
+    // se compara el precio tal como lo ve el comprador (convertido y redondeado en su moneda)
+    const comparables = v.ofertas.map((o) => ({ o, precio: precioEn(o.precio, ctx.moneda, ctx.tasas), stock: o.stock,
+      preparacionH: o.preparacion_h, recomendacion: o.tienda.recomendacion !== undefined ? Number(o.tienda.recomendacion) : null }))
+    const ordenadas = ordenarOfertas(comparables)
+    const barata = masBarata(comparables)
+    return {
+      id: v.id, sku: v.sku, opciones: v.opciones, imagenes: v.imagenes,
+      ofertas: ordenadas.map(({ o }) => ({
+        id: o.id,
+        masBarato: barata?.o.id === o.id,
+        precio: precio(ctx, o.precio),
+        lista: o.precio_lista ? precio(ctx, o.precio_lista) : null,
+        descuento: descuento(o.precio, o.precio_lista),
+        equivalencias: otras.map((m) => formatear(precioEn(o.precio, m, ctx.tasas), m)).join(' · '),
+        stock: o.stock, envioGratis: o.envio_gratis, preparacionH: o.preparacion_h, cerca: o.tienda.pais === ctx.region,
+        tienda: {
+          slug: o.tienda.slug, nombre: o.tienda.nombre, ciudad: o.tienda.ciudad, color: o.tienda.color,
+          recomendacion: o.tienda.recomendacion !== undefined ? Number(o.tienda.recomendacion) : null,
+          opiniones: o.tienda.opiniones ?? null, aTiempo: o.tienda.a_tiempo !== undefined ? Number(o.tienda.a_tiempo) : null,
+          respuesta: tiempoRespuesta(o.tienda.respuesta_min, ctx.idioma),
+        },
+      })),
+    }
+  })
 }
 
 async function Contenido({ params }: Props) {

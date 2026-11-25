@@ -14,6 +14,8 @@ import s from './Compra.module.css'
 
 export type OfertaVista = {
   id: string
+  /** la única más barata con stock (si hay empate de precio, ninguna) */
+  masBarato: boolean
   precio: string
   lista: string | null
   descuento: number
@@ -33,7 +35,8 @@ const NOMBRE_COLOR = COLORES as Record<string, { hex: string; es: string; pt: st
 export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
   const t = useTranslations('ficha')
   const tp = useTranslations('precio')
-  // la oferta elegida por defecto es la más barata que tiene stock (están ordenadas por precio)
+  // la oferta elegida por defecto es la primera con stock: vienen ordenadas por precio y, con el mismo precio,
+  // por la entrega más rápida (lib/ofertas.ts)
   const primeraConStock = (x: VarianteVista) => Math.max(0, x.ofertas.findIndex((o) => o.stock > 0))
   const inicial = Math.max(0, variantes.findIndex((v) => v.ofertas.some((o) => o.stock > 0)))
   const [vi, setVi] = useState(inicial)
@@ -185,7 +188,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
                   </td>
                   <td className={s.celdaPrecio}>
                     <b className="precio">{o.precio}</b>
-                    {i === 0 && <small className={s.barato}>{t('masBarato')}</small>}
+                    {o.masBarato && <small className={s.barato}>{t('masBarato')}</small>}
                   </td>
                   <td className={s.celdaEntrega}>
                     {o.envioGratis && <b className={s.gratis}>{t('envioGratis')}</b>}
