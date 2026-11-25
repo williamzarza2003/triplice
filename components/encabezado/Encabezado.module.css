@@ -5,6 +5,18 @@
 .logo img { height: 34px; width: auto; }
 .logo:focus-visible { box-shadow: var(--foco-oscuro); }
 
+.carrito {
+  flex: none; position: relative; width: 48px; height: 44px; display: grid; place-items: center; color: #fff;
+  border-radius: var(--r-control); border: 1px solid rgb(255 255 255 / .25);
+}
+.carrito:hover { color: #fff; border-color: rgb(255 255 255 / .6); }
+.carrito:focus-visible { box-shadow: var(--foco-oscuro); }
+/* el contador no cambia el tamaño del botón: aparece al hidratar sin mover nada */
+.contador {
+  position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: var(--r-pildora);
+  background: var(--ipe-400); color: var(--tinta); font: 700 var(--t-11)/20px var(--f-titulo); text-align: center;
+}
+
 .categorias { background: #144a4b; }
 .categoriasFila { display: flex; gap: var(--e-1); overflow-x: auto; scrollbar-width: none; height: 42px; align-items: center; }
 .categoriasFila::-webkit-scrollbar { display: none; }

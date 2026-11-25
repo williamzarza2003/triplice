@@ -35,7 +35,7 @@ export async function Pie({ ctx }: { ctx: Contexto }) {
         <div>
           <h2>{t('proyecto')}</h2>
           <a href={REPO}>{t('codigo')}</a>
-          <a href={`${REPO}/blob/fase-1/docs/arquitectura.md`}>{t('arquitectura')}</a>
+          <a href={`${REPO}/blob/fase-2/docs/arquitectura.md`}>{t('arquitectura')}</a>
           <p className={s.fase}>{t('fase')}</p>
         </div>
       </div>

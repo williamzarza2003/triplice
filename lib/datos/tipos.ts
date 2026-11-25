@@ -1,5 +1,6 @@
 // Formas de lo que devuelven las funciones de la base (supabase/migrations/*_funciones.sql).
-// Los importes vienen en centavos de dólar, sin impuestos.
+// Los importes vienen en centavos de dólar, sin impuestos: la web les suma el impuesto de la región
+// (lib/compra/impuestos.ts) con la categoría que trae cada tarjeta.
 
 export type TarjetaDatos = {
   id: string
@@ -18,6 +19,8 @@ export type TarjetaDatos = {
   variantes: number
   condicion: 'nuevo' | 'reacondicionado' | 'usado'
   ventas_30d: number
+  categoria: string
+  categoria_padre: string | null
 }
 
 export type Faceta = { valor: string; n: number }
@@ -54,13 +57,15 @@ export type FiltrosBusqueda = {
   condicion?: string[]
   atributos?: Record<string, string[]>
   orden?: 'relevancia' | 'precio_asc' | 'precio_desc' | 'novedades' | 'vendidos' | 'calificacion'
+  /** país del comprador: el filtro y el orden por precio usan el precio con su impuesto */
+  region?: string
   pagina?: number
   por_pagina?: number
 }
 
 export type Sugerencias = {
   corregido: string | null
-  productos: { slug: string; titulo: string; imagen: string | null; precio: number; categoria: string }[]
+  productos: { slug: string; titulo: string; imagen: string | null; precio: number; categoria: string; categoria_slug: string; categoria_padre: string | null }[]
   categorias: { slug: string; nombre: string; n: number }[]
 }
 

@@ -21,8 +21,10 @@ En el proyecto nuevo → **SQL Editor** → **New query**, pegá y ejecutá, **e
 
 1. `supabase/migrations/20261125000100_catalogo.sql` (tablas, índices, búsqueda y RLS)
 2. `supabase/migrations/20261125000200_funciones.sql` (las funciones que usa la web)
-3. `supabase/seed.sql` (337 productos, 15 tiendas, 5.900 reseñas; pesa 2,7 MB: si el editor se queja del tamaño,
-   usá la opción B)
+3. `supabase/migrations/20261126000100_compra.sql` (fase 2: impuestos, envío, retiro, cupones, carrito y pedidos)
+4. `supabase/migrations/20261126000200_precios_con_impuestos.sql` (fase 2: precios con el impuesto de la región)
+5. `supabase/seed.sql` (323 productos, 15 tiendas, 5.500 reseñas, reglas de impuesto, zonas y cupones; pesa 2,7 MB:
+   si el editor se queja del tamaño, usá la opción B)
 
 Opción B, desde tu PC (sin pegar archivos grandes): en el proyecto → **Connect** → copiá la *connection string* de
 tipo **Session pooler** y corré, desde la carpeta del repo:
@@ -37,14 +39,15 @@ npx -y supabase db push --db-url $env:SUPABASE_DB_URL --include-seed
 Para comprobar que quedó bien, en el SQL Editor:
 
 ```sql
-select count(*) from public.productos;              -- 337
+select count(*) from public.productos;              -- 323
 select public.buscar('{"q":"pava electirca"}') ->> 'corregido';  -- pava electrica
 ```
 
 ## 3. Variables de entorno en Vercel (las cargás vos)
 
 Proyecto → **Connect** (o *Project Settings → API*): copiá la **Project URL** y la clave **anon public**
-(la `service_role` no se usa: la web solo lee como anónimo y el RLS decide qué se ve).
+y la **service_role** (secreta: solo la usa el servidor para registrar y confirmar pedidos; el resto se lee como anónimo
+y el RLS decide qué se ve).
 
 En vercel.com → proyecto **triplice** → *Settings → Environment Variables*, para **Production** y **Preview**:
 
@@ -52,9 +55,13 @@ En vercel.com → proyecto **triplice** → *Settings → Environment Variables*
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | la Project URL (`https://xxxx.supabase.co`) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | la clave anon public |
-| `NEXT_PUBLIC_SITIO` | la URL de la vista previa o del dominio (para las imágenes de redes) |
+| `SUPABASE_SERVICE_ROLE_KEY` | la clave service_role (**sin** `NEXT_PUBLIC_`: nunca llega al navegador) |
+| `NEXT_PUBLIC_SITIO` | la URL de la vista previa o del dominio (para las imágenes de redes y la vuelta de Stripe) |
+| `STRIPE_SECRET_KEY` | la clave secreta **de prueba** de Stripe (`sk_test_…`) |
+| `STRIPE_WEBHOOK_SECRET` | el secreto del webhook de prueba (`whsec_…`), ver PENDIENTES |
+| `TRIPLICE_SECRETO` | 32 caracteres al azar: firma el comprobante que se guarda en el navegador |
 
-Después, **Redeploy** del último deploy de `fase-1`. En el pie de página dice de dónde salen los datos:
+Después, **Redeploy** del último deploy de `fase-2`. En el pie de página dice de dónde salen los datos:
 "Datos servidos por Supabase" o "por PostgreSQL (PGlite)".
 
 ## Para desarrollar en local con Supabase

@@ -1,0 +1,10 @@
+.mapa { width: 100%; height: auto; border-radius: var(--r-tarjeta); border: 1px solid var(--linea-2); display: block; }
+.tierra { fill: #eef1ec; }
+.rio { fill: none; stroke: #2e6f70; stroke-linecap: round; stroke-linejoin: round; }
+.puente { stroke: var(--tinta-2); stroke-width: 3; stroke-linecap: round; }
+.etiquetaPuente { font: 600 17px var(--f-titulo); fill: var(--tinta-2); }
+.pais { font: 700 22px var(--f-titulo); fill: var(--tinta-3); letter-spacing: .02em; }
+.pin circle { fill: var(--lapacho-700); stroke: #fff; stroke-width: 3; }
+.pin text { font: 800 16px var(--f-titulo); fill: #fff; text-anchor: middle; }
+.ciudad circle { fill: var(--tinta-3); }
+.ciudad text { font: 600 17px var(--f-titulo); fill: var(--tinta-2); paint-order: stroke; stroke: #eef1ec; stroke-width: 4px; }

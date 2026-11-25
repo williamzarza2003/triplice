@@ -1,7 +1,7 @@
 'use client'
 // La parte de la ficha que cambia al elegir una variante: galería, opciones, caja de compra y vendedores.
 // Los precios llegan ya convertidos y formateados desde el servidor: acá solo se elige cuál mostrar.
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useTransition } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useTextos } from '@/lib/i18n/textos'
@@ -9,6 +9,7 @@ import COLORES from '@/lib/catalogo/colores.json'
 import type { Idioma } from '@/lib/i18n/idiomas'
 import { textoSobre } from '@/lib/color'
 import { foto } from '@/lib/imagenes'
+import { FotoDiferida } from '../FotoDiferida'
 import { Icono } from '../Icono'
 import s from './Compra.module.css'
 
@@ -20,6 +21,8 @@ export type OfertaVista = {
   lista: string | null
   descuento: number
   equivalencias: string | null
+  /** el mismo producto en los otros países, con su impuesto (la etiqueta de frontera) */
+  frontera: { pais: string; precio: string; impuesto: string; enTuMoneda: string; masCaro: boolean }[]
   stock: number
   envioGratis: boolean
   preparacionH: number
@@ -28,11 +31,18 @@ export type OfertaVista = {
 }
 export type VarianteVista = { id: string; sku: string; opciones: Record<string, string>; imagenes: string[]; ofertas: OfertaVista[] }
 
-type Props = { idioma: Idioma; titulo: string; variantes: VarianteVista[]; info: React.ReactNode; detalles: React.ReactNode }
+type Props = {
+  idioma: Idioma; titulo: string; variantes: VarianteVista[]; info: React.ReactNode; detalles: React.ReactNode
+  /** "IVA 10 % incluido" o, en Internacional, que no lleva impuestos locales */
+  impuesto: string
+  /** agrega la oferta al carrito (Server Action): devuelve las unidades que quedan en el carrito */
+  agregar: (oferta: string) => Promise<{ ok: boolean; unidades: number }>
+  carrito: string
+}
 
 const NOMBRE_COLOR = COLORES as Record<string, { hex: string; es: string; pt: string; en: string }>
 
-export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
+export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, agregar, carrito }: Props) {
   const t = useTextos('ficha')
   const tp = useTextos('precio')
   // la oferta elegida por defecto es la primera con stock: vienen ordenadas por precio y, con el mismo precio,
@@ -42,7 +52,8 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
   const [vi, setVi] = useState(inicial)
   const [oi, setOi] = useState(() => primeraConStock(variantes[inicial]))
   const [foto_, setFoto] = useState(0)
-  const [aviso, setAviso] = useState(false)
+  const [aviso, setAviso] = useState<'listo' | 'error' | null>(null)
+  const [agregando, empezar] = useTransition()
   const v = variantes[vi]
   const oferta = v.ofertas[oi] ?? v.ofertas[0]
 
@@ -98,10 +109,9 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
           <div className={s.carrusel}>
             {v.imagenes.map((img, i) => i === 0
               ? <Image key={img} src={foto(img)} alt={titulo} width={480} height={480} sizes="88vw" loading="eager" fetchPriority="high" />
-              // las siguientes se piden al deslizar el carrusel (components/ImagenesDiferidas.tsx)
-              // eslint-disable-next-line @next/next/no-img-element
-              : <img key={img} alt="" width={480} height={480} sizes="88vw" data-diferida="" data-src={`${foto(img)}-480.webp`}
-                  data-srcset={`${foto(img)}-480.webp 480w, ${foto(img)}-800.webp 800w`} />)}
+              // las siguientes se piden al deslizar el carrusel
+              : <FotoDiferida key={img} width={480} height={480} sizes="88vw" src={`${foto(img)}-480.webp`}
+                  srcSet={`${foto(img)}-480.webp 480w, ${foto(img)}-800.webp 800w`} />)}
           </div>
         </section>
 
@@ -138,6 +148,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
                 {oferta.descuento > 0 && <span className="sello sello--oferta">−{oferta.descuento} %</span>}
               </p>
               {oferta.lista && <p className={s.antes}><span className="sr-only">{tp('antes')} </span><s>{oferta.lista}</s></p>}
+              <p className={s.impuesto}>{impuesto}</p>
               {oferta.equivalencias && <p className={s.equivale}>{tp('equivale', { otros: oferta.equivalencias })}</p>}
               <p className={oferta.stock === 0 ? s.sinStock : oferta.stock <= 3 ? s.pocas : s.stock}>
                 {oferta.stock === 0 ? t('sinStock') : oferta.stock <= 3 ? t('pocas', { n: oferta.stock }) : t('stock')}
@@ -149,11 +160,20 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
                     : t('preparacion', { ciudad: oferta.tienda.ciudad, horas: oferta.preparacionH })}
                 </li>
               </ul>
-              <button type="button" className="boton boton--accion boton--ancho" disabled={oferta.stock === 0}
-                onClick={() => setAviso(true)} aria-describedby={aviso ? 'aviso-carrito' : undefined}>
-                <Icono nombre="carrito" tam={20} />{t('agregar')}
+              <button type="button" className="boton boton--accion boton--ancho" disabled={oferta.stock === 0 || agregando}
+                aria-describedby={aviso ? 'aviso-carrito' : undefined}
+                onClick={() => empezar(async () => {
+                  const r = await agregar(oferta.id)
+                  setAviso(r.ok ? 'listo' : 'error')
+                  // el contador del encabezado lee la cookie que acaba de cambiar
+                  if (r.ok) window.dispatchEvent(new Event('triplice:carrito'))
+                })}>
+                <Icono nombre="carrito" tam={20} />{agregando ? t('agregando') : t('agregar')}
               </button>
-              <p id="aviso-carrito" className={s.aviso} role="status" hidden={!aviso}>{aviso && t('carritoPronto')}</p>
+              <p id="aviso-carrito" className={s.aviso} role="status">
+                {aviso === 'listo' && <>{t('agregado')} <Link href={carrito}>{t('verCarrito')}</Link></>}
+                {aviso === 'error' && t('noSeAgrego')}
+              </p>
               <div className={s.vendedor}>
                 <span>{t('vendido')}</span>
                 <Link href={`/${idioma}/tienda/${oferta.tienda.slug}`}><b>{oferta.tienda.nombre}</b></Link>
@@ -165,6 +185,24 @@ export function Compra({ idioma, titulo, variantes, info, detalles }: Props) {
             </>
           ) : <p className={s.sinStock}>{t('sinStock')}</p>}
         </aside>
+
+        {oferta && oferta.frontera.length > 0 && (
+          <details className={s.frontera}>
+            <summary><Icono nombre="frontera" tam={18} />{t('fronteraTitulo')}</summary>
+            <table>
+              <caption className="sr-only">{t('fronteraTitulo')}</caption>
+              <tbody>
+                {oferta.frontera.map((x) => (
+                  <tr key={x.pais}>
+                    <th scope="row">{t(`fronteraPais.${x.pais}`)}<small>{x.impuesto}</small></th>
+                    <td><b className="precio">{x.precio}</b><small>{t('fronteraEquivale', { precio: x.enTuMoneda })}</small></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p>{t('fronteraNota')}</p>
+          </details>
+        )}
 
         {/* viñetas: debajo de las opciones en escritorio, después del precio en el celular */}
         {detalles && <div className={s.detalles}>{detalles}</div>}

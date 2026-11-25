@@ -28,7 +28,7 @@ async function Contenido({ searchParams }: { searchParams: PageProps<'/[idioma]/
   const [ctx, params] = await Promise.all([contexto(), searchParams])
   const [t, datos] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'buscar' }),
-    buscar(leerFiltros(params, ctx.moneda, ctx.tasas), ctx.idioma),
+    buscar({ ...leerFiltros(params, ctx.moneda, ctx.tasas), region: ctx.region }, ctx.idioma),
   ])
   const base = ruta(ctx.idioma, '/buscar')
   const q = valorDe(params.q)

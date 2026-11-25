@@ -46,7 +46,7 @@ async function Contenido({ params, searchParams }: Props) {
     getTranslations({ locale: ctx.idioma, namespace: 'tienda' }),
     getTranslations({ locale: ctx.idioma, namespace: 'comun' }),
     getTranslations({ locale: ctx.idioma, namespace: 'ficha' }),
-    buscar(leerFiltros(sp, ctx.moneda, ctx.tasas, { tienda: slug }), ctx.idioma),
+    buscar({ ...leerFiltros(sp, ctx.moneda, ctx.tasas, { tienda: slug }), region: ctx.region }, ctx.idioma),
   ])
   const numero = new Intl.NumberFormat(LOCALE[ctx.idioma])
   const base = ruta(ctx.idioma, `/tienda/${slug}`)

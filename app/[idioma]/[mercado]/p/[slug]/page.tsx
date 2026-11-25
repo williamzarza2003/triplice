@@ -11,14 +11,16 @@ import { Icono } from '@/components/Icono'
 import { Migas } from '@/components/Migas'
 import { EsqueletoFicha } from '@/components/resultados/Esqueleto'
 import { valor } from '@/lib/catalogo/valores'
-import { contexto, precio, ruta, type Contexto } from '@/lib/contexto'
+import { contexto, precio, precioNumero, ruta, type Contexto } from '@/lib/contexto'
+import { precioFinal, reglaDe } from '@/lib/compra/impuestos'
 import { ficha, slugsProductos } from '@/lib/datos/consultas'
 import type { Ficha } from '@/lib/datos/tipos'
 import { esIdioma, LOCALE } from '@/lib/i18n/idiomas'
 import { Textos } from '@/lib/i18n/textos'
+import { agregarAlCarrito } from '../../carrito/acciones'
 import { masBarata, ordenarOfertas } from '@/lib/ofertas'
 import { descuento, formatear, precioEn } from '@/lib/precios'
-import { mercadoPredeterminado, MONEDAS, segmentoMercado } from '@/lib/region'
+import { MONEDA_DE, mercadoPredeterminado, MONEDAS, segmentoMercado } from '@/lib/region'
 import s from './ficha.module.css'
 
 type Props = PageProps<'/[idioma]/[mercado]/p/[slug]'>
@@ -59,12 +61,16 @@ function tiempoRespuesta(min: number | undefined, idioma: Contexto['idioma']) {
   return idioma === 'en' ? `${h} h` : `${h} h`
 }
 
-/** Precios de cada oferta, ya convertidos y formateados para el navegador. */
+/** Precios de cada oferta, con el impuesto de la región, ya convertidos y formateados para el navegador. */
 function vistas(f: Ficha, ctx: Contexto): VarianteVista[] {
   const otras = MONEDAS.filter((m) => m !== ctx.moneda)
+  const cat = { sub: f.categoria.slug, padre: f.categoria_padre?.slug ?? null }
+  const tasa = reglaDe(ctx.impuestos, cat).tasa
+  // etiqueta de frontera: el mismo precio base en cada país, con su impuesto y en su moneda, y cuánto es en la tuya
+  const paises = (['PY', 'BR', 'AR'] as const).filter((p) => p !== ctx.region)
   return f.variantes.map((v) => {
-    // se compara el precio tal como lo ve el comprador (convertido y redondeado en su moneda)
-    const comparables = v.ofertas.map((o) => ({ o, precio: precioEn(o.precio, ctx.moneda, ctx.tasas), stock: o.stock,
+    // se compara el precio tal como lo ve el comprador (convertido, con impuesto y redondeado en su moneda)
+    const comparables = v.ofertas.map((o) => ({ o, precio: precioNumero(ctx, o.precio, cat), stock: o.stock,
       preparacionH: o.preparacion_h, recomendacion: o.tienda.recomendacion !== undefined ? Number(o.tienda.recomendacion) : null }))
     const ordenadas = ordenarOfertas(comparables)
     const barata = masBarata(comparables)
@@ -73,10 +79,18 @@ function vistas(f: Ficha, ctx: Contexto): VarianteVista[] {
       ofertas: ordenadas.map(({ o }) => ({
         id: o.id,
         masBarato: barata?.o.id === o.id,
-        precio: precio(ctx, o.precio),
-        lista: o.precio_lista ? precio(ctx, o.precio_lista) : null,
+        precio: precio(ctx, o.precio, cat),
+        lista: o.precio_lista ? precio(ctx, o.precio_lista, cat) : null,
         descuento: descuento(o.precio, o.precio_lista),
-        equivalencias: otras.map((m) => formatear(precioEn(o.precio, m, ctx.tasas), m)).join(' · '),
+        equivalencias: otras.map((m) => formatear(precioFinal(o.precio, tasa, m, ctx.tasas), m)).join(' · '),
+        frontera: paises.map((pais) => {
+          const regla = reglaDe({ reglas: ctx.impuestosPaises[pais] ?? [] }, cat)
+          const local = precioFinal(o.precio, regla.tasa, MONEDA_DE[pais], ctx.tasas)
+          // cuánto es ese precio local en la moneda del comprador
+          const usd = MONEDA_DE[pais] === 'USD' ? local : local / ctx.tasas[MONEDA_DE[pais] as 'PYG' | 'BRL' | 'ARS']
+          return { pais, precio: formatear(local, MONEDA_DE[pais]), impuesto: regla.nombre,
+            enTuMoneda: formatear(precioEn(Math.round(usd * 100), ctx.moneda, ctx.tasas), ctx.moneda), masCaro: precioFinal(o.precio, regla.tasa, ctx.moneda, ctx.tasas) > precioFinal(o.precio, tasa, ctx.moneda, ctx.tasas) }
+        }),
         stock: o.stock, envioGratis: o.envio_gratis, preparacionH: o.preparacion_h, cerca: o.tienda.pais === ctx.region,
         tienda: {
           slug: o.tienda.slug, nombre: o.tienda.nombre, ciudad: o.tienda.ciudad, color: o.tienda.color,
@@ -93,9 +107,10 @@ async function Contenido({ params }: Props) {
   const [{ slug }, ctx] = await Promise.all([params, contexto()])
   const f = await ficha(slug, ctx.idioma)
   if (!f) notFound()
-  const [t, tc, mensajes] = await Promise.all([
+  const [t, tc, tp, mensajes] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'ficha' }),
     getTranslations({ locale: ctx.idioma, namespace: 'comun' }),
+    getTranslations({ locale: ctx.idioma, namespace: 'precio' }),
     getMessages({ locale: ctx.idioma }),
   ])
   // textos de la compra y de las opiniones para el navegador (solo en la ficha)
@@ -152,7 +167,9 @@ async function Contenido({ params }: Props) {
       ]} />
 
       <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
-        <Compra idioma={ctx.idioma} titulo={f.titulo} variantes={vistas(f, ctx)} info={info} detalles={detalles} />
+        <Compra idioma={ctx.idioma} titulo={f.titulo} variantes={vistas(f, ctx)} info={info} detalles={detalles}
+          impuesto={ctx.region === 'XX' ? tp('sinImpuesto') : tp('incluido', { impuesto: reglaDe(ctx.impuestos, { sub: f.categoria.slug, padre: f.categoria_padre?.slug ?? null }).nombre })}
+          agregar={agregarAlCarrito} carrito={r('/carrito')} />
       </Textos>
 
       <div className={s.bloques}>

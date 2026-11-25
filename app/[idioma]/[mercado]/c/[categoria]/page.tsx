@@ -60,7 +60,7 @@ async function Contenido({ params, searchParams }: Props) {
   const [t, tc, datos] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'ficha' }),
     getTranslations({ locale: ctx.idioma, namespace: 'comun' }),
-    buscar(leerFiltros(sp, ctx.moneda, ctx.tasas, { categoria }), ctx.idioma),
+    buscar({ ...leerFiltros(sp, ctx.moneda, ctx.tasas, { categoria }), region: ctx.region }, ctx.idioma),
   ])
   const base = ruta(ctx.idioma, `/c/${categoria}`)
   const hermanas = padre ? padre.hijas : cat.hijas

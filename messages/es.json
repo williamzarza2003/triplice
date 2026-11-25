@@ -45,7 +45,8 @@
     "tiendas": "Tiendas",
     "regionBoton": "Comprás desde {region}, precios en {moneda}, idioma {idioma}. Cambiar",
     "carrito": "Carrito",
-    "regionAclaracion": "Cambiar región, moneda o idioma"
+    "regionAclaracion": "Cambiar región, moneda o idioma",
+    "carritoCon": "Carrito: {n} unidades"
   },
   "sugerencias": {
     "enCategoria": "en {categoria}",
@@ -77,7 +78,9 @@
     "descuento": "{n} % menos",
     "sinImpuestos": "Sin impuestos · cotización del {fecha}",
     "equivale": "Equivale a {otros}",
-    "cotizacion": "1 US$ = {tasa}"
+    "cotizacion": "1 US$ = {tasa}",
+    "incluido": "{impuesto} incluido",
+    "sinImpuesto": "Sin impuestos locales: los del país de destino se pagan al recibir"
   },
   "tarjeta": {
     "envioGratis": "Envío gratis",
@@ -198,7 +201,6 @@
     "responde": "Responde en {tiempo}",
     "verTienda": "Ver la tienda",
     "agregar": "Agregar al carrito",
-    "carritoPronto": "El carrito y el pago con Stripe en modo de prueba llegan en la fase 2 de este proyecto. Por ahora podés explorar el catálogo, comparar vendedores y leer opiniones.",
     "ofertas": "{n, plural, one {Un vendedor} other {# vendedores}} para esta opción",
     "ofertasTitulo": "Comparar vendedores",
     "columnaTienda": "Tienda",
@@ -239,7 +241,19 @@
     "ampliar": "Ampliar la foto",
     "noEncontrado": "Este producto no existe o ya no se vende.",
     "elegirOferta": "Elegir",
-    "elegida": "Elegida"
+    "elegida": "Elegida",
+    "agregando": "Agregando…",
+    "agregado": "Lo agregamos al carrito.",
+    "verCarrito": "Ver el carrito",
+    "noSeAgrego": "No se pudo agregar: puede que se haya agotado. Elegí otra opción o probá de nuevo.",
+    "fronteraTitulo": "Este precio del otro lado del Puente",
+    "fronteraPais": {
+      "PY": "En Paraguay",
+      "BR": "En Brasil",
+      "AR": "En Argentina"
+    },
+    "fronteraEquivale": "≈ {precio} en tu moneda",
+    "fronteraNota": "Con el impuesto de cada país (simulación aproximada)."
   },
   "tienda": {
     "desde": "Vende en Tríplice desde {anio}",
@@ -267,8 +281,8 @@
     "proyecto": "El proyecto",
     "codigo": "Código en GitHub",
     "arquitectura": "Cómo está hecho",
-    "fase": "Fase 1: catálogo, búsqueda y ficha de producto",
-    "legal": "Proyecto de portafolio de William Zarza. Productos, tiendas, opiniones y pagos son ficticios o de prueba. Fotos: modelos 3D CC0 de Poly Haven fotografiados en Blender.",
+    "fase": "Fase 2: carrito, impuestos por país y pago de prueba",
+    "legal": "Proyecto de portafolio de William Zarza. Productos, tiendas, opiniones y pagos son ficticios o de prueba. Fotos: modelos propios y modelos CC0 de Poly Haven, fotografiados en Blender.",
     "datos": "Datos servidos por {origen}"
   },
   "error": {
@@ -278,5 +292,192 @@
     "noEncontradoTitulo": "No encontramos esa página",
     "noEncontradoTexto": "Puede que el enlace esté mal escrito o que el producto ya no se venda. Buscá lo que necesitás o volvé al inicio.",
     "volver": "Volver al inicio"
+  },
+  "compra": {
+    "carritoTitulo": "Tu carrito",
+    "deTienda": "De",
+    "noDisponible": "Ya no está disponible",
+    "agotado": "Se agotó: quitalo o guardalo para después",
+    "soloHay": "Solo quedan {n}: te cobramos {n}",
+    "quedan": "Quedan {n}",
+    "envioGratis": "Envío gratis",
+    "cantidadDe": "Cantidad de {producto}",
+    "actualizar": "Actualizar",
+    "guardarDespues": "Guardar para después",
+    "quitar": "Quitar",
+    "moverAlCarrito": "Mover al carrito",
+    "cadaUno": "{precio} c/u",
+    "guardadosTitulo": "Guardados para después ({n})",
+    "resumen": "Resumen",
+    "vacioTitulo": "Tu carrito está vacío",
+    "vacioTexto": "Lo que agregues desde la ficha de un producto aparece acá, con el precio en tu moneda y el impuesto de tu país.",
+    "vacioBoton": "Ver lo más vendido",
+    "cuponEtiqueta": "Cupón de descuento",
+    "cuponPlaceholder": "Código de cupón",
+    "cuponAplicar": "Aplicar",
+    "cuponNoExiste": "Ese cupón no existe. Revisá que esté bien escrito (por ejemplo, BIENVENIDA10).",
+    "cuponVencido": "Ese cupón ya venció. Probá con BIENVENIDA10, que te da 10 % en tu primera compra.",
+    "cuponAgotado": "Ese cupón ya se usó todas las veces que permitía.",
+    "cuponVacio": "Escribí el código del cupón.",
+    "cuponMinimo": "Te falta para usar {codigo}: sumá productos hasta la compra mínima del cupón.",
+    "quitarCupon": "Quitar cupón",
+    "continuar": "Continuar con la compra",
+    "nadaComprable": "No hay nada para comprar: lo que tenés en el carrito se agotó.",
+    "notaMoneda": "Pagás en {moneda}, con los precios que ves acá. El envío se elige en el próximo paso.",
+    "productos": "{n, plural, one {1 producto} other {# productos}}",
+    "cupon": "Cupón {codigo}",
+    "envio": "Envío",
+    "envioPendiente": "Se elige en el próximo paso",
+    "gratis": "Gratis",
+    "total": "Total",
+    "totalSinEnvio": "Total sin envío",
+    "incluye": "Incluye {lista}.",
+    "sinImpuestos": "Sin impuestos locales: si se envía fuera de la región, los del país de destino se pagan al recibir."
+  },
+  "pagar": {
+    "titulo": "Pagar",
+    "tuPedido": "Tu pedido",
+    "pasoEntrega": "Cómo lo recibís",
+    "pasoDatos": "Tus datos",
+    "pasoPago": "Pago",
+    "retiro": "Retiro en el local",
+    "domicilio": "Envío a domicilio",
+    "gratis": "Gratis",
+    "opcional": "(opcional)",
+    "listoHoras": "listo en {h} h",
+    "listoHoy": "listo hoy",
+    "listoDias": "listo en {d} días",
+    "variosLocales": "Retirás en {n} locales, cada uno lo suyo",
+    "plazo": "llega en {min} a {max} días hábiles",
+    "puente": "Puente de la Amistad",
+    "dondeRetiras": "Dónde retirás",
+    "fueraDelMapa": "fuera del mapa",
+    "datosRetiro": "Para retirar mostrá tu documento y el número de pedido.",
+    "pagar": "Pagar {total}",
+    "procesando": "Procesando…",
+    "notaStripe": "Pago de prueba con Stripe: no se cobra nada. Usá la tarjeta 4242 4242 4242 4242, cualquier fecha futura y cualquier código.",
+    "notaSimulado": "Esta vista previa todavía no tiene las claves de prueba de Stripe: al pagar vas a un simulador donde elegís si la tarjeta de prueba se aprueba o se rechaza. No se cobra nada.",
+    "protegida": "Compra protegida: si algo no llega como en la foto, la tienda te lo cambia o te devuelve la plata.",
+    "zonaElegida": "{zona}: envío {envio}, {plazo}.",
+    "notaImpuestos": "Impuestos según las reglas de {pais} (simulación aproximada). Pagás en {moneda}: tu banco no cobra conversión.",
+    "notaInternacional": "Pagás en {moneda}, sin impuestos locales.",
+    "errores": {
+      "requerido": "Completá este dato.",
+      "email": "Revisá el correo: le falta la arroba o el dominio (por ejemplo, nombre@correo.com).",
+      "telefono": "Escribí el teléfono con el código de área (al menos 7 números).",
+      "codigo": "Revisá el código postal.",
+      "codigo_BR": "El CEP tiene 8 números (por ejemplo, 85851-000).",
+      "codigo_AR": "El código postal tiene 4 números (3370) o el formato nuevo (N3370ABC).",
+      "zona": "Completá este dato.",
+      "zona_BR": "El estado va con su sigla de 2 letras (por ejemplo, PR)."
+    },
+    "generales": {
+      "sin_items": "Tu carrito quedó vacío: volvé al carrito y agregá algo.",
+      "cambio": "Algo cambió desde que abriste esta página (un precio o el stock). Revisá el total nuevo y volvé a tocar Pagar.",
+      "pago": "No pudimos conectar con Stripe. Esperá un momento y probá de nuevo; no se cobró nada."
+    },
+    "simuladorTitulo": "Simulador de pago",
+    "simuladorPedido": "Pedido {numero}",
+    "simuladorTexto": "Así se ve el pago mientras la vista previa no tenga las claves de prueba de Stripe. Elegí qué pasa con la tarjeta de prueba: no se cobra nada.",
+    "simuladorAprobada": "Pagar con la tarjeta aprobada (4242…)",
+    "simuladorRechazada": "Probar una tarjeta rechazada (4000…0002)",
+    "simuladorRechazo": "El banco rechazó la tarjeta (sin fondos o bloqueada para compras por internet). Probá con otra tarjeta: no se cobró nada.",
+    "simuladorVolver": "Volver a los datos de entrega",
+    "campos": {
+      "PY": {
+        "nombre": "Nombre y apellido",
+        "email": "Correo",
+        "telefono": "Teléfono o WhatsApp",
+        "ciudad": "Ciudad",
+        "zona": "Barrio",
+        "direccion": "Calle y número",
+        "codigo": "Código postal",
+        "referencia": "Referencia"
+      },
+      "BR": {
+        "nombre": "Nombre y apellido",
+        "email": "Correo",
+        "telefono": "Teléfono o WhatsApp",
+        "ciudad": "Ciudad",
+        "zona": "Estado (sigla)",
+        "direccion": "Calle y número",
+        "codigo": "CEP",
+        "referencia": "Complemento"
+      },
+      "AR": {
+        "nombre": "Nombre y apellido",
+        "email": "Correo",
+        "telefono": "Teléfono o WhatsApp",
+        "ciudad": "Localidad",
+        "zona": "Provincia",
+        "direccion": "Calle y número",
+        "codigo": "Código postal",
+        "referencia": "Piso o departamento"
+      },
+      "XX": {
+        "nombre": "Nombre y apellido",
+        "email": "Correo",
+        "telefono": "Teléfono",
+        "ciudad": "Ciudad",
+        "zona": "País",
+        "direccion": "Dirección",
+        "codigo": "Código postal",
+        "referencia": "Referencia"
+      }
+    },
+    "ayudas": {
+      "PY": {
+        "telefono": "Te escribimos por WhatsApp cuando sale el pedido.",
+        "referencia": "Por ejemplo: casa de rejas verdes, frente a la despensa."
+      },
+      "BR": {
+        "codigo": "8 números, por ejemplo 85851-000."
+      },
+      "AR": {
+        "codigo": "4 números (3370) o el formato nuevo (N3370ABC)."
+      },
+      "XX": {}
+    }
+  },
+  "pedido": {
+    "titulo": "Tu pedido",
+    "noEncontrado": "No encontramos ese pedido",
+    "noEncontradoTexto": "El comprobante se guarda en el navegador donde compraste. Si compraste en otro, abrilo ahí.",
+    "volverInicio": "Volver al inicio",
+    "confirmadoTitulo": "¡Listo! Tu pedido está confirmado",
+    "pendienteTitulo": "Estamos esperando la confirmación del pago",
+    "numero": "Pedido {numero}",
+    "aviso": "Te escribimos a {email} cuando cambie de estado.",
+    "lineaTitulo": "Cómo sigue",
+    "esperandoPago": "Esperando la confirmación del pago",
+    "estados": {
+      "confirmado": "Confirmado",
+      "preparando": "La tienda lo prepara",
+      "listoRetiro": "Listo para retirar",
+      "enviado": "En camino",
+      "entregado": "Entregado"
+    },
+    "preparandoRetiro": "Calculá unas {h} h",
+    "preparandoEnvio": "Lo empacan y lo entregan a la transportadora",
+    "listoRetiroDetalle": "Te avisamos por WhatsApp",
+    "enviadoDetalle": "Llega en {min} a {max} días hábiles",
+    "retirarEn": "Dónde retirás",
+    "llegaA": "A dónde llega",
+    "puente": "Puente de la Amistad",
+    "llevaDocumento": "Llevá tu documento y el número de pedido.",
+    "detalle": "Lo que compraste",
+    "vende": "Vende {tienda}",
+    "cantidad": "Cantidad: {n}",
+    "pagado": "Pagaste",
+    "aPagar": "A pagar",
+    "productos": "Productos",
+    "cupon": "Cupón {codigo}",
+    "envio": "Envío",
+    "gratis": "Gratis",
+    "total": "Total",
+    "incluye": "Incluye {lista}.",
+    "notaStripe": "Pago de prueba con Stripe: no se cobró nada.",
+    "notaSimulado": "Pago simulado: no se cobró nada.",
+    "seguirComprando": "Seguir comprando"
   }
 }

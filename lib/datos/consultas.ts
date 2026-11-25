@@ -15,6 +15,15 @@ export async function cotizaciones() {
   return { ...c, tasas: { PYG: Number(c.tasas.PYG), BRL: Number(c.tasas.BRL), ARS: Number(c.tasas.ARS) } }
 }
 
+/** Reglas de impuesto vigentes de los tres países (nombres en el idioma pedido). */
+export async function impuestosVigentes(idioma: Idioma) {
+  'use cache'
+  cacheLife('hours')
+  cacheTag('impuestos')
+  const r = await rpc<Record<string, { categoria: string | null; nombre: string; tasa: number | string }[]>>('impuestos_vigentes', { idioma })
+  return Object.fromEntries(Object.entries(r).map(([pais, reglas]) => [pais, reglas.map((x) => ({ ...x, tasa: Number(x.tasa) }))]))
+}
+
 export async function categorias(idioma: Idioma) {
   'use cache'
   cacheLife('hours')
@@ -43,7 +52,7 @@ export async function tienda(slug: string, idioma: Idioma) {
   return rpc<TiendaDatos | null>('tienda', { slug, idioma })
 }
 
-export async function buscar(filtros: FiltrosBusqueda, idioma: Idioma) {
+export async function buscar(filtros: FiltrosBusqueda, idioma: Idioma) { // filtros.region: precio con impuesto
   'use cache'
   cacheLife('hours')
   cacheTag('catalogo')

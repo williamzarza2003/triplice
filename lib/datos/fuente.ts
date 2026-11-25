@@ -6,12 +6,18 @@ import type { PGlite } from '@electric-sql/pglite'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 export type Funcion = 'buscar' | 'sugerir' | 'categorias_arbol' | 'inicio' | 'ficha' | 'tienda' | 'tiendas_lista'
-  | 'productos_slugs' | 'cotizaciones_vigentes'
+  | 'productos_slugs' | 'cotizaciones_vigentes' | 'impuestos_vigentes' | 'compra_datos' | 'zonas_envio_lista' | 'validar_cupon'
+  | 'pedido_publico'
+/** Las que solo puede correr el servidor con el rol de servicio (crean y confirman pedidos). */
+export type FuncionServicio = 'registrar_pedido' | 'confirmar_pago'
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const clave = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// clave de servicio: solo en el servidor, nunca con NEXT_PUBLIC_ (ver docs/supabase.md)
+const claveServicio = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 let supabase: SupabaseClient | null = null
+let servicio: SupabaseClient | null = null
 let local: Promise<PGlite> | null = null
 
 export const origenDatos = url && clave ? 'supabase' : 'pglite'
@@ -43,4 +49,25 @@ export async function rpc<T>(funcion: Funcion, p: object = {}): Promise<T> {
   // `funcion` es una de las de la lista: no viene del usuario, por eso se puede interpolar
   const { rows } = await db.query<{ r: T }>(`select public.${funcion}($1::jsonb) as r`, [JSON.stringify(p)])
   return rows[0].r
+}
+
+/**
+ * Funciones del rol de servicio (registrar y confirmar pedidos). Con Supabase hace falta SUPABASE_SERVICE_ROLE_KEY;
+ * sin ella devuelve null y el pedido queda solo en la cookie del comprador. En la base embebida se cambia de rol
+ * dentro de una transacción.
+ */
+export async function rpcServicio<T>(funcion: FuncionServicio, p: object): Promise<T | null> {
+  if (url && clave) {
+    if (!claveServicio) return null
+    servicio ??= createClient(url, claveServicio, { auth: { persistSession: false } })
+    const { data, error } = await servicio.rpc(funcion, { p })
+    if (error) throw new Error(`Supabase: ${funcion} falló (${error.message})`)
+    return data as T
+  }
+  const db = await baseLocal()
+  return db.transaction(async (tx) => {
+    await tx.exec('set local role service_role')
+    const { rows } = await tx.query<{ r: T }>(`select public.${funcion}($1::jsonb) as r`, [JSON.stringify(p)])
+    return rows[0].r
+  })
 }

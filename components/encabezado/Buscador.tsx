@@ -9,14 +9,15 @@ import { useTextos } from '@/lib/i18n/textos'
 import type { Sugerencias } from '@/lib/datos/tipos'
 import type { Idioma } from '@/lib/i18n/idiomas'
 import { foto } from '@/lib/imagenes'
-import { formatear, precioEn, type Tasas } from '@/lib/precios'
+import { precioFinal, reglaDe, type Impuestos } from '@/lib/compra/impuestos'
+import { formatear, type Tasas } from '@/lib/precios'
 import type { Moneda } from '@/lib/region'
 import { Icono } from '../Icono'
 import s from './Buscador.module.css'
 
 type Opcion = { href: string; clave: string }
 
-export function Buscador({ idioma, moneda, tasas }: { idioma: Idioma; moneda: Moneda; tasas: Tasas }) {
+export function Buscador({ idioma, moneda, tasas, impuestos }: { idioma: Idioma; moneda: Moneda; tasas: Tasas; impuestos: Impuestos }) {
   const t = useTextos('encabezado')
   const ts = useTextos('sugerencias')
   const router = useRouter()
@@ -126,7 +127,7 @@ export function Buscador({ idioma, moneda, tasas }: { idioma: Idioma; moneda: Mo
                 onMouseDown={(e) => { e.preventDefault(); router.push(opciones[n].href); setAbierto(false) }}>
                 {p.imagen ? <Image src={foto(p.imagen)} alt="" width={40} height={40} sizes="40px" /> : <span className={s.sinFoto} />}
                 <span className={s.titulo}>{p.titulo}</span>
-                <span className={s.precio}>{formatear(precioEn(p.precio, moneda, tasas), moneda)}</span>
+                <span className={s.precio}>{formatear(precioFinal(p.precio, reglaDe(impuestos, { sub: p.categoria_slug, padre: p.categoria_padre }).tasa, moneda, tasas), moneda)}</span>
               </a>
             </li>
           )

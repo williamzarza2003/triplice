@@ -96,3 +96,16 @@
   .celdaPrecio { text-align: right; }
   .celdaEntrega { grid-column: 1 / -1; }
 }
+
+.impuesto { font-size: var(--t-13); color: var(--tinta-2); margin-top: -2px; }
+
+/* Etiqueta de frontera: el mismo producto del otro lado del Puente */
+.frontera { grid-column: 2; border: 1px solid var(--linea-2); border-radius: var(--r-tarjeta); background: var(--papel); padding: var(--e-2) var(--e-3); }
+.frontera summary { display: flex; align-items: center; gap: var(--e-2); cursor: pointer; font-family: var(--f-titulo); font-weight: 700; color: var(--agua-900); min-height: 32px; }
+.frontera summary svg { flex: none; }
+.frontera table { width: 100%; border-collapse: collapse; margin-top: var(--e-2); }
+.frontera th, .frontera td { text-align: left; padding: var(--e-2) 0; border-top: 1px solid var(--linea); vertical-align: top; }
+.frontera td { text-align: right; }
+.frontera small { display: block; font-size: var(--t-13); color: var(--tinta-3); font-weight: 400; }
+.frontera p { font-size: var(--t-13); color: var(--tinta-3); margin-top: var(--e-2); }
+@media (max-width: 860px) { .frontera { grid-column: auto; } }

@@ -366,6 +366,54 @@ for (const x of PREGUNTAS_GEN) {
   }
 }
 
+// ------------------------------------------------------------------ fase 2: impuestos, envío, retiro y cupones
+// Impuestos: simulación aproximada (la interfaz lo aclara). Paraguay: IVA 10 % y 5 % en alimentos.
+// Argentina: IVA 21 % y 10,5 % en alimentos y computación. Brasil: un único "impuestos estimados" que
+// representa importación + ICMS, más alto en electrónica importada.
+const IMPUESTOS: { pais: 'PY' | 'BR' | 'AR'; cat: string | null; nombre: Texto; tasa: number }[] = [
+  { pais: 'PY', cat: null, nombre: { es: 'IVA 10 %', pt: 'IVA 10 %', en: 'VAT 10%' }, tasa: 0.1 },
+  { pais: 'PY', cat: 'supermercado', nombre: { es: 'IVA 5 %', pt: 'IVA 5 %', en: 'VAT 5%' }, tasa: 0.05 },
+  { pais: 'AR', cat: null, nombre: { es: 'IVA 21 %', pt: 'IVA 21 %', en: 'VAT 21%' }, tasa: 0.21 },
+  { pais: 'AR', cat: 'supermercado', nombre: { es: 'IVA 10,5 %', pt: 'IVA 10,5 %', en: 'VAT 10.5%' }, tasa: 0.105 },
+  { pais: 'AR', cat: 'informatica', nombre: { es: 'IVA 10,5 %', pt: 'IVA 10,5 %', en: 'VAT 10.5%' }, tasa: 0.105 },
+  { pais: 'BR', cat: null, nombre: { es: 'Impuestos estimados 25 %', pt: 'Impostos estimados 25 %', en: 'Estimated taxes 25%' }, tasa: 0.25 },
+  { pais: 'BR', cat: 'supermercado', nombre: { es: 'Impuestos estimados 12 %', pt: 'Impostos estimados 12 %', en: 'Estimated taxes 12%' }, tasa: 0.12 },
+  ...(['celulares', 'informatica', 'electronica'] as const).map((cat) => (
+    { pais: 'BR' as const, cat, nombre: { es: 'Impuestos estimados 35 %', pt: 'Impostos estimados 35 %', en: 'Estimated taxes 35%' }, tasa: 0.35 })),
+]
+for (const r of IMPUESTOS) {
+  L.push(`insert into public.reglas_impuesto (pais, categoria_id, nombre, tasa) values (${q(r.pais)}, ${r.cat ? `(select id from public.categorias where slug = ${q(r.cat)})` : 'null'}, ${j(r.nombre)}, ${r.tasa});`)
+}
+
+// Envío: base + por kilo (centavos de dólar). La frontera es la zona de las tiendas: sale más barato y más rápido.
+const ZONAS = [
+  { pais: 'PY', ambito: 'frontera', nombre: { es: 'Ciudad del Este y alrededores', pt: 'Ciudad del Este e região', en: 'Ciudad del Este area' }, ciudades: ['ciudad del este', 'hernandarias', 'minga guazu', 'presidente franco'], base: 300, kg: 50, dias: [1, 2] },
+  { pais: 'PY', ambito: 'pais', nombre: { es: 'Resto de Paraguay', pt: 'Resto do Paraguai', en: 'Rest of Paraguay' }, ciudades: [], base: 600, kg: 120, dias: [2, 4] },
+  { pais: 'BR', ambito: 'frontera', nombre: { es: 'Foz do Iguaçu', pt: 'Foz do Iguaçu', en: 'Foz do Iguaçu' }, ciudades: ['foz do iguacu'], base: 500, kg: 100, dias: [1, 3] },
+  { pais: 'BR', ambito: 'pais', nombre: { es: 'Resto de Brasil', pt: 'Resto do Brasil', en: 'Rest of Brazil' }, ciudades: [], base: 1200, kg: 300, dias: [5, 10] },
+  { pais: 'AR', ambito: 'frontera', nombre: { es: 'Puerto Iguazú', pt: 'Puerto Iguazú', en: 'Puerto Iguazú' }, ciudades: ['puerto iguazu'], base: 600, kg: 150, dias: [1, 3] },
+  { pais: 'AR', ambito: 'pais', nombre: { es: 'Resto de Argentina', pt: 'Resto da Argentina', en: 'Rest of Argentina' }, ciudades: [], base: 1400, kg: 350, dias: [5, 10] },
+  { pais: 'XX', ambito: 'mundo', nombre: { es: 'Envío internacional', pt: 'Envio internacional', en: 'International shipping' }, ciudades: [], base: 3500, kg: 900, dias: [7, 15] },
+]
+for (const z of ZONAS) {
+  L.push(`insert into public.zonas_envio (pais, ambito, nombre, ciudades, costo_base_usd_cent, costo_kg_usd_cent, dias_min, dias_max) values (${q(z.pais)}, ${q(z.ambito)}, ${j(z.nombre)}, '{${z.ciudades.map((c) => `"${c}"`).join(',')}}', ${z.base}, ${z.kg}, ${z.dias[0]}, ${z.dias[1]});`)
+}
+
+// Retiro: el local de cada tienda
+for (const t of TIENDAS) {
+  L.push(`insert into public.puntos_retiro (tienda_id, nombre, direccion, ciudad, lat, lng, horario) values ((select id from public.tiendas where slug = ${q(t.slug)}), ${q(t.nombre)}, ${q(t.direccion)}, ${q(t.ciudad)}, ${t.lat}, ${t.lng}, ${j(t.horario)});`)
+}
+
+// Cupones de prueba (el último está vencido, para mostrar el mensaje)
+const CUPONES = [
+  { codigo: 'BIENVENIDA10', tipo: 'porcentaje', valor: 10, minimo: 2000, vence: null, descripcion: { es: '10 % en tu primera compra, desde US$ 20', pt: '10 % na sua primeira compra, a partir de US$ 20', en: '10% off your first order over US$ 20' } },
+  { codigo: 'PUENTE', tipo: 'monto', valor: 1500, minimo: 15000, vence: null, descripcion: { es: 'US$ 15 menos en compras desde US$ 150', pt: 'US$ 15 de desconto a partir de US$ 150', en: 'US$ 15 off orders over US$ 150' } },
+  { codigo: 'INVIERNO25', tipo: 'porcentaje', valor: 25, minimo: 0, vence: '2026-08-31T23:59:59Z', descripcion: { es: 'Liquidación de invierno', pt: 'Liquidação de inverno', en: 'Winter sale' } },
+]
+for (const c of CUPONES) {
+  L.push(`insert into public.cupones (codigo, tipo, valor, minimo_usd_cent, descripcion, vence) values (${q(c.codigo)}, ${q(c.tipo)}, ${c.valor}, ${c.minimo}, ${j(c.descripcion)}, ${c.vence ? q(c.vence) : 'null'});`)
+}
+
 L.push('select public.refrescar_catalogo();')
 L.push('commit;')
 

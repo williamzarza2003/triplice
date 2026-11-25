@@ -5,7 +5,7 @@ import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
 import { MapaFrontera } from '@/components/inicio/MapaFrontera'
 import { PaisesPortada } from '@/components/inicio/PaisesPortada'
-import { contexto, precio, ruta } from '@/lib/contexto'
+import { categoriaDe, contexto, precio, ruta } from '@/lib/contexto'
 import { categorias, inicio } from '@/lib/datos/consultas'
 import { foto } from '@/lib/imagenes'
 import { textoSobre } from '@/lib/color'
@@ -46,10 +46,10 @@ export default async function Inicio() {
             <div>
               <p className={s.destacadaTitulo}><Link href={r(`/p/${destacada.slug}`)}>{destacada.titulo}</Link></p>
               <p className="precio">
-                {precio(ctx, destacada.precio)}{' '}
+                {precio(ctx, destacada.precio, categoriaDe(destacada))}{' '}
                 <span className="sello sello--oferta">−{descuento(destacada.precio, destacada.precio_lista)} %</span>
               </p>
-              {destacada.precio_lista && <p className={s.antes}><s>{precio(ctx, destacada.precio_lista)}</s> · {destacada.tienda.nombre}</p>}
+              {destacada.precio_lista && <p className={s.antes}><s>{precio(ctx, destacada.precio_lista, categoriaDe(destacada))}</s> · {destacada.tienda.nombre}</p>}
             </div>
           </article>
         )}

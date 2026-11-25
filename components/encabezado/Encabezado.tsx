@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server'
 import { categorias } from '@/lib/datos/consultas'
 import { ruta, type Contexto } from '@/lib/contexto'
 import { Icono } from '../Icono'
+import { BotonCarrito } from './BotonCarrito'
 import { Buscador } from './Buscador'
 import { MenuCategorias } from './MenuCategorias'
 import { SelectorRegion } from './SelectorRegion'
@@ -23,8 +24,9 @@ export async function Encabezado({ ctx }: { ctx: Contexto }) {
         <Link className={s.logo} href={ruta(ctx.idioma)} aria-label={t('inicioMarca')}>
           <Image src="/marca/logotipo-claro.svg" alt="" width={132} height={37} loading="eager" unoptimized />
         </Link>
-        <Buscador idioma={ctx.idioma} moneda={ctx.moneda} tasas={ctx.tasas} />
+        <Buscador idioma={ctx.idioma} moneda={ctx.moneda} tasas={ctx.tasas} impuestos={ctx.impuestos} />
         <SelectorRegion idioma={ctx.idioma} region={ctx.region} moneda={ctx.moneda} />
+        <BotonCarrito href={ruta(ctx.idioma, '/carrito')} etiqueta={t('carrito')} etiquetaCon={t.raw('carritoCon') as string} />
       </div>
       <nav id="categorias" className={s.categorias} aria-label={t('categorias')}>
         <div className={`contenedor ${s.categoriasFila}`}>

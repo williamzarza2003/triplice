@@ -45,7 +45,8 @@
     "tiendas": "Stores",
     "regionBoton": "Shopping from {region}, prices in {moneda}, language {idioma}. Change",
     "carrito": "Cart",
-    "regionAclaracion": "Change region, currency or language"
+    "regionAclaracion": "Change region, currency or language",
+    "carritoCon": "Cart: {n} items"
   },
   "sugerencias": {
     "enCategoria": "in {categoria}",
@@ -77,7 +78,9 @@
     "descuento": "{n}% off",
     "sinImpuestos": "Before tax · exchange rate of {fecha}",
     "equivale": "Equals {otros}",
-    "cotizacion": "1 US$ = {tasa}"
+    "cotizacion": "1 US$ = {tasa}",
+    "incluido": "{impuesto} included",
+    "sinImpuesto": "No local taxes: import duties are paid on delivery"
   },
   "tarjeta": {
     "envioGratis": "Free shipping",
@@ -198,7 +201,6 @@
     "responde": "Replies in {tiempo}",
     "verTienda": "Visit the store",
     "agregar": "Add to cart",
-    "carritoPronto": "The cart and Stripe test-mode checkout arrive in phase 2 of this project. For now you can browse the catalog, compare sellers and read reviews.",
     "ofertas": "{n, plural, one {One seller} other {# sellers}} for this option",
     "ofertasTitulo": "Compare sellers",
     "columnaTienda": "Store",
@@ -239,7 +241,19 @@
     "ampliar": "Zoom in",
     "noEncontrado": "This product doesn't exist or is no longer sold.",
     "elegirOferta": "Choose",
-    "elegida": "Selected"
+    "elegida": "Selected",
+    "agregando": "Adding…",
+    "agregado": "Added to your cart.",
+    "verCarrito": "View cart",
+    "noSeAgrego": "Couldn’t add it: it may have sold out. Pick another option or try again.",
+    "fronteraTitulo": "This price across the Bridge",
+    "fronteraPais": {
+      "PY": "In Paraguay",
+      "BR": "In Brazil",
+      "AR": "In Argentina"
+    },
+    "fronteraEquivale": "≈ {precio} in your currency",
+    "fronteraNota": "With each country’s tax (approximate simulation)."
   },
   "tienda": {
     "desde": "Selling on Tríplice since {anio}",
@@ -267,8 +281,8 @@
     "proyecto": "The project",
     "codigo": "Code on GitHub",
     "arquitectura": "How it's built",
-    "fase": "Phase 1: catalog, search and product page",
-    "legal": "Portfolio project by William Zarza. Products, sellers, reviews and payments are fictional or test-only. Photos: CC0 3D models from Poly Haven, shot in Blender.",
+    "fase": "Phase 2: cart, per-country taxes and test checkout",
+    "legal": "Portfolio project by William Zarza. Products, stores, reviews and payments are fictional or test-only. Photos: original models and CC0 Poly Haven models, shot in Blender.",
     "datos": "Data served by {origen}"
   },
   "error": {
@@ -278,5 +292,192 @@
     "noEncontradoTitulo": "We couldn't find that page",
     "noEncontradoTexto": "The link may be mistyped or the product is no longer sold. Search for what you need or go back home.",
     "volver": "Back to home"
+  },
+  "compra": {
+    "carritoTitulo": "Your cart",
+    "deTienda": "From",
+    "noDisponible": "No longer available",
+    "agotado": "Sold out: remove it or save it for later",
+    "soloHay": "Only {n} left: we’ll charge {n}",
+    "quedan": "Only {n} left",
+    "envioGratis": "Free shipping",
+    "cantidadDe": "Quantity of {producto}",
+    "actualizar": "Update",
+    "guardarDespues": "Save for later",
+    "quitar": "Remove",
+    "moverAlCarrito": "Move to cart",
+    "cadaUno": "{precio} each",
+    "guardadosTitulo": "Saved for later ({n})",
+    "resumen": "Summary",
+    "vacioTitulo": "Your cart is empty",
+    "vacioTexto": "Anything you add from a product page shows up here, priced in your currency with your country’s tax.",
+    "vacioBoton": "See best sellers",
+    "cuponEtiqueta": "Discount code",
+    "cuponPlaceholder": "Coupon code",
+    "cuponAplicar": "Apply",
+    "cuponNoExiste": "That coupon doesn’t exist. Check the spelling (for example, BIENVENIDA10).",
+    "cuponVencido": "That coupon has expired. Try BIENVENIDA10 for 10% off your first order.",
+    "cuponAgotado": "That coupon has reached its usage limit.",
+    "cuponVacio": "Type the coupon code.",
+    "cuponMinimo": "You’re short of the minimum for {codigo}: add items to reach it.",
+    "quitarCupon": "Remove coupon",
+    "continuar": "Continue to checkout",
+    "nadaComprable": "Nothing to buy: what’s in your cart sold out.",
+    "notaMoneda": "You pay in {moneda}, at the prices shown here. You’ll choose shipping in the next step.",
+    "productos": "{n, plural, one {1 item} other {# items}}",
+    "cupon": "Coupon {codigo}",
+    "envio": "Shipping",
+    "envioPendiente": "Chosen in the next step",
+    "gratis": "Free",
+    "total": "Total",
+    "totalSinEnvio": "Total before shipping",
+    "incluye": "Includes {lista}.",
+    "sinImpuestos": "No local taxes: if shipped outside the region, import duties are paid on delivery."
+  },
+  "pagar": {
+    "titulo": "Checkout",
+    "tuPedido": "Your order",
+    "pasoEntrega": "How you get it",
+    "pasoDatos": "Your details",
+    "pasoPago": "Payment",
+    "retiro": "Store pickup",
+    "domicilio": "Home delivery",
+    "gratis": "Free",
+    "opcional": "(optional)",
+    "listoHoras": "ready in {h} h",
+    "listoHoy": "ready today",
+    "listoDias": "ready in {d} days",
+    "variosLocales": "You pick up at {n} stores, each their own items",
+    "plazo": "arrives in {min} to {max} business days",
+    "puente": "Friendship Bridge",
+    "dondeRetiras": "Where you pick up",
+    "fueraDelMapa": "off the map",
+    "datosRetiro": "Bring an ID and your order number to pick up.",
+    "pagar": "Pay {total}",
+    "procesando": "Processing…",
+    "notaStripe": "Stripe test payment: nothing is charged. Use card 4242 4242 4242 4242, any future date and any code.",
+    "notaSimulado": "This preview doesn’t have Stripe test keys yet: paying takes you to a simulator where you choose whether the test card is approved or declined. Nothing is charged.",
+    "protegida": "Protected purchase: if something doesn’t arrive as pictured, the store swaps it or refunds you.",
+    "zonaElegida": "{zona}: shipping {envio}, {plazo}.",
+    "notaImpuestos": "Taxes follow {pais}’s rules (approximate simulation). You pay in {moneda}: no conversion fee from your bank.",
+    "notaInternacional": "You pay in {moneda}, with no local taxes.",
+    "errores": {
+      "requerido": "Please fill this in.",
+      "email": "Check the email: it’s missing the @ or the domain (for example, name@mail.com).",
+      "telefono": "Include the area code (at least 7 digits).",
+      "codigo": "Check the postal code.",
+      "codigo_BR": "The CEP has 8 digits (for example, 85851-000).",
+      "codigo_AR": "The postal code has 4 digits (3370) or the new format (N3370ABC).",
+      "zona": "Please fill this in.",
+      "zona_BR": "Use the 2-letter state code (for example, PR)."
+    },
+    "generales": {
+      "sin_items": "Your cart is empty now: go back and add something.",
+      "cambio": "Something changed since you opened this page (a price or the stock). Check the new total and tap Pay again.",
+      "pago": "We couldn’t reach Stripe. Wait a moment and try again; nothing was charged."
+    },
+    "simuladorTitulo": "Payment simulator",
+    "simuladorPedido": "Order {numero}",
+    "simuladorTexto": "This is how payment works until the preview gets Stripe test keys. Choose what happens with the test card: nothing is charged.",
+    "simuladorAprobada": "Pay with the approved card (4242…)",
+    "simuladorRechazada": "Try a declined card (4000…0002)",
+    "simuladorRechazo": "The bank declined the card (insufficient funds or online purchases blocked). Try another card: nothing was charged.",
+    "simuladorVolver": "Back to delivery details",
+    "campos": {
+      "PY": {
+        "nombre": "Full name",
+        "email": "Email",
+        "telefono": "Phone or WhatsApp",
+        "ciudad": "City",
+        "zona": "Neighborhood",
+        "direccion": "Street and number",
+        "codigo": "Postal code",
+        "referencia": "Landmark"
+      },
+      "BR": {
+        "nombre": "Full name",
+        "email": "Email",
+        "telefono": "Phone or WhatsApp",
+        "ciudad": "City",
+        "zona": "State (2 letters)",
+        "direccion": "Street and number",
+        "codigo": "CEP (postal code)",
+        "referencia": "Apartment, suite"
+      },
+      "AR": {
+        "nombre": "Full name",
+        "email": "Email",
+        "telefono": "Phone or WhatsApp",
+        "ciudad": "City",
+        "zona": "Province",
+        "direccion": "Street and number",
+        "codigo": "Postal code",
+        "referencia": "Floor or apartment"
+      },
+      "XX": {
+        "nombre": "Full name",
+        "email": "Email",
+        "telefono": "Phone",
+        "ciudad": "City",
+        "zona": "Country",
+        "direccion": "Address",
+        "codigo": "Postal code",
+        "referencia": "Landmark"
+      }
+    },
+    "ayudas": {
+      "PY": {
+        "telefono": "We’ll message you on WhatsApp when it ships.",
+        "referencia": "For example: house with green gates, across from the corner store."
+      },
+      "BR": {
+        "codigo": "8 digits, for example 85851-000."
+      },
+      "AR": {
+        "codigo": "4 digits (3370) or the new format (N3370ABC)."
+      },
+      "XX": {}
+    }
+  },
+  "pedido": {
+    "titulo": "Your order",
+    "noEncontrado": "We couldn’t find that order",
+    "noEncontradoTexto": "The receipt is saved in the browser you bought with. If you used another one, open it there.",
+    "volverInicio": "Back to home",
+    "confirmadoTitulo": "Done! Your order is confirmed",
+    "pendienteTitulo": "Waiting for payment confirmation",
+    "numero": "Order {numero}",
+    "aviso": "We’ll email {email} when its status changes.",
+    "lineaTitulo": "What happens next",
+    "esperandoPago": "Waiting for payment confirmation",
+    "estados": {
+      "confirmado": "Confirmed",
+      "preparando": "Store is preparing it",
+      "listoRetiro": "Ready for pickup",
+      "enviado": "On its way",
+      "entregado": "Delivered"
+    },
+    "preparandoRetiro": "About {h} h",
+    "preparandoEnvio": "Packed and handed to the carrier",
+    "listoRetiroDetalle": "We’ll message you on WhatsApp",
+    "enviadoDetalle": "Arrives in {min} to {max} business days",
+    "retirarEn": "Where you pick up",
+    "llegaA": "Where it goes",
+    "puente": "Friendship Bridge",
+    "llevaDocumento": "Bring an ID and your order number.",
+    "detalle": "What you bought",
+    "vende": "Sold by {tienda}",
+    "cantidad": "Quantity: {n}",
+    "pagado": "You paid",
+    "aPagar": "To pay",
+    "productos": "Items",
+    "cupon": "Coupon {codigo}",
+    "envio": "Shipping",
+    "gratis": "Free",
+    "total": "Total",
+    "incluye": "Includes {lista}.",
+    "notaStripe": "Stripe test payment: nothing was charged.",
+    "notaSimulado": "Simulated payment: nothing was charged.",
+    "seguirComprando": "Keep shopping"
   }
 }
