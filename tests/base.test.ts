@@ -144,3 +144,11 @@ describe('RLS', () => {
     await expect(db.exec('select public.refrescar_catalogo()')).rejects.toThrow(/permission denied/)
   })
 })
+
+describe('página de tienda', () => {
+  it('las tarjetas muestran la oferta de esa tienda, no la más barata de otra', async () => {
+    const r = await rpc('buscar', { tienda: 'casa-nubla', por_pagina: 60 })
+    expect(r.items.length).toBeGreaterThan(0)
+    expect(r.items.every((x: Json) => x.tienda.slug === 'casa-nubla')).toBe(true)
+  })
+})

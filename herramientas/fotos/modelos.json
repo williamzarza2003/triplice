@@ -295,7 +295,7 @@
  },
  "gamepad": {
   "elev": 50,
-  "zoom": 1.6,
+  "zoom": 1.05,
   "colores": [
    "rojo",
    "agua",
@@ -806,7 +806,8 @@
    "marino"
   ],
   "modo": "todo",
-  "fuerza": 0.75
+  "fuerza": 0.75,
+  "giro": 30
  },
  "sofa_03": {
   "descartado": true

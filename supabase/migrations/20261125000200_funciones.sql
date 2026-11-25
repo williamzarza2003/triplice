@@ -6,20 +6,31 @@ create or replace function public.txt(j jsonb, idioma text) returns text
 language sql immutable parallel safe
 as $$ select coalesce(j->>idioma, j->>'es', j->>'pt', j->>'en') $$;
 
--- Tarjetas de producto en el orden de ids recibido
-create or replace function public.tarjetas_json(ids uuid[], idioma text) returns jsonb
+-- Tarjetas de producto en el orden de ids recibido. Con `tienda`, el precio y el vendedor son los de esa
+-- tienda (en su página no tiene sentido mostrar la oferta más barata de otra).
+create or replace function public.tarjetas_json(ids uuid[], idioma text, tienda text default null) returns jsonb
 language sql stable
 set search_path = public, extensions
 as $$
   select coalesce(jsonb_agg(jsonb_build_object(
     'id', t.id, 'slug', t.slug, 'titulo', txt(t.titulo, idioma), 'marca', t.marca, 'imagen', t.imagen,
-    'precio', t.precio_usd_cent, 'precio_lista', t.precio_lista_usd_cent, 'envio_gratis', t.envio_gratis,
-    'tienda', jsonb_build_object('slug', t.tienda_slug, 'nombre', t.tienda_nombre, 'pais', t.tienda_pais, 'ciudad', t.tienda_ciudad),
-    'ofertas', t.ofertas, 'stock', t.stock, 'promedio', t.promedio, 'resenas', t.resenas,
+    'precio', coalesce(pt.precio, t.precio_usd_cent), 'precio_lista', case when pt.precio is null then t.precio_lista_usd_cent else pt.lista end,
+    'envio_gratis', coalesce(pt.envio, t.envio_gratis),
+    'tienda', case when pt.precio is null
+      then jsonb_build_object('slug', t.tienda_slug, 'nombre', t.tienda_nombre, 'pais', t.tienda_pais, 'ciudad', t.tienda_ciudad)
+      else jsonb_build_object('slug', pt.slug, 'nombre', pt.nombre, 'pais', pt.pais, 'ciudad', pt.ciudad) end,
+    'ofertas', t.ofertas, 'stock', coalesce(pt.stock, t.stock), 'promedio', t.promedio, 'resenas', t.resenas,
     'variantes', t.variantes, 'condicion', t.condicion, 'ventas_30d', t.ventas_30d
   ) order by u.orden), '[]'::jsonb)
   from unnest(ids) with ordinality as u(id, orden)
   join tarjetas t on t.id = u.id
+  left join lateral (
+    select o.precio_usd_cent as precio, o.precio_lista_usd_cent as lista, o.envio_gratis as envio, o.stock,
+           ti.slug, ti.nombre, ti.pais, ti.ciudad
+      from ofertas o join variantes v on v.id = o.variante_id join tiendas ti on ti.id = o.tienda_id
+     where tienda is not null and ti.slug = tienda and v.producto_id = t.id and o.activa
+     order by o.stock > 0 desc, o.precio_usd_cent limit 1
+  ) pt on true
 $$;
 
 -- Ids de la categoría pedida y de sus hijas
@@ -141,7 +152,7 @@ begin
     'por_pagina', por_pagina,
     'modo', modo,
     'corregido', corregido,
-    'items', tarjetas_json(array(select id from pagina_ids), idioma),
+    'items', tarjetas_json(array(select id from pagina_ids), idioma, filtro_tienda),
     'facetas', jsonb_build_object(
       'marcas', coalesce((select jsonb_agg(jsonb_build_object('valor', marca, 'n', n) order by n desc, marca)
                             from (select marca, count(*) n from marcada where fp and fe and fv and fc and fa group by marca) s), '[]'),
