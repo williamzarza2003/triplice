@@ -42,7 +42,7 @@ blender -b --factory-startup --python herramientas/fotos/fotografiar.py -- --mue
 npm install && npm run fotos:web
 ```
 
-Lighthouse de las maquetas (servidas como estáticas): 94 a 100 en Rendimiento, 100 en Accesibilidad, Buenas prácticas y SEO, en celular y escritorio.
+Lighthouse de las maquetas (servidas como estáticas): 100 en Accesibilidad, Buenas prácticas y SEO en todas las páginas; Rendimiento de 95 a 100, salvo el carrito en el celular, que da entre 93 y 95 según la corrida (la demora viene del servidor de prueba de Python).
 
 ## Créditos
 
@@ -64,3 +64,4 @@ Lighthouse de las maquetas (servidas como estáticas): 94 a 100 en Rendimiento, 
 - **Seven mockups** (home, search with faceted filters, product page with multi-seller offers, cart, checkout with tax breakdown, store page and seller dashboard), desktop and mobile. Open `maquetas/index.html`.
 - **Architecture:** full data model with RLS policies, Postgres full-text + trigram search tolerant to typos and accents, server-side price/tax/currency computation with worked examples (integer money, per-currency rounding), folder layout and a test plan (Vitest, pgTAP, Playwright, axe, Lighthouse CI).
 - **Product photos** come from CC0 Poly Haven 3D models shot in a single Blender studio setup for a consistent, curated grid.
+- **Lighthouse (mockups served as static files):** 100 in Accessibility, Best Practices and SEO on every page; Performance 95–100, except the cart on mobile (93–95 depending on the run, slowed by the local Python test server).
