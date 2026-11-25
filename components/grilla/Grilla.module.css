@@ -1,0 +1,11 @@
+.grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(184px, 1fr)); gap: var(--e-3); }
+/* vidrieras del inicio: 6 en escritorio, 4 en tableta, 2 filas de 2 en el celular (nunca una tarjeta sola) */
+.fila { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+@media (max-width: 1100px) {
+  .fila { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .fila > :nth-child(n + 5) { display: none; }
+}
+@media (max-width: 860px) {
+  .grilla { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-2); }
+  .fila { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

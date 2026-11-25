@@ -1,0 +1,3 @@
+.migas { display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--t-13); color: var(--tinta-3); padding: var(--e-4) 0 0; margin: 0; list-style: none; }
+.migas li + li::before { content: '›'; margin-right: 6px; }
+.migas a { color: var(--tinta-2); }
