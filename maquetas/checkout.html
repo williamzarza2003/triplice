@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagar · Tríplice</title>
+<meta name="description" content="Maqueta del checkout de Tríplice: dirección, envío o retiro en CDE, pago de prueba y desglose de impuestos.">
+<link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<script src="datos.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body class="modo-pago">
+<header class="encabezado" data-encabezado></header>
+
+<main id="contenido" class="contenedor">
+  <h1 style="font-size:var(--t-33);margin-top:var(--e-6)">Pagar</h1>
+  <ol class="pasos" aria-label="Pasos de la compra">
+    <li class="hecho">Dirección</li>
+    <li class="hecho">Envío</li>
+    <li class="actual" aria-current="step">Pago</li>
+    <li>Listo</li>
+  </ol>
+
+  <div class="dos-columnas">
+    <div style="display:grid;gap:var(--e-4)">
+      <section class="panel" aria-labelledby="t-dir">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <h2 id="t-dir" style="font-size:var(--t-19)">1. Dirección</h2><button class="enlace-boton">Cambiar</button>
+        </div>
+        <p style="margin-top:6px">Lucía Benítez · Barrio San José, calle Pa'i Pérez 450, casa de rejas verdes, Ciudad del Este · 0981 000 000</p>
+      </section>
+
+      <section class="panel" aria-labelledby="t-envio">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+          <h2 id="t-envio" style="font-size:var(--t-19)">2. Envío</h2><button class="enlace-boton">Cambiar</button>
+        </div>
+        <fieldset style="border:0;padding:0;margin:var(--e-3) 0 0;display:grid;gap:var(--e-2)">
+          <legend class="sr-only">Cómo lo recibís</legend>
+          <label class="opcion-envio"><input type="radio" name="envio" checked><span><b>Retiro en Casa Nubla, microcentro de CDE</b><small>Hoy desde las 16:00 · traé tu cédula · a 1,2 km de tu casa</small></span><b style="color:var(--exito)">Gratis</b></label>
+          <label class="opcion-envio"><input type="radio" name="envio"><span><b>A tu casa, mañana</b><small>Miércoles 3, de 9 a 13 h · te avisamos por WhatsApp</small></span><b>₲ 15.000</b></label>
+          <label class="opcion-envio"><input type="radio" name="envio"><span><b>A tu casa, estándar</b><small>Jueves 4 o viernes 5</small></span><b>₲ 9.000</b></label>
+        </fieldset>
+        <p style="font-size:var(--t-13);color:var(--tinta-2);margin-top:var(--e-3)">Las medialunas salen de Almacén Misiones: las retirás en el mismo punto, llegan a las 15:30.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="t-pago">
+        <h2 id="t-pago" style="font-size:var(--t-19);margin-bottom:var(--e-3)">3. Pago</h2>
+        <p class="tarjeta-prueba">Pago de prueba con Stripe: no se cobra nada. Usá la tarjeta 4242 4242 4242 4242, cualquier fecha futura y cualquier código.</p>
+        <div class="grupo-form" style="margin-top:var(--e-4)">
+          <label class="campo c6"><span>Nombre como figura en la tarjeta</span><input autocomplete="cc-name" value="LUCIA BENITEZ"></label>
+          <label class="campo campo--error c4"><span>Número de tarjeta</span><input inputmode="numeric" autocomplete="cc-number" value="4000 0000 0000 0002" aria-invalid="true" aria-describedby="err-tarjeta"></label>
+          <label class="campo c2"><span>Vence</span><input inputmode="numeric" autocomplete="cc-exp" value="08 / 29"></label>
+          <p class="campo__error c6" id="err-tarjeta"><span data-icono="info" data-icono-clase="icono icono--chico"></span>El banco rechazó la tarjeta (sin fondos o bloqueada para compras por internet). Probá con otra tarjeta o elegí transferencia.</p>
+          <label class="campo c3"><span>Código de seguridad</span><input inputmode="numeric" autocomplete="cc-csc" value="•••"><small>Los 3 números de atrás</small></label>
+          <label class="campo c3"><span>Cuotas</span><select><option>1 pago</option><option selected>3 cuotas sin interés</option><option>6 cuotas (con interés del banco)</option></select></label>
+        </div>
+        <label style="display:flex;gap:8px;align-items:flex-start;margin-top:var(--e-4);font-size:var(--t-14)"><input type="checkbox" checked style="width:18px;height:18px;accent-color:var(--agua-900)"> Quiero la factura legal a nombre de <b>Lucía Benítez · RUC 4.512.378-1</b></label>
+      </section>
+    </div>
+
+    <aside class="resumen panel" aria-labelledby="t-resumen">
+      <h2 id="t-resumen" style="font-size:var(--t-19)">Tu pedido</h2>
+      <div style="display:flex;gap:6px">
+        <img src="img/vintage_electric_kettle.webp" alt="Pava eléctrica" width="56" height="56" style="background:var(--neblina);border-radius:6px">
+        <img src="img/tea_set_01.webp" alt="Juego de té" width="56" height="56" style="background:var(--neblina);border-radius:6px">
+        <img src="img/adjustable_wrench.webp" alt="Llave ajustable (2)" width="56" height="56" style="background:var(--neblina);border-radius:6px">
+        <img src="img/croissant.webp" alt="Medialunas" width="56" height="56" style="background:var(--neblina);border-radius:6px">
+      </div>
+      <div data-desglose="0"></div>
+      <p style="font-size:var(--t-13);color:var(--tinta-2)">Impuestos según las reglas de Paraguay (simulación aproximada). El total se cobra en guaraníes: tu banco no te cobra conversión.</p>
+      <button class="boton boton--accion boton--ancho" type="button" data-pagar>Pagar</button>
+      <p style="font-size:var(--t-13);color:var(--tinta-2);display:flex;gap:6px" data-icono="escudo" data-icono-clase="icono icono--chico">Compra protegida. Podés devolverlo hasta 7 días después de recibirlo.</p>
+    </aside>
+  </div>
+</main>
+
+<footer class="pie" data-pie></footer>
+<script>
+  // El botón dice exactamente cuánto se va a cobrar
+  window.addEventListener('load', () => {
+    const total = document.querySelector('.resumen dd.total')
+    const b = document.querySelector('[data-pagar]')
+    if (total && b) b.textContent = `Pagar ${total.textContent}`
+  })
+</script>
+</body>
+</html>

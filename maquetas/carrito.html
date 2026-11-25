@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carrito · Tríplice</title>
+<meta name="description" content="Maqueta del carrito de Tríplice: líneas con stock y entrega, guardados para después, cupón y desglose de impuestos.">
+<link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<script src="datos.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="encabezado" data-encabezado></header>
+
+<main id="contenido" class="contenedor">
+  <h1 style="font-size:var(--t-33);margin:var(--e-6) 0 var(--e-2)">Tu carrito</h1>
+  <p class="sello sello--info" style="margin-bottom:var(--e-5)">Sumamos la llave ajustable que tenías guardada en tu cuenta.</p>
+
+  <div class="dos-columnas">
+    <div>
+      <section class="panel" aria-labelledby="t-vendedor1" style="margin-bottom:var(--e-4)">
+        <h2 id="t-vendedor1" style="font-size:var(--t-16)">De <a href="tienda.html">Casa Nubla</a> · retiro hoy en CDE o envío mañana</h2>
+        <article class="linea">
+          <img src="img/vintage_electric_kettle.webp" alt="" width="112" height="112">
+          <div>
+            <h3><a href="producto.html">Pava eléctrica 1,7 L con corte para mate</a></h3>
+            <div class="linea__meta"><span>Crema · 1,7 L</span><span class="envio--hoy">Retiralo hoy</span></div>
+            <div class="linea__acciones">
+              <div class="cantidad" role="group" aria-label="Cantidad de pava eléctrica"><button type="button" aria-label="Uno menos"><span data-icono="menos" data-icono-clase="icono icono--chico"></span></button><output>1</output><button type="button" aria-label="Uno más"><span data-icono="mas" data-icono-clase="icono icono--chico"></span></button></div>
+              <button class="enlace-boton">Guardar para después</button><button class="enlace-boton">Quitar</button>
+            </div>
+          </div>
+          <p class="linea__precio precio" data-precio="vintage_electric_kettle"></p>
+        </article>
+        <article class="linea">
+          <img src="img/tea_set_01.webp" alt="" width="112" height="112">
+          <div>
+            <h3><a href="producto.html">Juego de té de porcelana, 6 tazas con tetera</a></h3>
+            <div class="linea__meta"><span>Blanco con borde dorado</span><span class="stock-bajo">Quedan 2</span></div>
+            <div class="linea__acciones">
+              <div class="cantidad" role="group" aria-label="Cantidad de juego de té"><button type="button" aria-label="Uno menos"><span data-icono="menos" data-icono-clase="icono icono--chico"></span></button><output>1</output><button type="button" aria-label="Uno más"><span data-icono="mas" data-icono-clase="icono icono--chico"></span></button></div>
+              <button class="enlace-boton">Guardar para después</button><button class="enlace-boton">Quitar</button>
+            </div>
+          </div>
+          <p class="linea__precio precio" data-precio="tea_set_01"></p>
+        </article>
+      </section>
+
+      <section class="panel" aria-labelledby="t-vendedor2">
+        <h2 id="t-vendedor2" style="font-size:var(--t-16)">De <a href="tienda.html">Ferretería Tatu</a> y <a href="tienda.html">Almacén Misiones</a> · llega mañana</h2>
+        <article class="linea">
+          <img src="img/adjustable_wrench.webp" alt="" width="112" height="112">
+          <div>
+            <h3><a href="producto.html">Llave ajustable 10" de acero forjado</a></h3>
+            <div class="linea__meta"><span>10" · <span data-precio="adjustable_wrench"></span> c/u</span></div>
+            <div class="linea__acciones">
+              <div class="cantidad" role="group" aria-label="Cantidad de llave ajustable"><button type="button" aria-label="Uno menos"><span data-icono="menos" data-icono-clase="icono icono--chico"></span></button><output>2</output><button type="button" aria-label="Uno más"><span data-icono="mas" data-icono-clase="icono icono--chico"></span></button></div>
+              <button class="enlace-boton">Guardar para después</button><button class="enlace-boton">Quitar</button>
+            </div>
+          </div>
+          <p class="linea__precio precio" data-precio="adjustable_wrench" data-cantidad="2"></p>
+        </article>
+        <article class="linea">
+          <img src="img/croissant.webp" alt="" width="112" height="112">
+          <div>
+            <h3><a href="producto.html">Medialunas de manteca × 6, horneadas hoy</a></h3>
+            <div class="linea__meta"><span>Caja de 6 · IVA reducido (5 %)</span><span>Se entrega solo en CDE, Hernandarias y Foz</span></div>
+            <div class="linea__acciones">
+              <div class="cantidad" role="group" aria-label="Cantidad de medialunas"><button type="button" aria-label="Uno menos"><span data-icono="menos" data-icono-clase="icono icono--chico"></span></button><output>1</output><button type="button" aria-label="Uno más"><span data-icono="mas" data-icono-clase="icono icono--chico"></span></button></div>
+              <button class="enlace-boton">Guardar para después</button><button class="enlace-boton">Quitar</button>
+            </div>
+          </div>
+          <p class="linea__precio precio" data-precio="croissant"></p>
+        </article>
+      </section>
+
+      <section class="seccion" aria-labelledby="t-despues">
+        <div class="seccion__cabeza"><h2 id="t-despues">Guardados para después (2)</h2></div>
+        <div class="grilla" data-grilla="binoculars, desk_lamp_arm_01" data-compacta></div>
+      </section>
+    </div>
+
+    <aside class="resumen panel" aria-labelledby="t-resumen">
+      <h2 id="t-resumen" style="font-size:var(--t-19)">Resumen</h2>
+      <div data-desglose="0"></div>
+      <form class="cupon" onsubmit="return false"><label class="sr-only" for="cupon">Cupón</label><input id="cupon" placeholder="Código de cupón" value="FRONTERA10"><button class="boton boton--sec" type="submit">Aplicar</button></form>
+      <p class="campo__error" role="alert"><span data-icono="info" data-icono-clase="icono icono--chico"></span>FRONTERA10 venció el 30 de noviembre. Probá con BIENVENIDA, que te da 10 % en tu primera compra.</p>
+      <a class="boton boton--accion boton--ancho" href="checkout.html">Ir a pagar</a>
+      <p style="font-size:var(--t-13);color:var(--tinta-2);display:flex;gap:6px" data-icono="candado" data-icono-clase="icono icono--chico">Pagás en tu moneda. Retenemos el pago hasta que recibas todo.</p>
+    </aside>
+  </div>
+</main>
+
+<footer class="pie" data-pie></footer>
+</body>
+</html>

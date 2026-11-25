@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>"cosina" · Resultados · Tríplice</title>
+<meta name="description" content="Maqueta de resultados de búsqueda de Tríplice, con filtros por facetas y corrección de errores de tipeo.">
+<link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<script src="datos.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="encabezado" data-encabezado></header>
+
+<main id="contenido" class="contenedor">
+  <ol class="migas" aria-label="Estás en"><li><a href="index.html">Inicio</a></li><li>Resultados de búsqueda</li></ol>
+
+  <div class="resultados">
+    <aside class="filtros" id="filtros" aria-label="Filtros">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="font-size:var(--t-19)">Filtrar</h2>
+        <button type="button" class="enlace-boton" data-cerrar-filtros>Ver 105 resultados</button>
+      </div>
+      <fieldset><legend>Entrega</legend>
+        <label><input type="checkbox" checked> Retiro hoy en CDE <small>42</small></label>
+        <label><input type="checkbox"> Llega mañana <small>87</small></label>
+        <label><input type="checkbox"> Envío gratis <small>64</small></label>
+      </fieldset>
+      <fieldset><legend>Precio (₲)</legend>
+        <div class="rango"><label class="sr-only" for="pmin">Mínimo</label><input id="pmin" inputmode="numeric" placeholder="Mínimo"><label class="sr-only" for="pmax">Máximo</label><input id="pmax" inputmode="numeric" placeholder="Máximo" value="400.000"></div>
+      </fieldset>
+      <fieldset><legend>Categoría</legend>
+        <label><input type="checkbox" checked> Cocina <small>64</small></label>
+        <label><input type="checkbox" checked> Hogar <small>41</small></label>
+        <label><input type="checkbox"> Jardín <small>12</small></label>
+        <label><input type="checkbox"> Pequeños electrodomésticos <small>23</small></label>
+      </fieldset>
+      <fieldset><legend>Material</legend>
+        <label><input type="checkbox"> Acero inoxidable <small>31</small></label>
+        <label><input type="checkbox"> Cerámica de Itá <small>9</small></label>
+        <label><input type="checkbox"> Porcelana <small>14</small></label>
+        <label><input type="checkbox"> Hierro enlozado <small>6</small></label>
+      </fieldset>
+      <fieldset><legend>Marca</legend>
+        <label><input type="checkbox"> Nubla <small>24</small></label>
+        <label><input type="checkbox"> Arandu <small>19</small></label>
+        <label><input type="checkbox"> Kapé <small>11</small></label>
+        <button type="button" class="enlace-boton" style="justify-self:start">Ver las 14 marcas</button>
+      </fieldset>
+      <fieldset><legend>Calificación</legend>
+        <label><input type="radio" name="est"> 4,5 o más <small>52</small></label>
+        <label><input type="radio" name="est" checked> 4 o más <small>96</small></label>
+      </fieldset>
+      <fieldset><legend>Vendedor</legend>
+        <label><input type="checkbox"> Solo reputación 95 % o más <small>88</small></label>
+        <label><input type="checkbox"> Tiendas de Paraguay <small>91</small></label>
+        <label><input type="checkbox"> Tiendas de Brasil <small>22</small></label>
+        <label><input type="checkbox"> Tiendas de Argentina <small>15</small></label>
+      </fieldset>
+    </aside>
+
+    <section aria-labelledby="titulo-resultados">
+      <p class="correccion">Mostramos resultados para <b>cocina</b>. Buscaste <a href="#">cosina</a>.</p>
+      <div class="barra-resultados">
+        <div><h1 id="titulo-resultados">Cocina y hogar</h1><p>105 resultados · precios con IVA de Paraguay</p></div>
+        <button type="button" class="boton boton--sec boton-filtros" aria-controls="filtros" aria-expanded="false" data-icono="filtro">Filtros (4)</button>
+        <label class="orden">Ordenar por <select class="control"><option>Más relevantes</option><option>Menor precio</option><option>Mayor precio</option><option>Mejor calificados</option><option>Más vendidos</option><option>Novedades</option></select></label>
+      </div>
+      <div class="chips" aria-label="Filtros activos">
+        <button class="chip chip--activo" type="button">Retiro hoy en CDE <span data-icono="cerrar" data-icono-clase="icono"></span><span class="sr-only">Quitar filtro</span></button>
+        <button class="chip chip--activo" type="button">Cocina y Hogar <span data-icono="cerrar" data-icono-clase="icono"></span><span class="sr-only">Quitar filtro</span></button>
+        <button class="chip chip--activo" type="button">Hasta ₲ 400.000 <span data-icono="cerrar" data-icono-clase="icono"></span><span class="sr-only">Quitar filtro</span></button>
+        <button class="chip chip--activo" type="button">4 estrellas o más <span data-icono="cerrar" data-icono-clase="icono"></span><span class="sr-only">Quitar filtro</span></button>
+        <button class="chip" type="button">Borrar todo</button>
+      </div>
+      <div class="grilla" data-grilla="pot_enamel_01, tea_set_01, ceramic_vase_02, desk_lamp_arm_01, ArmChair_01, potted_plant_02, vintage_electric_kettle"></div>
+      <nav aria-label="Páginas de resultados" style="display:flex;gap:8px;justify-content:center;margin-top:var(--e-8)">
+        <a class="boton boton--marca" aria-current="page" href="#">1</a><a class="boton boton--sec" href="#">2</a><a class="boton boton--sec" href="#">3</a><a class="boton boton--sec" href="#">Siguiente</a>
+      </nav>
+    </section>
+  </div>
+</main>
+
+<footer class="pie" data-pie></footer>
+<script>
+  // Hoja de filtros en el celular (en escritorio la columna está siempre a la vista)
+  document.addEventListener('click', (e) => {
+    const abrir = e.target.closest('.boton-filtros')
+    const cerrar = e.target.closest('[data-cerrar-filtros]')
+    const f = document.getElementById('filtros')
+    if (abrir) { f.classList.add('filtros--abiertos'); abrir.setAttribute('aria-expanded', 'true'); f.querySelector('input').focus() }
+    if (cerrar) { f.classList.remove('filtros--abiertos'); document.querySelector('.boton-filtros').setAttribute('aria-expanded', 'false') }
+  })
+</script>
+</body>
+</html>

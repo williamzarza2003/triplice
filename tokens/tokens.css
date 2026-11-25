@@ -1,0 +1,85 @@
+/*
+  Tríplice · tokens de diseño (fase 0).
+  Fuente única para las maquetas y, en la fase 1, para Next.js (se importa en app/globals.css).
+  Contrastes medidos con la fórmula WCAG 2.x: ver docs/diseno.md.
+*/
+:root {
+  /* ---------- Color: marca */
+  --agua-900: #0f3d3e;   /* Agua del Paraná: marca, encabezado, enlaces, foco */
+  --agua-700: #1f5f60;   /* hover de enlaces y botones secundarios */
+  --agua-100: #e2ecea;   /* fondos de selección, chips activos */
+  --agua-50:  #eef4f3;
+
+  --lapacho-700: #a6215c;  /* acción principal: "Agregar al carrito", "Pagar" (blanco encima: 7,0:1) */
+  --lapacho-800: #87194a;  /* hover / presionado */
+  --lapacho-100: #f8e3ec;
+
+  --ipe-400: #f2c230;      /* Ipê amarillo: SOLO ofertas y precio rebajado (tinta encima: 9,9:1) */
+  --ipe-100: #fff4cc;
+  --ipe-900: #7a5a00;      /* texto de oferta sobre ipe-100 (5,8:1) */
+
+  /* ---------- Color: neutros fríos (nada de crema) */
+  --tinta:      #16201f;   /* texto principal (16,7:1 sobre blanco) */
+  --tinta-2:    #46524f;   /* texto secundario (8,1:1) */
+  --tinta-3:    #5e6b68;   /* metadatos chicos (5,6:1 sobre blanco, 5,1:1 sobre neblina) */
+  --linea:      #d5dfdc;   /* bordes de tarjetas y separadores */
+  --linea-2:    #e7eeec;
+  --neblina:    #f3f6f5;   /* fondo de página */
+  --papel:      #ffffff;   /* tarjetas, paneles */
+
+  /* ---------- Color: estados */
+  --exito:      #1a6b4a;   --exito-100: #e1f2e9;
+  --error:      #b3261e;   --error-100: #fbe4e2;
+  --aviso-100:  var(--ipe-100);
+  --info-100:   var(--agua-100);
+
+  /* ---------- Tipografía */
+  --f-titulo: 'Schibsted Grotesk', 'Segoe UI', system-ui, sans-serif;           /* títulos y precios */
+  --f-texto:  'Atkinson Hyperlegible Next', 'Segoe UI', system-ui, sans-serif;  /* datos, texto, formularios */
+
+  /* escala 1,2 (tercera menor) a partir de 16 px; los precios usan cifras tabulares */
+  --t-11: 0.6875rem;  /* sello "Compra verificada", leyendas */
+  --t-13: 0.8125rem;  /* metadatos de tarjeta: envío, vendedor */
+  --t-14: 0.875rem;   /* texto de interfaz chico, filtros */
+  --t-16: 1rem;       /* texto base */
+  --t-19: 1.1875rem;  /* precio en tarjeta, subtítulos */
+  --t-23: 1.4375rem;  /* títulos de bloque */
+  --t-28: 1.75rem;    /* precio en la ficha */
+  --t-33: 2.0625rem;  /* título de página */
+  --t-40: 2.5rem;     /* portada */
+
+  --lh-ajustado: 1.15;
+  --lh-texto: 1.5;
+
+  /* ---------- Espacios (base 4) */
+  --e-1: 4px;  --e-2: 8px;  --e-3: 12px; --e-4: 16px; --e-5: 20px;
+  --e-6: 24px; --e-8: 32px; --e-10: 40px; --e-14: 56px; --e-18: 72px;
+
+  /* ---------- Radios con jerarquía: más grande el contenedor, más grande el radio */
+  --r-control: 6px;   /* inputs, botones, sellos */
+  --r-tarjeta: 10px;  /* tarjeta de producto, ofertas */
+  --r-panel:   16px;  /* paneles, hojas del celular, modales */
+  --r-pildora: 999px; /* chips de filtro, selector de moneda */
+
+  /* ---------- Sombras: la tarjeta va plana con borde; la sombra aparece solo cuando algo flota */
+  --s-flota:  0 6px 20px rgb(15 61 62 / 0.12), 0 1px 3px rgb(15 61 62 / 0.08);   /* menús, autocompletado */
+  --s-hoja:   0 -8px 28px rgb(15 61 62 / 0.16);                                  /* hoja inferior en el celular */
+  --s-hover:  0 2px 10px rgb(15 61 62 / 0.10);                                   /* tarjeta al pasar el mouse */
+
+  /* ---------- Foco: anillo doble que se ve sobre claro y sobre oscuro */
+  --foco: 0 0 0 2px var(--papel), 0 0 0 4px var(--agua-900);
+  --foco-oscuro: 0 0 0 2px var(--agua-900), 0 0 0 4px var(--ipe-400);
+
+  /* ---------- Movimiento */
+  --dur-rapida: 120ms;
+  --dur-media: 220ms;
+  --curva: cubic-bezier(.2, .7, .2, 1);
+
+  /* ---------- Medidas de layout */
+  --ancho-max: 1280px;
+  --alto-encabezado: 64px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-rapida: 0ms; --dur-media: 0ms; }
+}

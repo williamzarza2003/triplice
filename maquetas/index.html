@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tríplice · Los tres mercados de la frontera, en una sola tienda</title>
+<meta name="description" content="Maqueta de la fase 0 de Tríplice: marketplace de Paraguay, Brasil y Argentina con precios en tu moneda e impuestos de tu país.">
+<link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<script src="datos.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="encabezado" data-encabezado></header>
+
+<main id="contenido" class="contenedor">
+  <section class="portada" aria-labelledby="titulo-portada">
+    <div class="mapa-portada">
+      <!-- La idea fuerte de la marca: la confluencia del Paraná y el Iguazú, con los tres países y sus ciudades -->
+      <svg class="mapa" viewBox="0 0 460 400" aria-hidden="true">
+        <g fill="none" stroke-linecap="round">
+          <path d="M210 -10 C240 80 180 150 214 230 S196 360 232 420" stroke="#2e6f70" stroke-width="30"/>
+          <path d="M470 170 C390 160 320 220 220 228" stroke="#2e6f70" stroke-width="24"/>
+          <path d="M210 -10 C240 80 180 150 214 230 S196 360 232 420" stroke="#5fa3a3" stroke-width="2" stroke-dasharray="1 10"/>
+          <path d="M470 170 C390 160 320 220 220 228" stroke="#5fa3a3" stroke-width="2" stroke-dasharray="1 10"/>
+        </g>
+        <g font-family="Schibsted Grotesk, sans-serif" font-size="15" fill="#cfe2df">
+          <text x="112" y="112">Paraguay</text>
+          <text x="330" y="90">Brasil</text>
+          <text x="320" y="320">Argentina</text>
+        </g>
+        <g font-family="Atkinson Hyperlegible Next, sans-serif" font-size="12" fill="#fff">
+          <circle cx="178" cy="196" r="6" fill="#F2C230"/><text x="88" y="200">Ciudad del Este</text>
+          <circle cx="262" cy="196" r="4" fill="#fff"/><text x="272" y="200">Foz do Iguaçu</text>
+          <circle cx="250" cy="262" r="4" fill="#fff"/><text x="260" y="266">Puerto Iguazú</text>
+        </g>
+      </svg>
+      <h1 id="titulo-portada">Los tres mercados de la frontera, en una sola tienda.</h1>
+      <p>El precio en tu moneda, con los impuestos de tu país y el día en que llega a tu casa. Comparalo con los otros dos lados del río con un toque.</p>
+      <div class="paises" role="list">
+        <a class="pais pais--actual" role="listitem" href="?region=PY"><small>Comprás desde</small><b>Paraguay · ₲</b></a>
+        <a class="pais" role="listitem" href="?region=BR"><small>Comprar desde</small><b>Brasil · R$</b></a>
+        <a class="pais" role="listitem" href="?region=AR"><small>Comprar desde</small><b>Argentina · $</b></a>
+      </div>
+    </div>
+
+    <article class="oferta-dia" aria-labelledby="titulo-oferta">
+      <div>
+        <p class="contador-tiempo">Termina en 05:42:10</p>
+        <h2 id="titulo-oferta" style="font-size:var(--t-19);margin-top:8px">Oferta del día</h2>
+      </div>
+      <img src="img/vintage_electric_kettle.webp" alt="Pava eléctrica color crema con mango negro" width="450" height="450">
+      <div>
+        <p style="font-size:var(--t-14)"><a href="producto.html?id=vintage_electric_kettle">Pava eléctrica 1,7 L con corte para mate</a></p>
+        <p class="precio" style="font-size:var(--t-23)"><span data-precio="vintage_electric_kettle"></span> <span class="sello sello--oferta">−17 %</span></p>
+        <p style="font-size:var(--t-13);color:var(--tinta-2)">Quedan 23 de 80 · Retiralo hoy en CDE</p>
+      </div>
+    </article>
+  </section>
+
+  <nav class="atajos" aria-label="Atajos a categorías">
+    <a class="atajo" href="buscar.html?cat=Supermercado" data-icono="canasta">Súper</a>
+    <a class="atajo" href="buscar.html?cat=Electrónica" data-icono="pantalla">Electrónica</a>
+    <a class="atajo" href="buscar.html?cat=Hogar" data-icono="casa">Hogar</a>
+    <a class="atajo" href="buscar.html?cat=Herramientas" data-icono="llave">Herramientas</a>
+    <a class="atajo" href="buscar.html?cat=Moda" data-icono="remera">Moda</a>
+    <a class="atajo" href="buscar.html?cat=Deportes" data-icono="pelota">Deportes</a>
+    <a class="atajo" href="buscar.html?cat=Librería" data-icono="libro">Librería</a>
+    <a class="atajo" href="buscar.html" data-icono="mas">Todas</a>
+  </nav>
+
+  <section class="seccion" aria-labelledby="t-ofertas">
+    <div class="seccion__cabeza"><h2 id="t-ofertas">Ofertas de hoy</h2><a href="buscar.html?oferta=1">Ver las 312 ofertas</a></div>
+    <div class="grilla grilla--seis" data-grilla="Television_01, boombox, digital_wrist_watch, binoculars, stationery_supplies, vintage_electric_kettle"></div>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-hoy">
+    <div class="seccion__cabeza"><h2 id="t-hoy">Retiralo hoy en Ciudad del Este</h2><a href="buscar.html?retiro=1">Ver el mapa de retiro</a></div>
+    <div class="grilla grilla--seis" data-grilla="gaming_console, adjustable_wrench, croissant, food_avocado_01, Drill_01, pot_enamel_01"></div>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-region">
+    <div class="seccion__cabeza"><h2 id="t-region">Hecho en la región</h2><a href="tienda.html">Conocé al Taller Itá</a></div>
+    <div class="grilla grilla--seis" data-grilla="ceramic_vase_02, potted_plant_02, ArmChair_01, tea_set_01, Ukulele_01, desk_lamp_arm_01"></div>
+  </section>
+
+  <section class="franja-confianza" aria-label="Por qué comprar en Tríplice">
+    <div data-icono="escudo"><span><b>Si no llega, te devolvemos todo</b><p>Retenemos el pago hasta que confirmes que recibiste el pedido.</p></span></div>
+    <div data-icono="caja"><span><b>Precio final, sin sorpresas</b><p>El impuesto de tu país ya está sumado. En el pago ves el desglose línea por línea.</p></span></div>
+    <div data-icono="mapa"><span><b>Retiro en 14 puntos de CDE</b><p>Y envío a Foz, Puerto Iguazú, Encarnación y Posadas en 24 a 48 horas.</p></span></div>
+  </section>
+</main>
+
+<footer class="pie" data-pie></footer>
+</body>
+</html>

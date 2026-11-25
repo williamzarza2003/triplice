@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Casa Nubla · Tienda en Tríplice</title>
+<meta name="description" content="Maqueta de la página pública de un vendedor en Tríplice: reputación, productos, opiniones y punto de retiro en Ciudad del Este.">
+<link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<script src="datos.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<header class="encabezado" data-encabezado></header>
+
+<main id="contenido" class="contenedor">
+  <div class="tienda-portada" aria-hidden="true">
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#2e6f70" stroke-linecap="round">
+      <path d="M760 -20 C800 40 720 90 770 140 S740 200 790 240" stroke-width="26"/><path d="M1220 70 C1080 60 960 130 772 138" stroke-width="20"/></g>
+      <circle cx="728" cy="122" r="7" fill="#F2C230"/></svg>
+  </div>
+  <div class="tienda-cabeza">
+    <div class="tienda-logo" aria-hidden="true">CN</div>
+    <div>
+      <h1>Casa Nubla</h1>
+      <p>Electrodomésticos y cocina · Av. Monseñor Rodríguez 1180, Ciudad del Este · vende desde 2014</p>
+    </div>
+    <div style="display:flex;gap:8px"><button class="boton boton--sec" type="button" data-icono="corazon" data-icono-clase="icono icono--chico">Seguir tienda</button><button class="boton boton--marca" type="button">Preguntar</button></div>
+  </div>
+
+  <div class="metricas">
+    <div class="metrica"><b class="rep--alta">98 %</b><span>la recomienda (4.102 opiniones)</span></div>
+    <div class="metrica"><b>12.840</b><span>ventas en el último año</span></div>
+    <div class="metrica"><b>1 h</b><span>tarda en responder, en promedio</span></div>
+    <div class="metrica"><b>97 %</b><span>de los envíos llegan a tiempo</span></div>
+  </div>
+
+  <nav class="pestanas" aria-label="Secciones de la tienda"><a href="#" aria-current="page">Productos (186)</a><a href="#">Opiniones</a><a href="#">Sobre la tienda</a><a href="#">Retiro y envíos</a></nav>
+
+  <div class="chips" aria-label="Filtrar productos de la tienda">
+    <button class="chip chip--activo" type="button">Todo</button><button class="chip" type="button">Cocina (64)</button><button class="chip" type="button">Electrónica (41)</button><button class="chip" type="button">Hogar (38)</button><button class="chip" type="button">En oferta (17)</button><button class="chip" type="button">Retiro hoy (122)</button>
+  </div>
+  <div class="grilla" data-grilla="vintage_electric_kettle, Television_01, pot_enamel_01, tea_set_01, desk_lamp_arm_01, digital_wrist_watch"></div>
+
+  <section class="seccion dos-paneles" aria-label="Retiro y opiniones">
+    <div class="panel">
+      <h2 style="font-size:var(--t-19)">Dónde retirar</h2>
+      <svg viewBox="0 0 400 180" role="img" aria-label="Mapa del microcentro de Ciudad del Este con el local de Casa Nubla a dos cuadras del Puente de la Amistad" style="width:100%;height:auto;margin:var(--e-3) 0;border-radius:10px;background:#e7eeec">
+        <g stroke="#fff" stroke-width="10" fill="none"><path d="M0 60H400M0 130H400M90 0V180M210 0V180M320 0V180"/></g>
+        <path d="M400 0 C380 60 395 120 370 180" stroke="#9fc3c2" stroke-width="34" fill="none"/>
+        <path d="M320 92 H400" stroke="#46524f" stroke-width="6"/>
+        <text x="300" y="84" font-size="11" fill="#46524f" font-family="Atkinson Hyperlegible Next, sans-serif">Puente de la Amistad</text>
+        <circle cx="250" cy="95" r="11" fill="#a6215c"/><circle cx="250" cy="95" r="4" fill="#fff"/>
+        <text x="150" y="118" font-size="12" fill="#16201f" font-weight="700" font-family="Atkinson Hyperlegible Next, sans-serif">Casa Nubla</text>
+      </svg>
+      <p style="font-size:var(--t-14)">Lunes a sábado de 7 a 18 h. Tu pedido está listo 2 horas después de pagar; te avisamos por WhatsApp.</p>
+    </div>
+    <div class="panel">
+      <h2 style="font-size:var(--t-19)">Lo último que dijeron</h2>
+      <article class="opinion"><p class="estrellas"><span data-icono="estrella" data-icono-clase="icono icono--estrella"></span><b>5</b> · Mirta B. · pava eléctrica</p><p>Me la cambiaron en el acto porque vino con la base rayada.</p></article>
+      <article class="opinion"><p class="estrellas"><span data-icono="estrella" data-icono-clase="icono icono--estrella"></span><b>4</b> · Rafael S. · televisor 43"</p><p>Bom preço. A entrega em Foz atrasou um dia, mas avisaram.</p></article>
+    </div>
+  </section>
+</main>
+
+<footer class="pie" data-pie></footer>
+</body>
+</html>

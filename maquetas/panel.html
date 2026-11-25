@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel del vendedor · Casa Nubla · Tríplice</title>
+<meta name="description" content="Maqueta del panel del vendedor de Tríplice: ventas, pedidos por preparar, preguntas, stock y productos más vistos.">
+<link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="estilos.css">
+<script src="datos.js" defer></script>
+<script src="app.js" defer></script>
+</head>
+<body class="modo-pago">
+<header class="encabezado" data-encabezado></header>
+
+<div class="panel-vendedor">
+  <nav class="lateral" aria-label="Panel del vendedor">
+    <a href="#" aria-current="page" data-icono="grafico">Resumen</a>
+    <a href="#" data-icono="caja">Pedidos <span class="pendientes">5</span></a>
+    <a href="#" data-icono="tienda">Productos</a>
+    <a href="#" data-icono="info">Preguntas <span class="pendientes">3</span></a>
+    <a href="#" data-icono="estrella">Opiniones</a>
+    <a href="tienda.html" data-icono="usuario">Ver mi tienda</a>
+  </nav>
+
+  <main id="contenido" class="escritorio contenedor" style="width:auto;margin:0">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px">
+      <div><h1 style="font-size:var(--t-28)">Buen día, Casa Nubla</h1><p style="color:var(--tinta-2)">Martes 2 de diciembre · tenés 5 pedidos para preparar antes de las 16:00.</p></div>
+      <a class="boton boton--accion" href="#" data-icono="mas" data-icono-clase="icono icono--chico">Publicar un producto</a>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><span>Ventas de noviembre</span><b>₲ 184,3 M</b><small class="sube">+12 % que octubre</small></div>
+      <div class="kpi"><span>Pedidos para preparar</span><b>5</b><small>3 son retiro hoy</small></div>
+      <div class="kpi"><span>Visitas que compran</span><b>3,4 %</b><small class="baja">−0,3 puntos</small></div>
+      <div class="kpi"><span>Preguntas sin responder</span><b>3</b><small>la más vieja, hace 2 h</small></div>
+    </div>
+
+    <section class="panel" aria-labelledby="t-ventas">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px">
+        <h2 id="t-ventas" style="font-size:var(--t-19)">Ventas por día · noviembre</h2>
+        <div class="chips" style="margin:0"><button class="chip chip--activo" type="button">30 días</button><button class="chip" type="button">12 meses</button></div>
+      </div>
+      <svg class="grafico" viewBox="0 0 900 220" role="img" aria-labelledby="desc-grafico" data-grafico></svg>
+      <p id="desc-grafico" class="sr-only">Ventas diarias de noviembre: suben los viernes y sábados; el pico fue el sábado 29, con 11,8 millones de guaraníes.</p>
+    </section>
+
+    <div class="dos-paneles">
+      <section class="panel" aria-labelledby="t-pedidos">
+        <h2 id="t-pedidos" style="font-size:var(--t-19);margin-bottom:var(--e-3)">Pedidos para preparar</h2>
+        <table class="tabla tabla--responsiva">
+          <thead><tr><th scope="col">Pedido</th><th scope="col">Producto</th><th scope="col">Entrega</th><th scope="col">Estado</th><th scope="col" class="num">Total</th></tr></thead>
+          <tbody>
+            <tr><td>#20418</td><td><span class="prod-celda"><img src="img/vintage_electric_kettle.webp" alt="">Pava eléctrica crema</span></td><td>Retiro hoy 16:00</td><td><span class="estado estado--nuevo">Nuevo</span></td><td class="num">₲ 234.000</td></tr>
+            <tr><td>#20415</td><td><span class="prod-celda"><img src="img/Television_01.webp" alt="">Televisor 43"</span></td><td>Envío a Foz, jueves</td><td><span class="estado estado--prep">Preparando</span></td><td class="num">R$ 1.458</td></tr>
+            <tr><td>#20409</td><td><span class="prod-celda"><img src="img/tea_set_01.webp" alt="">Juego de té × 2</span></td><td>Retiro hoy 17:30</td><td><span class="estado estado--prep">Preparando</span></td><td class="num">₲ 776.000</td></tr>
+            <tr><td>#20398</td><td><span class="prod-celda"><img src="img/pot_enamel_01.webp" alt="">Olla enlozada 24 cm</span></td><td>Mañana, CDE</td><td><span class="estado estado--enviado">En camino</span></td><td class="num">₲ 266.000</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="panel" aria-labelledby="t-preguntas">
+        <h2 id="t-preguntas" style="font-size:var(--t-19);margin-bottom:var(--e-3)">Preguntas por responder</h2>
+        <div class="pregunta"><p><b>¿Tienen la pava en verde para retirar hoy?</b></p><p style="border:0;padding:0">Juan, hace 2 h · Pava eléctrica 1,7 L</p></div>
+        <form class="cupon" onsubmit="return false"><label class="sr-only" for="resp">Respuesta</label><input id="resp" placeholder="Escribí la respuesta"><button class="boton boton--marca" type="submit">Responder</button></form>
+        <div class="pregunta"><p><b>Vocês entregam em Santa Terezinha de Itaipu?</b></p><p style="border:0;padding:0">Ana, hace 3 h · Televisor 43"</p></div>
+        <div class="pregunta"><p><b>¿La olla sirve para cocina de inducción?</b></p><p style="border:0;padding:0">Carlos, hace 5 h · Olla enlozada</p></div>
+        <h2 style="font-size:var(--t-19);margin:var(--e-6) 0 var(--e-3)">Poco stock</h2>
+        <p style="font-size:var(--t-14);display:flex;justify-content:space-between"><span>Juego de té de porcelana</span><span class="stock-bajo">Quedan 2</span></p>
+        <p style="font-size:var(--t-14);display:flex;justify-content:space-between;margin-top:6px"><span>Pava eléctrica 1 L</span><span class="sello sello--error">Sin stock</span></p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<footer class="pie" data-pie></footer>
+<script>
+  // Gráfico de barras de ventas diarias (datos de ejemplo, fijos): sin librería
+  window.addEventListener('load', () => {
+    const svg = document.querySelector('[data-grafico]')
+    const dias = Array.from({ length: 30 }, (_, i) => {
+      const finde = [4, 5].includes((i + 5) % 7)        // el 1 de noviembre cae sábado
+      return Math.round((4.2 + Math.sin(i / 3) * 0.9 + (finde ? 3.6 : 0) + (i === 28 ? 3 : 0)) * 10) / 10
+    })
+    const max = 12, x0 = 40, ancho = 852 / 30
+    const y = (v) => 190 - (v / max) * 170
+    let g = [0, 4, 8, 12].map((v) => `<line x1="${x0}" x2="896" y1="${y(v)}" y2="${y(v)}" stroke="#e7eeec"/><text x="${x0 - 6}" y="${y(v) + 4}" text-anchor="end" font-size="10" fill="#5e6b68">${v} M</text>`).join('')
+    g += dias.map((v, i) => `<rect x="${x0 + i * ancho + 2}" y="${y(v)}" width="${ancho - 4}" height="${190 - y(v)}" rx="3" fill="${i === 28 ? '#a6215c' : '#1f5f60'}"><title>${i + 1} de noviembre: ₲ ${v.toLocaleString('es')} M</title></rect>`).join('')
+    g += [1, 8, 15, 22, 29].map((d) => `<text x="${x0 + (d - 1) * ancho + ancho / 2}" y="208" text-anchor="middle" font-size="10" fill="#5e6b68">${d}</text>`).join('')
+    g += `<text x="${x0 + 28 * ancho + ancho / 2}" y="${y(dias[28]) - 6}" text-anchor="middle" font-size="11" font-weight="700" fill="#a6215c">₲ ${dias[28].toLocaleString('es')} M</text>`
+    svg.innerHTML = g
+  })
+</script>
+</body>
+</html>
