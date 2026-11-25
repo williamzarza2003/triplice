@@ -100,7 +100,11 @@ function estrellas(valor, opiniones) {
 }
 
 /** Tarjeta de producto: mucha información en tres niveles de lectura (qué es → cuánto → cuándo y quién). */
-function tarjeta(p, { compacta = false } = {}) {
+let tarjetasPintadas = 0
+function tarjeta(p, { compacta = false, nivel = 3 } = {}) {
+  // las primeras seis se cargan sin esperar (son las que se ven al abrir la página)
+  const n = tarjetasPintadas++
+  const carga = n < 6 ? `loading="eager"${n === 0 ? ' fetchpriority="high"' : ''}` : 'loading="lazy"'
   const precio = precioProducto(p)
   const antes = p.antes ? precioEn(p.antes, estado.region, estado.moneda, p.reducido) : null
   const desc = antes ? Math.round((1 - precio / antes) * 100) : 0
@@ -110,11 +114,11 @@ function tarjeta(p, { compacta = false } = {}) {
   const otras = otrasFronteras(p)
   return `<article class="tarjeta${compacta ? ' tarjeta--compacta' : ''}">
     <a class="tarjeta__foto" href="producto.html?id=${p.id}" tabindex="-1" aria-hidden="true">
-      <img src="img/${p.id}.webp" alt="" width="450" height="450" loading="lazy" decoding="async" onerror="this.closest('.tarjeta__foto').classList.add('sin-foto')">
+      <img src="img/${p.id}.webp" alt="" width="450" height="450" ${carga} decoding="async" onerror="this.closest('.tarjeta__foto').classList.add('sin-foto')">
       ${desc ? `<span class="sello sello--oferta">−${desc} %</span>` : ''}
     </a>
     <div class="tarjeta__cuerpo">
-      <h3 class="tarjeta__titulo"><a href="producto.html?id=${p.id}">${p.nombre}</a></h3>
+      <h${nivel} class="tarjeta__titulo"><a href="producto.html?id=${p.id}">${p.nombre}</a></h${nivel}>
       ${estrellas(p.estrellas, p.opiniones)}
       <div class="tarjeta__precio">
         <p class="precio${desc ? ' precio--oferta' : ''}"><span class="sr-only">Precio: </span>${fmt(precio)}${antes ? ` <s class="precio__antes"><span class="sr-only">antes </span>${fmt(antes)}</s>` : ''}</p>
@@ -226,7 +230,8 @@ function montar() {
   document.querySelectorAll('[data-grilla]').forEach((g) => {
     const ids = g.dataset.grilla.split(',').map((s) => s.trim()).filter(Boolean)
     const lista = ids.length ? ids.map((id) => PRODUCTOS.find((x) => x.id === id)).filter(Boolean) : PRODUCTOS
-    g.innerHTML = lista.map((x) => tarjeta(x, { compacta: g.hasAttribute('data-compacta') })).join('')
+    // data-nivel: nivel del título de cada tarjeta, para respetar el orden de encabezados de la página
+    g.innerHTML = lista.map((x) => tarjeta(x, { compacta: g.hasAttribute('data-compacta'), nivel: Number(g.dataset.nivel || 3) })).join('')
   })
   document.querySelectorAll('[data-precio]').forEach((el) => {
     const prod = PRODUCTOS.find((x) => x.id === el.dataset.precio)
@@ -300,4 +305,5 @@ function parecido(texto, t) {
   })
 }
 
-document.addEventListener('DOMContentLoaded', montar)
+// El script va al final del body: el DOM ya está y se arma todo antes del primer pintado
+montar()

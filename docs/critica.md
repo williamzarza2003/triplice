@@ -34,10 +34,17 @@ Comparación contra Amazon y Mercado Libre, mirando las mismas pantallas en 1440
 5. En el celular, el total del carrito quedaba al final de todo. Ahora hay una barra fija con el total y "Ir a pagar", como la de la ficha.
 6. El gráfico del panel en el celular tenía 30 barras ilegibles: ahora muestra los últimos 14 días, más alto.
 
+**Ronda 3 (con las fotos finales y Lighthouse)**
+1. La sombra de cada foto terminaba en un cuadrado gris sobre la tarjeta: ahora se desvanece en óvalo (`npm run fotos:web`).
+2. El reloj, la llave, la cámara, los útiles y el juego de té quedaban diminutos (el script normalizaba por la medida mayor): cada uno tiene su zoom.
+3. Lighthouse marcaba saltos de diseño (CLS hasta 0,69 en escritorio): el encabezado y las grillas se armaban después de pintar. Los scripts pasaron al final del `body` y arman todo antes del primer pintado; las fuentes se sirven desde el repo con precarga y `font-display: optional`, y `scrollbar-gutter: stable` evita el salto cuando aparece la barra. CLS 0 en las siete páginas.
+4. Orden de encabezados: en la búsqueda y la tienda las tarjetas usaban `h3` sin un `h2` antes. Ahora el nivel se elige por grilla.
+
 ## En qué todavía no
 
 - **Fotos:** son modelos 3D de estudio (CC0). Una tienda real necesita fotos de cada vendedor, con fondos distintos; la fase 1 tiene que definir cómo se normalizan (recorte automático y fondo neutro).
 - **Contenido escaso:** 20 productos de ejemplo. Amazon y ML se sienten "infinitos"; con el seed de 400 productos de la fase 1 se va a notar si la grilla aguanta.
 - **Idiomas:** las maquetas están en español. El selector de idioma existe, pero los textos en portugués e inglés llegan en la fase 1 (con next-intl).
 - **Precios fijos en el HTML:** algunos importes de ejemplo (ofertas de otros vendedores, cuotas del checkout) están escritos a mano para Paraguay; si cambiás de región, solo se recalculan las tarjetas, la ficha y el desglose.
+- **Rendimiento del carrito en el celular:** entre 93 y 95 según la corrida; el elemento más grande es la franja del aviso de demo y la demora viene del servidor de prueba (`http.server` de Python). En un hosting estático debería quedar arriba de 95.
 - **Accesibilidad sin auditar con lectores de pantalla:** hay foco visible, etiquetas y roles, pero falta probar con NVDA y TalkBack.

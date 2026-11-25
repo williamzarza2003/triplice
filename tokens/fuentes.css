@@ -1,0 +1,14 @@
+/* Fuentes servidas desde el repo (subconjunto latino + ₲ × − ≈), variables en peso.
+   Schibsted Grotesk y Atkinson Hyperlegible Next: SIL Open Font License 1.1. */
+@font-face {
+  font-family: 'Schibsted Grotesk';
+  src: url('fuentes/schibsted.woff2') format('woff2');
+  font-weight: 400 900;
+  font-display: optional;  /* con la precarga llega casi siempre a tiempo; si no, se queda el respaldo y no hay salto */
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('fuentes/atkinson.woff2') format('woff2');
+  font-weight: 200 800;
+  font-display: optional;  /* con la precarga llega casi siempre a tiempo; si no, se queda el respaldo y no hay salto */
+}

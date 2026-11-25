@@ -6,12 +6,9 @@
 <title>"cosina" · Resultados · Tríplice</title>
 <meta name="description" content="Maqueta de resultados de búsqueda de Tríplice, con filtros por facetas y corrección de errores de tipeo.">
 <link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="preload" href="../tokens/fuentes/schibsted.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../tokens/fuentes/atkinson.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilos.css">
-<script src="datos.js" defer></script>
-<script src="app.js" defer></script>
 </head>
 <body>
 <header class="encabezado" data-encabezado></header>
@@ -22,7 +19,7 @@
   <div class="resultados">
     <aside class="filtros" id="filtros" aria-label="Filtros">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <h2 style="font-size:var(--t-19)">Filtrar</h2>
+        <p style="font-family:var(--f-titulo);font-weight:700;font-size:var(--t-19)">Filtrar</p>
         <button type="button" class="enlace-boton" data-cerrar-filtros>Ver 105 resultados</button>
       </div>
       <fieldset><legend>Entrega</legend>
@@ -77,7 +74,7 @@
         <button class="chip chip--activo" type="button">4 estrellas o más <span data-icono="cerrar" data-icono-clase="icono"></span><span class="sr-only">Quitar filtro</span></button>
         <button class="chip" type="button">Borrar todo</button>
       </div>
-      <div class="grilla" data-grilla="pot_enamel_01, tea_set_01, ceramic_vase_02, desk_lamp_arm_01, ArmChair_01, potted_plant_02, vintage_electric_kettle"></div>
+      <div class="grilla" data-nivel="2" data-grilla="pot_enamel_01, tea_set_01, ceramic_vase_02, desk_lamp_arm_01, ArmChair_01, potted_plant_02, vintage_electric_kettle"></div>
       <nav aria-label="Páginas de resultados" style="display:flex;gap:8px;justify-content:center;margin-top:var(--e-8)">
         <a class="boton boton--marca" aria-current="page" href="#">1</a><a class="boton boton--sec" href="#">2</a><a class="boton boton--sec" href="#">3</a><a class="boton boton--sec" href="#">Siguiente</a>
       </nav>
@@ -86,6 +83,9 @@
 </main>
 
 <footer class="pie" data-pie></footer>
+<!-- Al final del body y sin defer: arma encabezado y grillas antes del primer pintado (sin saltos) -->
+<script src="datos.js"></script>
+<script src="app.js"></script>
 <script>
   // Hoja de filtros en el celular (en escritorio la columna está siempre a la vista)
   document.addEventListener('click', (e) => {

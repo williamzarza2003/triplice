@@ -6,12 +6,9 @@
 <title>Casa Nubla · Tienda en Tríplice</title>
 <meta name="description" content="Maqueta de la página pública de un vendedor en Tríplice: reputación, productos, opiniones y punto de retiro en Ciudad del Este.">
 <link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="preload" href="../tokens/fuentes/schibsted.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../tokens/fuentes/atkinson.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilos.css">
-<script src="datos.js" defer></script>
-<script src="app.js" defer></script>
 </head>
 <body>
 <header class="encabezado" data-encabezado></header>
@@ -43,7 +40,7 @@
   <div class="chips" aria-label="Filtrar productos de la tienda">
     <button class="chip chip--activo" type="button">Todo</button><button class="chip" type="button">Cocina (64)</button><button class="chip" type="button">Electrónica (41)</button><button class="chip" type="button">Hogar (38)</button><button class="chip" type="button">En oferta (17)</button><button class="chip" type="button">Retiro hoy (122)</button>
   </div>
-  <div class="grilla" data-grilla="vintage_electric_kettle, Television_01, pot_enamel_01, tea_set_01, desk_lamp_arm_01, digital_wrist_watch"></div>
+  <div class="grilla" data-nivel="2" data-grilla="vintage_electric_kettle, Television_01, pot_enamel_01, tea_set_01, desk_lamp_arm_01, digital_wrist_watch"></div>
 
   <section class="seccion dos-paneles" aria-label="Retiro y opiniones">
     <div class="panel">
@@ -67,5 +64,8 @@
 </main>
 
 <footer class="pie" data-pie></footer>
+<!-- Al final del body y sin defer: arma encabezado y grillas antes del primer pintado (sin saltos) -->
+<script src="datos.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

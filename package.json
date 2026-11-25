@@ -1,0 +1,13 @@
+{
+  "name": "triplice",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Fase 0 de Tríplice: herramientas de las maquetas (la app Next.js llega en la fase 1).",
+  "type": "module",
+  "scripts": {
+    "fotos:web": "node herramientas/fotos/a_webp.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.0"
+  }
+}

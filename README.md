@@ -35,16 +35,19 @@ Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil 
 
 ## Cómo verlo
 
-Abrí `maquetas/index.html` en el navegador. Para regenerar las fotos (necesita Blender 5.x):
+Abrí `maquetas/index.html` en el navegador (funciona con doble clic, sin servidor). Para regenerar las fotos (necesita Blender 5.x y Node):
 
 ```
 blender -b --factory-startup --python herramientas/fotos/fotografiar.py -- --muestras 64
+npm install && npm run fotos:web
 ```
+
+Lighthouse de las maquetas (servidas como estáticas): 94 a 100 en Rendimiento, 100 en Accesibilidad, Buenas prácticas y SEO, en celular y escritorio.
 
 ## Créditos
 
-- Modelos 3D: [Poly Haven](https://polyhaven.com) (CC0). Cada carpeta de `herramientas/fotos/modelos/` tiene su `credito.json` con autor y enlace.
-- Tipografías: Schibsted Grotesk y Atkinson Hyperlegible Next (SIL Open Font License), servidas por Google Fonts.
+- Modelos 3D: [Poly Haven](https://polyhaven.com) (CC0). Autor y enlace de cada uno en [`docs/creditos.md`](docs/creditos.md).
+- Tipografías: Schibsted Grotesk y Atkinson Hyperlegible Next (SIL Open Font License), servidas desde el repo en un subconjunto latino (`tokens/fuentes/`).
 
 ---
 

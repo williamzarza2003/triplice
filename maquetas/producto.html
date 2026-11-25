@@ -6,12 +6,9 @@
 <title>Pava eléctrica 1,7 L con corte para mate · Nubla · Tríplice</title>
 <meta name="description" content="Maqueta de ficha de producto de Tríplice: precio en tu moneda con impuestos, comparación con los otros dos países, ofertas de varios vendedores, especificaciones y opiniones.">
 <link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="preload" href="../tokens/fuentes/schibsted.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../tokens/fuentes/atkinson.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilos.css">
-<script src="datos.js" defer></script>
-<script src="app.js" defer></script>
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Pava eléctrica 1,7 L con corte para mate", "brand": { "@type": "Brand", "name": "Nubla" },
   "image": "img/vintage_electric_kettle.webp", "sku": "NUB-PAV-17-CR",
@@ -183,9 +180,12 @@
 </div>
 
 <footer class="pie" data-pie></footer>
+<!-- Al final del body y sin defer: arma encabezado y grillas antes del primer pintado (sin saltos) -->
+<script src="datos.js"></script>
+<script src="app.js"></script>
 <script>
   // Tabla de frontera: el precio final del mismo producto en cada país, con el impuesto de cada uno
-  document.addEventListener('DOMContentLoaded', () => {
+  ;(() => {
     document.querySelectorAll('[data-fronteras]').forEach((tb) => {
       const p = PRODUCTOS.find((x) => x.id === tb.dataset.fronteras)
       tb.innerHTML = ['PY', 'BR', 'AR'].map((r) => {
@@ -198,7 +198,7 @@
         return `<tr class="${r === estado.region ? 'es-tuya' : ''}"><th scope="row">${reg.nombre}${r === estado.region ? ' (vos)' : ''}<small>${r === 'BR' ? 'Impuestos estimados' : 'IVA'} ${tasa.toLocaleString('es')} %</small></th><td>${formato(local, reg.moneda)}${equiv}</td></tr>`
       }).join('')
     })
-  })
+  })()
 </script>
 </body>
 </html>

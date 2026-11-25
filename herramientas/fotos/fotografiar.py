@@ -20,20 +20,22 @@ AQUI = Path(__file__).resolve().parent
 MODELOS = AQUI / "modelos"
 SALIDA = AQUI / "renders"
 
-# Ajustes por modelo: giro para mostrar el frente, elevación de la cámara (grados) y margen
+# Ajustes por modelo: giro para mostrar el frente, elevación de la cámara (grados) y zoom
+# (el zoom compensa los objetos finos o desparramados, que con la normalización por la medida mayor quedan chicos)
 AJUSTES = {
     "Television_01": {"giro": 20},
     "classic_laptop": {"giro": 20, "elev": 28},
     "boombox": {"giro": 20},
-    "Camera_01": {"giro": 210},
+    "Camera_01": {"giro": 210, "zoom": 1.25},
     "gaming_console": {"giro": 200, "elev": 30},
-    "digital_wrist_watch": {"giro": 180, "elev": 35},
+    "digital_wrist_watch": {"giro": 180, "elev": 35, "zoom": 1.7},
     "ArmChair_01": {"giro": 20},
     "Drill_01": {"giro": 110},
-    "adjustable_wrench": {"elev": 55},
-    "stationery_supplies": {"elev": 35},
+    "adjustable_wrench": {"elev": 55, "zoom": 1.5},
+    "stationery_supplies": {"elev": 35, "zoom": 1.25},
     "food_avocado_01": {"elev": 30},
     "croissant": {"elev": 35},
+    "tea_set_01": {"elev": 30, "zoom": 1.3},
 }
 
 
@@ -99,7 +101,7 @@ def importar(modelo):
     return raiz, (mx - mn) * esc
 
 
-def camara(alto, giro, elev):
+def camara(alto, giro, elev, zoom=1.0):
     sc = bpy.context.scene
     raiz = bpy.data.objects["Producto"]
     raiz.rotation_euler.z = math.radians(giro)
@@ -110,7 +112,7 @@ def camara(alto, giro, elev):
     sc.camera = ob
     objetivo = Vector((0, 0, alto * 0.48))
     fov = 2 * math.atan(18 / cam.lens)
-    dist = (0.72 / math.tan(fov / 2)) * 1.0
+    dist = (0.72 / math.tan(fov / 2)) / zoom
     e = math.radians(elev)
     ob.location = objetivo + Vector((0, -math.cos(e), math.sin(e))) * dist
     ob.rotation_euler = (objetivo - ob.location).to_track_quat("-Z", "Y").to_euler()
@@ -124,18 +126,20 @@ def main():
     a = p.parse_args(argv)
     SALIDA.mkdir(exist_ok=True)
     modelos = a.solo.split(",") if a.solo else sorted(d.name for d in MODELOS.iterdir() if d.is_dir())
-    creditos = {}
+    # con --solo se re-renderizan algunas fotos: los créditos de las demás se conservan
+    archivo_creditos = SALIDA / "creditos.json"
+    creditos = json.loads(archivo_creditos.read_text(encoding="utf-8")) if archivo_creditos.exists() else {}
     for m in modelos:
         limpiar()
         estudio(a.muestras)
         _, dims = importar(m)
         aj = AJUSTES.get(m, {})
-        camara(dims.z, aj.get("giro", 210), aj.get("elev", 18))
+        camara(dims.z, aj.get("giro", 210), aj.get("elev", 18), aj.get("zoom", 1.0))
         bpy.context.scene.render.filepath = str(SALIDA / f"{m}.png")
         bpy.ops.render.render(write_still=True)
         creditos[m] = json.loads((MODELOS / m / "credito.json").read_text(encoding="utf-8"))
         print("FOTO", m, flush=True)
-    (SALIDA / "creditos.json").write_text(json.dumps(creditos, ensure_ascii=False, indent=2), encoding="utf-8")
+    archivo_creditos.write_text(json.dumps(dict(sorted(creditos.items())), ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

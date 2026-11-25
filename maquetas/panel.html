@@ -6,12 +6,9 @@
 <title>Panel del vendedor · Casa Nubla · Tríplice</title>
 <meta name="description" content="Maqueta del panel del vendedor de Tríplice: ventas, pedidos por preparar, preguntas, stock y productos más vistos.">
 <link rel="icon" href="../marca/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Schibsted+Grotesk:wght@500;700;800&display=swap">
+<link rel="preload" href="../tokens/fuentes/schibsted.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../tokens/fuentes/atkinson.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="estilos.css">
-<script src="datos.js" defer></script>
-<script src="app.js" defer></script>
 </head>
 <body class="modo-pago">
 <header class="encabezado" data-encabezado></header>
@@ -77,9 +74,12 @@
 </div>
 
 <footer class="pie" data-pie></footer>
+<!-- Al final del body y sin defer: arma encabezado y grillas antes del primer pintado (sin saltos) -->
+<script src="datos.js"></script>
+<script src="app.js"></script>
 <script>
   // Gráfico de barras de ventas diarias (datos de ejemplo, fijos): sin librería
-  window.addEventListener('load', () => {
+  ;(() => {
     const svg = document.querySelector('[data-grafico]')
     const dias = Array.from({ length: 30 }, (_, i) => {
       const finde = [4, 5].includes((i + 5) % 7)        // el 1 de noviembre cae sábado
@@ -98,7 +98,7 @@
     g += [1, 8, 15, 22, 29].filter((d) => d > desde).map((d) => `<text x="${x0 + (d - 1 - desde) * ancho + ancho / 2}" y="${H - 12}" text-anchor="middle" font-size="11" fill="#5e6b68">${d}</text>`).join('')
     g += `<text x="${x0 + (28 - desde) * ancho + ancho / 2}" y="${y(dias[28]) - 6}" text-anchor="middle" font-size="12" font-weight="700" fill="#a6215c">₲ ${dias[28].toLocaleString('es')} M</text>`
     svg.innerHTML = g
-  })
+  })()
 </script>
 </body>
 </html>

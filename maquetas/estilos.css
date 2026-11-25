@@ -1,8 +1,9 @@
+@import url('../tokens/fuentes.css');
 @import url('../tokens/tokens.css');
 
 /* ================================================================ base */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; scrollbar-gutter: stable; }   /* reserva la barra: el ancho no cambia cuando la página crece */
 body { margin: 0; font-family: var(--f-texto); font-size: var(--t-16); line-height: var(--lh-texto); color: var(--tinta); background: var(--neblina); }
 img, svg { display: block; max-width: 100%; }
 h1, h2, h3, h4 { font-family: var(--f-titulo); line-height: var(--lh-ajustado); margin: 0; letter-spacing: -0.01em; }
