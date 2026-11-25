@@ -1,0 +1,978 @@
+{
+ "adjustable_wrench": {
+  "elev": 55,
+  "zoom": 1.5
+ },
+ "alarm_clock_01": {
+  "colores": [
+   "rosa",
+   "ipe",
+   "grafito"
+  ],
+  "modo": "saturado"
+ },
+ "all_purpose_cleaner": {
+  "colores": [
+   "cielo",
+   "menta",
+   "ipe"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.92,
+   0.1
+  ]
+ },
+ "ArmChair_01": {
+  "giro": 20,
+  "colores": [
+   "agua",
+   "terracota",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "bench_vice_01": {
+  "descartado": true
+ },
+ "bleach_bottle": {
+  "colores": [
+   "cielo",
+   "monte"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.8,
+   0.1
+  ]
+ },
+ "bolt_cutters_01": {
+  "zoom": 1.1
+ },
+ "boombox": {
+  "giro": 20,
+  "colores": [
+   "rojo",
+   "grafito",
+   "cielo"
+  ],
+  "modo": "claro"
+ },
+ "brass_diya_lantern": {
+  "descartado": true
+ },
+ "brass_pan_01": {
+  "elev": 35,
+  "zoom": 1.3
+ },
+ "caged_hanging_light": {
+  "colores": [
+   "rojo",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "Camera_01": {
+  "giro": 210,
+  "zoom": 1.25
+ },
+ "carved_wooden_plate": {
+  "elev": 35
+ },
+ "cassette_player": {
+  "giro": 30,
+  "colores": [
+   "rojo",
+   "grafito"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.3,
+   0.5
+  ]
+ },
+ "ceiling_fan": {
+  "elev": 28,
+  "colores": [
+   "grafito",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "ceramic_pot": {
+  "colores": [
+   "agua",
+   "terracota"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.3,
+   0.5
+  ]
+ },
+ "ceramic_vase_01": {
+  "colores": [
+   "agua",
+   "terracota",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "ceramic_vase_02": {
+  "colores": [
+   "ipe",
+   "cielo",
+   "lapacho"
+  ],
+  "modo": "claro"
+ },
+ "ceramic_vase_03": {
+  "colores": [
+   "grafito",
+   "menta",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "ceramic_vase_04": {
+  "colores": [
+   "terracota",
+   "marino"
+  ],
+  "modo": "claro"
+ },
+ "CheeseBox_01": {
+  "descartado": true
+ },
+ "classic_laptop": {
+  "giro": 20,
+  "elev": 28,
+  "colores": [
+   "grafito",
+   "cielo"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.3,
+   0.5
+  ]
+ },
+ "coffee_table_round_01": {
+  "colores": [
+   "grafito",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "CoffeeTable_01": {
+  "colores": [
+   "rojo",
+   "monte"
+  ],
+  "modo": "todo",
+  "fuerza": 0.8
+ },
+ "combination_wrench": {
+  "elev": 55,
+  "zoom": 1.5
+ },
+ "concrete_cat_statue": {
+  "giro": 30,
+  "colores": [
+   "terracota",
+   "agua"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.3,
+   0.5
+  ]
+ },
+ "croissant": {
+  "elev": 35
+ },
+ "cross_pein_hammer": {
+  "zoom": 1.15
+ },
+ "desk_lamp_arm_01": {
+  "colores": [
+   "agua",
+   "ipe",
+   "lapacho"
+  ],
+  "modo": "saturado"
+ },
+ "didelta_spinosa": {
+  "descartado": true
+ },
+ "digital_wrist_watch": {
+  "giro": 180,
+  "elev": 35,
+  "zoom": 1.7,
+  "colores": [
+   "ipe",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "dining_chair_02": {
+  "giro": 30,
+  "colores": [
+   "marino",
+   "monte",
+   "rojo"
+  ],
+  "modo": "saturado"
+ },
+ "Drill_01": {
+  "giro": 110,
+  "colores": [
+   "rojo",
+   "agua",
+   "naranja"
+  ],
+  "modo": "saturado"
+ },
+ "drill_press_01": {
+  "colores": [
+   "rojo",
+   "grafito"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.25,
+   0.14
+  ]
+ },
+ "electric_stove": {
+  "giro": 30,
+  "colores": [
+   "grafito",
+   "rojo"
+  ],
+  "modo": "claro"
+ },
+ "exterior_aircon_unit": {
+  "giro": 30
+ },
+ "fancy_picture_frame_01": {
+  "giro": 30
+ },
+ "fish_knife": {
+  "elev": 40,
+  "zoom": 1.2
+ },
+ "fishermans_hat": {
+  "colores": [
+   "monte",
+   "marino",
+   "arena"
+  ],
+  "modo": "todo",
+  "fuerza": 0.8
+ },
+ "flathead_screwdriver": {
+  "zoom": 1.15,
+  "colores": [
+   "ipe",
+   "agua"
+  ],
+  "modo": "saturado"
+ },
+ "flood_lights": {
+  "descartado": true
+ },
+ "folding_wooden_stool": {
+  "colores": [
+   "rojo",
+   "monte"
+  ],
+  "modo": "todo",
+  "fuerza": 0.65
+ },
+ "food_avocado_01": {
+  "elev": 30
+ },
+ "gamepad": {
+  "elev": 50,
+  "zoom": 1.6,
+  "colores": [
+   "rojo",
+   "agua",
+   "ipe"
+  ],
+  "modo": "todo",
+  "fuerza": 0.75
+ },
+ "gaming_console": {
+  "giro": 200,
+  "elev": 30,
+  "colores": [
+   "marino",
+   "rojo"
+  ],
+  "modo": "todo",
+  "fuerza": 0.7
+ },
+ "garden_gloves_01": {
+  "elev": 35,
+  "zoom": 1.2,
+  "colores": [
+   "lapacho",
+   "ipe",
+   "naranja"
+  ],
+  "modo": "saturado"
+ },
+ "garden_gnome": {
+  "giro": 30
+ },
+ "garden_sprinkler_01": {
+  "colores": [
+   "agua",
+   "rojo"
+  ],
+  "modo": "saturado"
+ },
+ "GreenChair_01": {
+  "colores": [
+   "terracota",
+   "marino",
+   "ipe"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.33,
+   0.12
+  ],
+  "giro": 30
+ },
+ "hamburger_buns": {
+  "elev": 35,
+  "zoom": 1.3
+ },
+ "handsaw_wood": {
+  "elev": 35,
+  "zoom": 1.2
+ },
+ "hanging_industrial_lamp": {
+  "colores": [
+   "monte",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "hanging_picture_frame_01": {
+  "giro": 30
+ },
+ "hanging_picture_frame_02": {
+  "giro": 30,
+  "colores": [
+   "grafito",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "hatchet": {
+  "colores": [
+   "agua",
+   "rojo"
+  ],
+  "modo": "saturado"
+ },
+ "horse_statue_01": {
+  "colores": [
+   "grafito",
+   "ipe"
+  ],
+  "modo": "claro"
+ },
+ "industrial_coffee_table": {
+  "zoom": 0.92
+ },
+ "industrial_pastic_container": {
+  "colores": [
+   "monte",
+   "grafito",
+   "rojo"
+  ],
+  "modo": "saturado"
+ },
+ "industrial_pipe_lamp": {
+  "colores": [
+   "grafito",
+   "agua"
+  ],
+  "modo": "claro"
+ },
+ "industrial_wall_lamp": {
+  "giro": 30
+ },
+ "industrial_wall_sconce": {
+  "giro": 30
+ },
+ "leipoldtia_schultzei": {
+  "descartado": true
+ },
+ "life_jacket": {
+  "colores": [
+   "naranja",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "mantel_clock_01": {
+  "giro": 30
+ },
+ "measuring_tape_01": {
+  "zoom": 1.25,
+  "colores": [
+   "ipe",
+   "rojo",
+   "agua"
+  ],
+  "modo": "claro"
+ },
+ "Megaphone_01": {
+  "colores": [
+   "ipe",
+   "cielo"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.0,
+   0.08
+  ]
+ },
+ "metal_jug": {
+  "colores": [
+   "agua",
+   "rojo"
+  ],
+  "modo": "claro"
+ },
+ "metal_office_desk": {
+  "giro": 30,
+  "colores": [
+   "agua",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "metal_stool_01": {
+  "colores": [
+   "marino",
+   "monte"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.06,
+   0.08
+  ]
+ },
+ "metal_tool_chest": {
+  "colores": [
+   "agua",
+   "ipe",
+   "grafito"
+  ],
+  "modo": "saturado"
+ },
+ "metal_toolbox": {
+  "colores": [
+   "rojo",
+   "marino"
+  ],
+  "modo": "todo",
+  "fuerza": 0.8
+ },
+ "metal_trash_can": {
+  "descartado": true
+ },
+ "mid_century_lounge_chair": {
+  "giro": 30,
+  "colores": [
+   "rojo",
+   "monte",
+   "marino"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.07,
+   0.08
+  ]
+ },
+ "modern_arm_chair_01": {
+  "giro": 30
+ },
+ "modern_coffee_table_01": {
+  "colores": [
+   "terracota",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "modified_thermos": {
+  "colores": [
+   "lapacho",
+   "ipe",
+   "cielo"
+  ],
+  "modo": "saturado"
+ },
+ "multi_cleaner_5_litre": {
+  "colores": [
+   "menta",
+   "rosa",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "multi_cleaner_bottle": {
+  "giro": 30,
+  "colores": [
+   "cielo",
+   "rosa",
+   "menta"
+  ],
+  "modo": "claro"
+ },
+ "office_notepads": {
+  "elev": 55,
+  "zoom": 1.3
+ },
+ "oil_tin": {
+  "descartado": true
+ },
+ "ornate_mirror_01": {
+  "giro": 30
+ },
+ "Ottoman_01": {
+  "colores": [
+   "marino",
+   "monte",
+   "rojo"
+  ],
+  "modo": "todo",
+  "fuerza": 0.75
+ },
+ "painted_wooden_bench": {
+  "colores": [
+   "agua",
+   "monte"
+  ],
+  "modo": "saturado"
+ },
+ "painted_wooden_chair_01": {
+  "giro": 30,
+  "colores": [
+   "menta",
+   "rosa",
+   "cielo"
+  ],
+  "modo": "claro"
+ },
+ "painted_wooden_chair_02": {
+  "colores": [
+   "ipe",
+   "rosa"
+  ],
+  "modo": "claro"
+ },
+ "painted_wooden_nightstand": {
+  "colores": [
+   "monte",
+   "rosa",
+   "marino"
+  ],
+  "modo": "todo",
+  "fuerza": 0.75
+ },
+ "pastic_torch_6v": {
+  "colores": [
+   "rojo",
+   "agua"
+  ],
+  "modo": "saturado"
+ },
+ "planter_pot_clay": {
+  "colores": [
+   "agua",
+   "arena"
+  ],
+  "modo": "saturado"
+ },
+ "plastic_broom": {
+  "zoom": 1.1,
+  "colores": [
+   "agua",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "plastic_container": {
+  "colores": [
+   "cielo",
+   "menta"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.97,
+   0.1
+  ]
+ },
+ "plastic_crate_01": {
+  "colores": [
+   "cielo",
+   "monte",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "plastic_crate_02": {
+  "colores": [
+   "agua",
+   "lapacho"
+  ],
+  "modo": "saturado"
+ },
+ "plastic_jerrycan": {
+  "colores": [
+   "ipe",
+   "monte"
+  ],
+  "modo": "saturado"
+ },
+ "plastic_monobloc_chair_01": {
+  "giro": 30,
+  "colores": [
+   "rojo",
+   "monte",
+   "marino",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "plastic_thermos": {
+  "colores": [
+   "rojo",
+   "cielo"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.2,
+   0.12
+  ]
+ },
+ "pliers": {
+  "colores": [
+   "rojo",
+   "agua",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "portable_cassette_player": {
+  "colores": [
+   "ipe",
+   "rosa",
+   "rojo"
+  ],
+  "modo": "claro"
+ },
+ "portable_generator": {
+  "colores": [
+   "rojo",
+   "agua"
+  ],
+  "modo": "saturado"
+ },
+ "postcard_set_01": {
+  "descartado": true
+ },
+ "pot_enamel_01": {
+  "colores": [
+   "rojo",
+   "agua",
+   "marino"
+  ],
+  "modo": "saturado"
+ },
+ "propane_torch": {
+  "colores": [
+   "rojo",
+   "ipe"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.6,
+   0.12
+  ]
+ },
+ "retro_multimeter": {
+  "giro": 30
+ },
+ "round_spectacles": {
+  "elev": 30,
+  "zoom": 1.3
+ },
+ "rubber_boots": {
+  "colores": [
+   "ipe",
+   "rojo",
+   "marino"
+  ],
+  "modo": "saturado",
+  "tono": [
+   0.38,
+   0.12
+  ]
+ },
+ "rubber_duck_toy": {
+  "colores": [
+   "ipe",
+   "cielo",
+   "menta",
+   "lapacho"
+  ],
+  "modo": "saturado"
+ },
+ "screwdriver": {
+  "zoom": 1.15,
+  "colores": [
+   "ipe",
+   "agua",
+   "rojo"
+  ],
+  "modo": "saturado"
+ },
+ "screwdrivers_02": {
+  "elev": 40,
+  "zoom": 1.3
+ },
+ "security_camera_01": {
+  "colores": [
+   "grafito",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "security_camera_02": {
+  "colores": [
+   "grafito",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "Shelf_01": {
+  "giro": 30,
+  "colores": [
+   "grafito",
+   "arena",
+   "monte"
+  ],
+  "modo": "claro"
+ },
+ "side_table_01": {
+  "colores": [
+   "grafito",
+   "monte"
+  ],
+  "modo": "todo",
+  "fuerza": 0.6
+ },
+ "sledgehammer_01": {
+  "colores": [
+   "rojo",
+   "naranja"
+  ],
+  "modo": "saturado"
+ },
+ "small_lpg_tank": {
+  "descartado": true
+ },
+ "Sofa_01": {
+  "colores": [
+   "monte",
+   "marino",
+   "terracota"
+  ],
+  "modo": "claro",
+  "giro": 30
+ },
+ "sofa_02": {
+  "colores": [
+   "terracota",
+   "marino"
+  ],
+  "modo": "todo",
+  "fuerza": 0.75
+ },
+ "sofa_03": {
+  "descartado": true
+ },
+ "standing_picture_frame_02": {
+  "colores": [
+   "grafito",
+   "arena"
+  ],
+  "modo": "claro"
+ },
+ "stationery_supplies": {
+  "elev": 35,
+  "zoom": 1.25
+ },
+ "sungka_board": {
+  "elev": 45,
+  "zoom": 1.4
+ },
+ "tea_set_01": {
+  "elev": 30,
+  "zoom": 1.3,
+  "colores": [
+   "cielo",
+   "menta",
+   "rosa"
+  ],
+  "modo": "claro"
+ },
+ "Television_01": {
+  "giro": 20,
+  "colores": [
+   "rojo",
+   "agua",
+   "ipe"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.35,
+   0.55
+  ]
+ },
+ "television_02": {
+  "giro": 30
+ },
+ "throw_pillows_01": {
+  "colores": [
+   "agua",
+   "cielo",
+   "monte"
+  ],
+  "modo": "saturado"
+ },
+ "tire_pump": {
+  "colores": [
+   "rojo",
+   "cielo"
+  ],
+  "modo": "claro"
+ },
+ "tongue_groove_pliers": {
+  "elev": 45,
+  "zoom": 1.3
+ },
+ "trowel_01": {
+  "elev": 35,
+  "zoom": 1.3
+ },
+ "Ukulele_01": {
+  "colores": [
+   "agua",
+   "lapacho",
+   "grafito"
+  ],
+  "modo": "todo",
+  "fuerza": 0.7
+ },
+ "vintage_electric_kettle": {
+  "colores": [
+   "rojo",
+   "agua",
+   "ipe"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.38,
+   0.58
+  ]
+ },
+ "vintage_flashlight": {
+  "colores": [
+   "agua",
+   "ipe"
+  ],
+  "modo": "saturado"
+ },
+ "vintage_microwave": {
+  "colores": [
+   "rojo",
+   "menta",
+   "cielo"
+  ],
+  "modo": "claro"
+ },
+ "vintage_stapler": {
+  "colores": [
+   "rojo",
+   "ipe",
+   "grafito"
+  ],
+  "modo": "saturado"
+ },
+ "vintage_suitcase": {
+  "colores": [
+   "marino",
+   "rojo",
+   "terracota"
+  ],
+  "modo": "saturado"
+ },
+ "wall_clock": {
+  "colores": [
+   "rojo",
+   "grafito"
+  ],
+  "modo": "claro"
+ },
+ "watering_can_metal_01": {
+  "colores": [
+   "monte",
+   "rojo",
+   "ipe"
+  ],
+  "modo": "claro",
+  "umbral_s": [
+   0.3,
+   0.5
+  ]
+ },
+ "wine_bottles_01": {
+  "zoom": 1.25
+ },
+ "wooden_broom": {
+  "zoom": 1.1
+ },
+ "wooden_cutting_board": {
+  "elev": 35,
+  "zoom": 1.1
+ },
+ "wooden_spoon": {
+  "elev": 40,
+  "zoom": 1.3
+ },
+ "wooden_stool_01": {
+  "colores": [
+   "agua",
+   "rosa"
+  ],
+  "modo": "claro"
+ },
+ "wooden_stool_02": {
+  "colores": [
+   "grafito",
+   "rojo"
+  ],
+  "modo": "todo",
+  "fuerza": 0.65
+ }
+}

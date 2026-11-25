@@ -11,3 +11,10 @@ __pycache__/
 graphify-out/
 .claude/settings.local.json
 herramientas/fuentes/
+.datos/
+playwright-report/
+test-results/
+next-env.d.ts
+.env*.local
+*.tsbuildinfo
+herramientas/fotos/segunda_tanda.txt
