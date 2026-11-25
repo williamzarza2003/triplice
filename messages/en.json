@@ -179,6 +179,8 @@
       "luz": "a light"
     },
     "opcionNombre": {
+      "almacenamiento": "Storage",
+      "contenido": "Size",
       "color": "Color",
       "medida": "Size",
       "talle": "Size",

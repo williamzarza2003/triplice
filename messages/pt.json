@@ -179,6 +179,8 @@
       "luz": "a luz"
     },
     "opcionNombre": {
+      "almacenamiento": "Armazenamento",
+      "contenido": "Tamanho",
       "color": "Cor",
       "medida": "Medida",
       "talle": "Tamanho",

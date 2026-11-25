@@ -131,6 +131,31 @@ export const RESENAS: Record<5 | 4 | 3 | 2 | 1, { titulos: Banco; textos: Banco 
 
 /** Frases por rubro que se suman a las reseñas buenas, para que no suenen todas iguales. */
 export const DETALLES: Record<string, Banco> = {
+  celulares: {
+    es: ['La batería me dura todo el día.', 'Vino liberado, le puse el chip y anduvo.', 'Las fotos de noche salen mejor de lo que esperaba.', 'Me lo entregaron configurado en español.'],
+    pt: ['A bateria dura o dia todo.', 'Veio desbloqueado, coloquei o chip e funcionou.', 'As fotos à noite saem melhores do que eu esperava.'],
+    en: ['Battery lasts all day.', 'Came unlocked, worked with my SIM right away.'],
+  },
+  informatica: {
+    es: ['La uso para la facultad y anda rápida.', 'La pantalla tiene buen brillo.', 'Vino con el teclado en español, con la ñ.'],
+    pt: ['Uso para a faculdade e é rápida.', 'A tela tem um bom brilho.'],
+    en: ['Fast enough for college work.', 'Bright screen.'],
+  },
+  audio: {
+    es: ['Se escucha fuerte y claro.', 'La batería dura lo que dice.', 'Los uso en la moto y no se caen.'],
+    pt: ['O som é alto e limpo.', 'A bateria dura o que promete.'],
+    en: ['Loud and clear.', 'Battery lasts as advertised.'],
+  },
+  perfumeria: {
+    es: ['Es original, vino sellado.', 'Dura todo el día en la piel.', 'Me preguntaron qué perfume tenía puesto.'],
+    pt: ['É original, veio lacrado.', 'Dura o dia todo na pele.'],
+    en: ['Genuine and sealed.', 'Lasts all day.'],
+  },
+  relojeria: {
+    es: ['Me achicaron la malla en el local sin cobrarme.', 'Se ve más caro de lo que es.', 'La hora se lee bien al sol.'],
+    pt: ['Ajustaram a pulseira na loja sem cobrar.', 'Parece mais caro do que é.'],
+    en: ['They resized the bracelet for free.', 'Looks more expensive than it is.'],
+  },
   electronica: {
     es: ['El sonido es mejor de lo que pensaba.', 'Lo probé con la tele del living y anduvo a la primera.', 'Trae el enchufe de dos patas planas, como en Paraguay.'],
     pt: ['O som é melhor do que eu imaginava.', 'Funcionou de primeira.', 'Veio com adaptador de tomada.'],
@@ -187,6 +212,39 @@ export const DETALLES: Record<string, Banco> = {
 /** Preguntas frecuentes por rubro con la respuesta del vendedor. */
 export const PREGUNTAS: { rubros: string[] | '*'; q: Banco; r: Banco }[] = [
   {
+    rubros: ['celulares'],
+    q: { es: ['¿Está liberado para cualquier compañía?', '¿Trae cargador en la caja?', '¿La garantía vale en Brasil?'],
+      pt: ['Está desbloqueado para qualquer operadora?', 'Vem com carregador?'], en: ['Is it unlocked?'] },
+    r: { es: ['Sí, viene liberado de fábrica y anda con las tres compañías de Paraguay, Brasil y Argentina.',
+      'Trae el cable USB-C; el cargador se vende aparte y te hacemos precio si lo llevás junto.',
+      'La garantía la cubrimos nosotros en el local. Si estás en Foz, lo podés traer o mandarlo por la transportadora.'],
+      pt: ['Sim, vem desbloqueado de fábrica e funciona com as operadoras do Brasil, do Paraguai e da Argentina.', 'Vem com o cabo USB-C; o carregador é vendido à parte.'],
+      en: ['Yes, factory unlocked; works with carriers in Paraguay, Brazil and Argentina.'] },
+  },
+  {
+    rubros: ['informatica'],
+    q: { es: ['¿El teclado es en español?', '¿Viene con el sistema instalado?'], pt: ['O teclado é em português?', 'Vem com sistema instalado?'],
+      en: ['Which keyboard layout?'] },
+    r: { es: ['Sí, teclado en español latinoamericano, con la ñ.', 'Sí, la entregamos instalada y actualizada, lista para usar.'],
+      pt: ['Temos com teclado ABNT2 sob encomenda; o padrão é em espanhol.', 'Sim, entregamos com sistema instalado e atualizado.'],
+      en: ['Latin American Spanish layout; US layout on request.'] },
+  },
+  {
+    rubros: ['perfumeria'],
+    q: { es: ['¿Es original?', '¿Cuánto dura en la piel?', '¿Tienen el de 200 ml?'], pt: ['É original?', 'Quanto tempo dura na pele?'],
+      en: ['Is it genuine?'] },
+    r: { es: ['Sí, es original: viene sellado y con número de lote, y te damos la factura.', 'Entre 6 y 8 horas en la piel; en la ropa, más.',
+      'Las medidas que tenemos son las que ves arriba de la ficha.'],
+      pt: ['Sim, é original: vem lacrado e com número de lote.', 'Entre 6 e 8 horas na pele.'], en: ['Yes, sealed with batch number and invoice.'] },
+  },
+  {
+    rubros: ['relojeria'],
+    q: { es: ['¿Me achican la malla?', '¿Se puede usar para nadar?'], pt: ['Vocês ajustam a pulseira?', 'Pode nadar com ele?'], en: ['Can you resize the strap?'] },
+    r: { es: ['Sí, la achicamos en el local sin costo, en cinco minutos.', 'Fijate en la ficha hasta cuántos metros es sumergible: desde 50 m sirve para nadar en la pileta.'],
+      pt: ['Sim, ajustamos na loja sem custo.', 'Veja na ficha até quantos metros é à prova d\'água: a partir de 50 m dá para nadar.'],
+      en: ['Yes, free resizing in store.'] },
+  },
+  {
     rubros: '*',
     q: { es: ['¿Hacen envíos a Foz?', '¿Tienen factura legal?', '¿Puedo retirar hoy en el local?', '¿Tiene garantía?'],
       pt: ['Vocês entregam em Foz?', 'Emitem nota fiscal?', 'Posso retirar hoje?'], en: ['Do you ship to Brazil?'] },
@@ -228,6 +286,11 @@ export const PREGUNTAS: { rubros: string[] | '*'; q: Banco; r: Banco }[] = [
 
 /** Viñetas generales por rubro (se suman a las que salen de los atributos). */
 export const VINETAS: Record<string, Banco> = {
+  celulares: { es: ['Liberado de fábrica, con garantía escrita en la tienda'], pt: ['Desbloqueado de fábrica, com garantia por escrito'], en: ['Factory unlocked, written store warranty'] },
+  informatica: { es: ['Teclado en español, con la ñ'], pt: ['Teclado em espanhol (ABNT2 sob encomenda)'], en: ['Spanish keyboard layout'] },
+  audio: { es: ['Se conecta en segundos con cualquier celular'], pt: ['Conecta em segundos com qualquer celular'], en: ['Pairs with any phone in seconds'] },
+  perfumeria: { es: ['Original, sellado y con número de lote'], pt: ['Original, lacrado e com número de lote'], en: ['Genuine, sealed and batch-numbered'] },
+  relojeria: { es: ['Ajuste de malla sin costo en la tienda'], pt: ['Ajuste de pulseira grátis na loja'], en: ['Free strap resizing in store'] },
   electronica: { es: ['Probado en nuestro taller antes de salir'], pt: ['Testado na nossa oficina antes do envio'], en: ['Tested in our workshop before shipping'] },
   electrodomesticos: { es: ['Listo para la red de 220 V de la región'], pt: ['Pronto para a rede de 220 V da região'], en: ['Ready for the region\'s 220 V grid'] },
   cocina: { es: ['Apto para lavar a mano'], pt: ['Pode lavar à mão'], en: ['Hand-wash safe'] },
@@ -252,6 +315,11 @@ export const CONDICION: Record<'nuevo' | 'reacondicionado' | 'usado', Texto> = {
 }
 
 export const EN_CAJA: Record<string, Banco> = {
+  celulares: { es: ['El equipo', 'Cable USB-C', 'Funda transparente', 'Pin para el chip'], pt: ['O aparelho', 'Cabo USB-C', 'Capa transparente', 'Pino para o chip'], en: ['The device', 'USB-C cable', 'Clear case', 'SIM tool'] },
+  informatica: { es: ['El equipo', 'Fuente o cable', 'Guía rápida'], pt: ['O equipamento', 'Fonte ou cabo', 'Guia rápido'], en: ['The device', 'Power adapter or cable', 'Quick guide'] },
+  audio: { es: ['El equipo', 'Cable de carga USB-C', 'Manual en español y portugués'], pt: ['O aparelho', 'Cabo de carga USB-C', 'Manual em português e espanhol'], en: ['The device', 'USB-C charging cable', 'Manual'] },
+  perfumeria: { es: ['El producto en su caja sellada'], pt: ['O produto na caixa lacrada'], en: ['The product in its sealed box'] },
+  relojeria: { es: ['El reloj', 'Estuche', 'Certificado de garantía'], pt: ['O relógio', 'Estojo', 'Certificado de garantia'], en: ['The watch', 'Case', 'Warranty card'] },
   electronica: { es: ['El equipo', 'Cable de alimentación', 'Manual en español y portugués'], pt: ['O aparelho', 'Cabo de energia', 'Manual em português e espanhol'], en: ['The device', 'Power cable', 'Spanish and Portuguese manual'] },
   electrodomesticos: { es: ['El equipo', 'Manual y certificado de garantía'], pt: ['O aparelho', 'Manual e certificado de garantia'], en: ['The appliance', 'Manual and warranty card'] },
   herramientas: { es: ['La herramienta', 'Manual de seguridad'], pt: ['A ferramenta', 'Manual de segurança'], en: ['The tool', 'Safety manual'] },

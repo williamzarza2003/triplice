@@ -21,21 +21,102 @@ const CAPACIDAD: Atributo = { clave: 'capacidad_l', nombre: t('Capacidad', 'Capa
 const ESTILO: Atributo = { clave: 'estilo', nombre: t('Estilo', 'Estilo', 'Style'), tipo: 'opcion', filtrable: true }
 const ORIGEN_HECHO: Atributo = { clave: 'hecho_a_mano', nombre: t('Hecho a mano', 'Feito à mão', 'Handmade'), tipo: 'booleano', filtrable: true }
 const USO: Atributo = { clave: 'uso', nombre: t('Uso', 'Uso', 'Use'), tipo: 'opcion', filtrable: true }
+const PANTALLA: Atributo = { clave: 'pantalla_pulgadas', nombre: t('Pantalla', 'Tela', 'Screen'), tipo: 'numero', unidad: '"', filtrable: true }
+const CONECTIVIDAD: Atributo = { clave: 'conectividad', nombre: t('Conectividad', 'Conectividade', 'Connectivity'), tipo: 'opcion', filtrable: true }
+const ALMACENAMIENTO: Atributo = { clave: 'almacenamiento_gb', nombre: t('Almacenamiento', 'Armazenamento', 'Storage'), tipo: 'opcion', filtrable: true }
 
 export const CATEGORIAS: Categoria[] = [
+  // Lo que más se busca en Ciudad del Este va primero: son los atajos de la portada.
   {
-    slug: 'electronica', icono: 'pantalla', nombre: t('Electrónica', 'Eletrônicos', 'Electronics'),
+    slug: 'celulares', icono: 'celular', nombre: t('Celulares y tablets', 'Celulares e tablets', 'Phones & tablets'),
+    hijas: [
+      { slug: 'smartphones', nombre: t('Smartphones', 'Smartphones', 'Smartphones') },
+      { slug: 'celulares-basicos', nombre: t('Celulares de teclas', 'Celulares básicos', 'Feature phones') },
+      { slug: 'tablets', nombre: t('Tablets', 'Tablets', 'Tablets') },
+      { slug: 'accesorios-celular', nombre: t('Cargadores y baterías', 'Carregadores e baterias', 'Chargers & power banks') },
+    ],
+    atributos: [
+      PANTALLA,
+      { clave: 'ram_gb', nombre: t('Memoria RAM', 'Memória RAM', 'RAM'), tipo: 'numero', unidad: 'GB', filtrable: true },
+      { clave: 'camara_mp', nombre: t('Cámara principal', 'Câmera principal', 'Main camera'), tipo: 'numero', unidad: 'MP' },
+      { clave: 'bateria_mah', nombre: t('Batería', 'Bateria', 'Battery'), tipo: 'numero', unidad: 'mAh' },
+      { clave: 'red', nombre: t('Red', 'Rede', 'Network'), tipo: 'opcion', filtrable: true },
+      { clave: 'sim', nombre: t('Chip', 'Chip', 'SIM'), tipo: 'opcion' },
+      ALMACENAMIENTO, POTENCIA, CONECTIVIDAD,
+    ],
+  },
+  {
+    slug: 'informatica', icono: 'notebook', nombre: t('Computación', 'Informática', 'Computers'),
+    hijas: [
+      { slug: 'notebooks', nombre: t('Notebooks', 'Notebooks', 'Laptops') },
+      { slug: 'monitores', nombre: t('Monitores', 'Monitores', 'Monitors') },
+      { slug: 'perifericos', nombre: t('Teclados y mouse', 'Teclados e mouses', 'Keyboards & mice') },
+      { slug: 'almacenamiento-y-redes', nombre: t('Discos y redes', 'Armazenamento e redes', 'Storage & networking') },
+    ],
+    atributos: [
+      PANTALLA,
+      { clave: 'procesador', nombre: t('Procesador', 'Processador', 'Processor'), tipo: 'opcion', filtrable: true },
+      { clave: 'ram_gb', nombre: t('Memoria RAM', 'Memória RAM', 'RAM'), tipo: 'numero', unidad: 'GB', filtrable: true },
+      ALMACENAMIENTO,
+      { clave: 'tarjeta_video', nombre: t('Placa de video', 'Placa de vídeo', 'Graphics'), tipo: 'texto' },
+      CONECTIVIDAD,
+    ],
+  },
+  {
+    slug: 'audio', icono: 'auricular', nombre: t('Audio y auriculares', 'Áudio e fones', 'Audio & headphones'),
+    hijas: [
+      { slug: 'auriculares', nombre: t('Auriculares', 'Fones de ouvido', 'Headphones') },
+      { slug: 'parlantes', nombre: t('Parlantes', 'Caixas de som', 'Speakers') },
+    ],
+    atributos: [
+      CONECTIVIDAD,
+      { clave: 'cancelacion_ruido', nombre: t('Cancelación de ruido', 'Cancelamento de ruído', 'Noise cancelling'), tipo: 'booleano', filtrable: true },
+      { clave: 'bateria_h', nombre: t('Batería', 'Bateria', 'Battery'), tipo: 'numero', unidad: 'h' },
+      { clave: 'resistencia_agua', nombre: t('Resistencia al agua', 'Resistência à água', 'Water resistance'), tipo: 'opcion', filtrable: true },
+      POTENCIA, ESTILO, TENSION,
+    ],
+  },
+  {
+    slug: 'perfumeria', icono: 'perfume', nombre: t('Perfumes y belleza', 'Perfumes e beleza', 'Perfume & beauty'),
+    hijas: [
+      { slug: 'perfumes', nombre: t('Perfumes', 'Perfumes', 'Fragrances') },
+      { slug: 'cuidado-personal', nombre: t('Cuidado personal', 'Cuidados pessoais', 'Personal care') },
+    ],
+    atributos: [
+      { clave: 'familia', nombre: t('Familia olfativa', 'Família olfativa', 'Scent family'), tipo: 'opcion', filtrable: true },
+      { clave: 'concentracion', nombre: t('Concentración', 'Concentração', 'Concentration'), tipo: 'opcion', filtrable: true },
+      { clave: 'genero', nombre: t('Para', 'Para', 'For'), tipo: 'opcion', filtrable: true },
+      POTENCIA, TENSION,
+      { clave: 'bateria_h', nombre: t('Autonomía', 'Autonomia', 'Runtime'), tipo: 'numero', unidad: 'h' },
+    ],
+  },
+  {
+    slug: 'relojeria', icono: 'reloj', nombre: t('Relojes', 'Relógios', 'Watches'),
+    hijas: [
+      { slug: 'relojes-de-mano', nombre: t('Relojes de pulsera', 'Relógios de pulso', 'Wristwatches') },
+      { slug: 'smartwatches', nombre: t('Relojes inteligentes', 'Smartwatches', 'Smartwatches') },
+    ],
+    atributos: [
+      { clave: 'mecanismo', nombre: t('Mecanismo', 'Mecanismo', 'Movement'), tipo: 'opcion', filtrable: true },
+      MATERIAL,
+      { clave: 'resistencia_agua_m', nombre: t('Sumergible hasta', 'À prova d\'água até', 'Water resistant to'), tipo: 'numero', unidad: 'm' },
+      { clave: 'genero', nombre: t('Para', 'Para', 'For'), tipo: 'opcion', filtrable: true },
+      { clave: 'bateria_dias', nombre: t('Batería', 'Bateria', 'Battery'), tipo: 'numero', unidad: 'd' },
+      CONECTIVIDAD, ESTILO,
+    ],
+  },
+  {
+    slug: 'electronica', icono: 'pantalla', nombre: t('TV, consolas y cámaras', 'TV, games e câmeras', 'TV, gaming & cameras'),
     hijas: [
       { slug: 'tv-y-video', nombre: t('TV y video', 'TV e vídeo', 'TV & video') },
-      { slug: 'audio', nombre: t('Audio', 'Áudio', 'Audio') },
-      { slug: 'computacion', nombre: t('Computación', 'Informática', 'Computers') },
       { slug: 'videojuegos', nombre: t('Videojuegos', 'Videogames', 'Video games') },
-      { slug: 'camaras', nombre: t('Cámaras', 'Câmeras', 'Cameras') },
+      { slug: 'camaras', nombre: t('Cámaras y drones', 'Câmeras e drones', 'Cameras & drones') },
       { slug: 'seguridad', nombre: t('Seguridad y radios', 'Segurança e rádios', 'Security & radios') },
     ],
     atributos: [
-      { clave: 'pantalla_pulgadas', nombre: t('Pantalla', 'Tela', 'Screen'), tipo: 'numero', unidad: '"', filtrable: true },
-      { clave: 'conectividad', nombre: t('Conectividad', 'Conectividade', 'Connectivity'), tipo: 'opcion', filtrable: true },
+      PANTALLA,
+      { clave: 'resolucion', nombre: t('Resolución', 'Resolução', 'Resolution'), tipo: 'opcion', filtrable: true },
+      CONECTIVIDAD, ALMACENAMIENTO,
       { clave: 'bateria_h', nombre: t('Batería', 'Bateria', 'Battery'), tipo: 'numero', unidad: 'h' },
       POTENCIA, TENSION, ESTILO,
     ],
@@ -169,7 +250,6 @@ export const CATEGORIAS: Categoria[] = [
   {
     slug: 'moda', icono: 'reloj', nombre: t('Moda y accesorios', 'Moda e acessórios', 'Fashion & accessories'),
     hijas: [
-      { slug: 'relojes-de-mano', nombre: t('Relojes', 'Relógios', 'Watches') },
       { slug: 'anteojos-y-sombreros', nombre: t('Anteojos y sombreros', 'Óculos e chapéus', 'Glasses & hats') },
       { slug: 'calzado', nombre: t('Calzado', 'Calçados', 'Footwear') },
       { slug: 'valijas', nombre: t('Valijas y bolsos', 'Malas e bolsas', 'Luggage & bags') },

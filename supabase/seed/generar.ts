@@ -59,6 +59,11 @@ for (const c of CATEGORIAS) ATRIBUTOS[c.slug] = Object.fromEntries(c.atributos.m
 
 // ------------------------------------------------------------------ marcas ficticias por rubro
 const MARCAS: Record<string, string[]> = {
+  celulares: ['Ondatec', 'Yvága', 'Tesãi', 'Mbyja'],
+  informatica: ['Arandu', 'Visora', 'Kapé', 'Ondatec'],
+  audio: ['Pirá Sound', "Ñe'ẽ Audio", 'Kapé', 'Yvága'],
+  perfumeria: ['Jasy', 'Yvoty', 'Maison Paraná', 'Ara'],
+  relojeria: ['Ara', 'Tiempo Sur', 'Kuarepoti', 'Mbyja'],
   electronica: ['Arandu', 'Kapé', 'Ondatec', 'Pirá Sound', 'Visora', 'Yvága'],
   electrodomesticos: ['Moranga', 'Tibia', 'Ventura', 'Calor Paraná', 'Ñandutí Hogar'],
   cocina: ['Tacurú', 'Mesa Larga', 'Puchero', 'Ñandutí Hogar', 'Areguá'],
@@ -75,9 +80,14 @@ const MARCAS: Record<string, string[]> = {
   moda: ['Yvy', 'Ponte', 'Cuero Sur', 'Sol de Foz'],
   auto: ['Ruta 7', 'Motor Sur', 'Tatu'],
 }
-const GARANTIA: Record<string, number> = { electronica: 6, electrodomesticos: 12, herramientas: 6, iluminacion: 6, muebles: 6 }
+const GARANTIA: Record<string, number> = { celulares: 6, informatica: 12, audio: 6, relojeria: 12, electronica: 6, electrodomesticos: 12, herramientas: 6, iluminacion: 6, muebles: 6 }
+// Lo que la gente va a buscar a Ciudad del Este: se vende más, tiene más ofertas y más vendedores, y es lo nuevo.
+// Así la portada (ofertas, más vendidos y novedades) muestra celulares, notebooks, perfumes y relojes.
+const DEMANDA = new Set(['celulares', 'informatica', 'audio', 'perfumeria', 'relojeria', 'electronica'])
+const esDemanda = (e: Entrada, cat: string) => DEMANDA.has(cat) && e.m.startsWith('tp_')
+
 const GRAMOS_POR_LITRO: Record<string, number> = {
-  muebles: 60, electronica: 150, electrodomesticos: 120, cocina: 250, decoracion: 300, iluminacion: 80, herramientas: 400,
+  muebles: 60, celulares: 300, informatica: 200, audio: 150, perfumeria: 400, relojeria: 300, electronica: 150, electrodomesticos: 120, cocina: 250, decoracion: 300, iluminacion: 80, herramientas: 400,
   jardin: 120, supermercado: 300, limpieza: 400, deportes: 120, juegos: 150, libreria: 300, moda: 100, auto: 250,
 }
 
@@ -87,7 +97,7 @@ type Producto = {
   id: string; slug: string; sub: string; cat: string; marca: string; titulo: Texto; vinetas: Record<Idioma, string[]>
   descripcion: Texto; atributos: Record<string, Valor>; peso_g: number | null; medidas_mm: number[] | null; garantia: number
   condicion: string; pais_origen: string; en_caja: Record<Idioma, string[]>; ventas_30d: number; creado: number
-  usd: number; variantes: Variante[]; popularidad: number; calidad: number; modelo: string
+  usd: number; variantes: Variante[]; popularidad: number; calidad: number; modelo: string; demanda: boolean
 }
 
 const imagenes = new Set<string>()
@@ -147,7 +157,7 @@ function crear(e: Entrada, linea: 0 | 1 | 2, colores: (string | null)[]) {
   if (!cat) throw new Error(`Subcategoría desconocida: ${e.sub} (${e.m})`)
   const pool = MARCAS[cat]
   const base = hash(e.m).readUInt16LE(0)
-  const marca = pool[(base + linea) % pool.length]
+  const marca = linea === 0 && e.marca ? e.marca : pool[(base + linea) % pool.length]
   let titulo = texto(linea === 1 && e.b?.n ? e.b.n : e.n)
   if (linea > 0 && !(linea === 1 && e.b?.n)) {
     const nombres = colores.filter((c): c is string => !!c).map(nombreColor)
@@ -175,22 +185,25 @@ function crear(e: Entrada, linea: 0 | 1 | 2, colores: (string | null)[]) {
     medidas.forEach((t, ti) => {
       const opciones: Record<string, string> = { ...opcionColor, ...(t ? { [tallas!.clave]: t } : {}) }
       const sku = `${slug(marca).slice(0, 4).toUpperCase()}-${hash(id).toString('hex').slice(0, 5).toUpperCase()}-${ci}${ti}`
-      variantes.push({ id: uuid(`variante:${id}:${ci}:${ti}`), sku, opciones, imagenes: fotos, recargo: tallas?.clave === 'medida' ? ti * 0.12 : 0 })
+      const recargo = tallas?.recargos?.[ti] ?? (tallas?.clave === 'medida' ? ti * 0.12 : 0)
+      variantes.push({ id: uuid(`variante:${id}:${ci}:${ti}`), sku, opciones, imagenes: fotos, recargo })
     })
   })
 
-  const dims = dimensiones(e.m)
+  const dims = e.mm ?? dimensiones(e.m)
   const litros = dims ? (dims[0] * dims[1] * dims[2]) / 1e6 : 0
-  const popularidad = Math.pow(r(), 1.6)
+  const demanda = esDemanda(e, cat)
+  const popularidad = demanda ? 0.5 + 0.5 * Math.pow(r(), 0.7) : 0.85 * Math.pow(r(), 1.6)
   PRODUCTOS.push({
     id, slug: s, sub: e.sub, cat, marca, titulo, vinetas: vinetas(cat, a, cond, garantia), descripcion: descripcion(titulo, marca, cond, cat),
-    atributos: a, peso_g: dims ? Math.max(40, Math.round((litros * (GRAMOS_POR_LITRO[cat] ?? 150)) / 10) * 10) : null,
+    atributos: a, peso_g: e.peso ?? (dims ? Math.max(40, Math.round((litros * (GRAMOS_POR_LITRO[cat] ?? 150)) / 10) * 10) : null),
     medidas_mm: dims, garantia, condicion: cond,
     pais_origen: a.origen ? ({ py: 'PY', br: 'BR', ar: 'AR', importado: 'CN' } as Record<string, string>)[String(a.origen)] ?? 'PY'
       : a.hecho_a_mano ? 'PY' : elegir(r, ['PY', 'BR', 'AR', 'CN', 'CN', 'BR']),
     en_caja: Object.fromEntries(IDIOMAS.map((i) => [i, EN_CAJA[cat]?.[i] ?? []])) as Record<Idioma, string[]>,
-    ventas_30d: Math.round(popularidad * popularidad * 900 + r() * 6), creado: HOY - Math.floor(r() * 420) * DIA,
-    usd, variantes, popularidad, calidad: entre(r, 3.9, 4.9), modelo: e.m,
+    ventas_30d: Math.round(popularidad * popularidad * 900 + r() * 6),
+    creado: HOY - (demanda ? Math.floor(r() * 75) : 90 + Math.floor(r() * 360)) * DIA,
+    usd, variantes, popularidad, calidad: entre(r, 3.9, 4.9), modelo: e.m, demanda,
   })
 }
 
@@ -200,6 +213,11 @@ for (const e of CATALOGO) {
   const cs = aj.colores ?? []
   const original = e.co ?? null
   if (cs.length === 0) crear(e, 0, [original])
+  else if (e.juntos) {
+    // un solo producto con todos sus colores (un celular no cambia de marca por ser lila)
+    if (!original) throw new Error(`Falta el color original (co) de ${e.m}`)
+    crear(e, 0, [original, ...cs.filter((c) => c !== original)])
+  }
   else {
     if (!original) throw new Error(`Falta el color original (co) de ${e.m}`)
     crear(e, 0, [original, cs[0]].filter((x, i, xs) => xs.indexOf(x) === i))
@@ -218,19 +236,23 @@ for (const p of PRODUCTOS) {
   const usadoOVintage = p.condicion !== 'nuevo'
   const candidatas = TIENDAS.filter((t) => t.rubros.includes(p.cat))
   const fuertes = candidatas.filter((t) => t.rubros[0] === p.cat)
-  let principal = usadoOVintage && ['muebles', 'decoracion', 'electronica'].includes(p.cat)
+  // lo usado o reacondicionado: los muebles y la decoración van al anticuario; la electrónica, al taller de Arandu
+  let principal = usadoOVintage && ['muebles', 'decoracion'].includes(p.cat)
     ? TIENDAS.find((t) => t.slug === 'antiquario-parana')!
+    : usadoOVintage && p.cat === 'electronica' ? TIENDAS.find((t) => t.slug === 'arandu-electronica')!
     : elegir(r, fuertes.length && r() < 0.7 ? fuertes : candidatas.length ? candidatas : TIENDAS.filter((t) => t.generalista))
   if (!principal) principal = TIENDAS[0]
   tiendaPrincipal.set(p.id, principal)
   const otras = [...candidatas, ...TIENDAS.filter((t) => t.generalista)].filter((t, i, xs) => t !== principal && xs.indexOf(t) === i)
-  const extra = Math.min(otras.length, elegir(r, [0, 0, 1, 1, 1, 2, 2, 3]))
+  const extra = Math.min(otras.length, elegir(r, p.demanda ? [1, 2, 2, 3, 3] : [0, 0, 1, 1, 1, 2, 2, 3]))
   const elegidas = [principal]
   while (elegidas.length < extra + 1) {
     const t = elegir(r, otras)
     if (!elegidas.includes(t)) elegidas.push(t)
   }
-  const conLista = r() < 0.24
+  // las rebajas grandes son de lo que más se busca; el resto tiene descuentos chicos y menos seguido
+  const conLista = r() < (p.demanda ? 0.6 : 0.16)
+  const [rebajaMin, rebajaMax] = p.demanda ? [1.14, 1.4] : [1.06, 1.2]
   elegidas.forEach((t, ti) => {
     const factor = ti === 0 ? 1 : entre(r, 0.94, 1.14)
     for (const v of p.variantes) {
@@ -238,7 +260,7 @@ for (const p of PRODUCTOS) {
       const stock = r() < 0.06 ? 0 : r() < 0.15 ? Math.ceil(r() * 3) : Math.ceil(r() * 60)
       OFERTAS.push({
         id: uuid(`oferta:${v.id}:${t.slug}`), variante: v.id, tienda: t.slug, precio,
-        lista: conLista && ti === 0 ? Math.round(precio * entre(r, 1.12, 1.38)) : null,
+        lista: conLista && ti === 0 ? Math.round(precio * entre(r, rebajaMin, rebajaMax)) : null,
         stock, envio: precio / 100 >= t.envioGratisDesde, prep: Math.max(1, Math.round(t.preparacionH * entre(r, 0.7, 1.4))),
       })
     }

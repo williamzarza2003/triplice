@@ -40,7 +40,7 @@ export const TIENDAS: Tienda[] = [
   },
   {
     slug: 'arandu-electronica', nombre: 'Arandu Electrónica', pais: 'PY', ciudad: 'Ciudad del Este', direccion: 'Galería Jebai, local 214',
-    lat: -25.5089, lng: -54.6127, desde: 2017, color: '#22345a', rubros: ['electronica', 'libreria', 'juegos'],
+    lat: -25.5089, lng: -54.6127, desde: 2017, color: '#22345a', rubros: ['celulares', 'informatica', 'electronica', 'audio', 'juegos'],
     envioGratisDesde: 80, preparacionH: 3,
     lema: t('Electrónica probada y con garantía escrita.', 'Eletrônicos testados e com garantia por escrito.', 'Tested electronics with written warranty.'),
     descripcion: t(
@@ -76,7 +76,7 @@ export const TIENDAS: Tienda[] = [
   },
   {
     slug: 'loja-ponte', nombre: 'Loja Ponte', pais: 'BR', ciudad: 'Foz do Iguaçu', direccion: 'Av. JK 2210, Centro',
-    lat: -25.5427, lng: -54.5827, desde: 2019, color: '#3d5a3a', rubros: ['moda', 'deportes', 'electronica'], generalista: true,
+    lat: -25.5427, lng: -54.5827, desde: 2019, color: '#3d5a3a', rubros: ['moda', 'perfumeria', 'relojeria', 'audio', 'deportes'], generalista: true,
     envioGratisDesde: 50, preparacionH: 6,
     lema: t('Del lado brasileño del Puente, con factura en reales.', 'Do lado brasileiro da Ponte, com nota fiscal.', 'On the Brazilian side of the Bridge, with a local invoice.'),
     descripcion: t(
@@ -123,16 +123,16 @@ export const TIENDAS: Tienda[] = [
     reputacion: { recomendacion: 95, opiniones: 520, ventas_12m: 1730, respuesta_min: 90, a_tiempo: 94 },
   },
   {
-    slug: 'vivero-kaaguy', nombre: "Vivero Ka'aguy", pais: 'PY', ciudad: 'Hernandarias', direccion: 'Calle Acaray 1200',
-    lat: -25.3960, lng: -54.6420, desde: 2012, color: '#2e6f70', rubros: ['jardin', 'decoracion'],
-    envioGratisDesde: 35, preparacionH: 24,
-    lema: t('Plantas que se crían en el calor de acá.', 'Plantas criadas no calor daqui.', 'Plants raised in our own heat.'),
+    slug: 'senal-celulares', nombre: 'Señal Celulares', pais: 'PY', ciudad: 'Ciudad del Este', direccion: 'Calle Pampliega 240, local 12',
+    lat: -25.5094, lng: -54.6119, desde: 2016, color: '#2e6f70', rubros: ['celulares', 'audio', 'informatica', 'relojeria'],
+    envioGratisDesde: 70, preparacionH: 1,
+    lema: t('Celulares liberados, con la factura y la caja.', 'Celulares desbloqueados, com nota e caixa.', 'Unlocked phones, boxed and invoiced.'),
     descripcion: t(
-      'Vivero y casa de jardín. Todas las plantas se crían acá, así que aguantan el verano de la frontera.',
-      'Viveiro e loja de jardinagem. Todas as plantas são cultivadas aqui e aguentam o verão da fronteira.',
-      'Plant nursery and garden shop. Everything is grown locally, so it handles the border summer.'),
-    horario: t('Lunes a domingo de 7 a 17 h', 'Segunda a domingo, das 7h às 17h', 'Daily, 7 am to 5 pm'),
-    reputacion: { recomendacion: 98, opiniones: 410, ventas_12m: 1180, respuesta_min: 150, a_tiempo: 97 },
+      'Celulares, tablets y accesorios en el microcentro de Ciudad del Este. Te lo entregamos configurado, con el chip puesto y la garantía escrita.',
+      'Celulares, tablets e acessórios no centro de Ciudad del Este. Entregamos configurado, com o chip e garantia por escrito.',
+      'Phones, tablets and accessories in downtown Ciudad del Este. Delivered set up, SIM in, with a written warranty.'),
+    horario: t('Lunes a sábado de 7 a 16 h', 'Segunda a sábado, das 7h às 16h', 'Mon–Sat, 7 am to 4 pm'),
+    reputacion: { recomendacion: 97, opiniones: 3340, ventas_12m: 15210, respuesta_min: 25, a_tiempo: 96 },
   },
   {
     slug: 'papelaria-tres-fronteiras', nombre: 'Papelaria Três Fronteiras', pais: 'BR', ciudad: 'Foz do Iguaçu', direccion: 'Rua Almirante Barroso 870',
@@ -172,7 +172,7 @@ export const TIENDAS: Tienda[] = [
   },
   {
     slug: 'antiquario-parana', nombre: 'Antiquário Paraná', pais: 'BR', ciudad: 'Foz do Iguaçu', direccion: 'Rua Marechal Deodoro 430',
-    lat: -25.5490, lng: -54.5880, desde: 2008, color: '#87194a', rubros: ['muebles', 'decoracion', 'electronica'],
+    lat: -25.5490, lng: -54.5880, desde: 2008, color: '#87194a', rubros: ['muebles', 'decoracion'],
     envioGratisDesde: 200, preparacionH: 48,
     lema: t('Objetos con historia, restaurados.', 'Objetos com história, restaurados.', 'Restored objects with a story.'),
     descripcion: t(
@@ -195,15 +195,15 @@ export const TIENDAS: Tienda[] = [
     reputacion: { recomendacion: 92, opiniones: 870, ventas_12m: 2960, respuesta_min: 150, a_tiempo: 91 },
   },
   {
-    slug: 'casa-guarani', nombre: 'Casa Guaraní', pais: 'AR', ciudad: 'Puerto Iguazú', direccion: 'Av. Misiones 410',
-    lat: -25.6010, lng: -54.5710, desde: 2015, color: '#3d5a3a', rubros: ['decoracion', 'muebles', 'cocina'],
-    envioGratisDesde: 70, preparacionH: 24,
-    lema: t('Diseño y artesanía de Misiones.', 'Design e artesanato de Misiones.', 'Design and crafts from Misiones.'),
+    slug: 'perfumeria-jasy', nombre: 'Perfumería Jasy', pais: 'PY', ciudad: 'Ciudad del Este', direccion: 'Av. San Blas 115',
+    lat: -25.5101, lng: -54.6098, desde: 2012, color: '#a6215c', rubros: ['perfumeria', 'relojeria', 'moda'],
+    envioGratisDesde: 60, preparacionH: 2,
+    lema: t('Perfumes originales, con sello y número de lote.', 'Perfumes originais, com selo e número de lote.', 'Genuine fragrances, sealed and batch-numbered.'),
     descripcion: t(
-      'Tienda de diseño en Puerto Iguazú con piezas de artesanos de Misiones y de la región.',
-      'Loja de design em Puerto Iguazú com peças de artesãos de Misiones e da região.',
-      'Design shop in Puerto Iguazú with pieces by artisans from Misiones and the region.'),
-    horario: t('Lunes a domingo de 10 a 20 h', 'Segunda a domingo, das 10h às 20h', 'Daily, 10 am to 8 pm'),
-    reputacion: { recomendacion: 96, opiniones: 450, ventas_12m: 1050, respuesta_min: 180, a_tiempo: 95 },
+      'Perfumería y relojería frente al Puente de la Amistad. Cada perfume llega sellado y con su número de lote: si lo abrís y no es lo que pediste, te lo cambiamos.',
+      'Perfumaria e relojoaria em frente à Ponte da Amizade. Cada perfume chega lacrado e com número de lote: se não for o que você pediu, trocamos.',
+      'Fragrance and watch shop by the Friendship Bridge. Every bottle arrives sealed with its batch number; if it is not what you ordered, we swap it.'),
+    horario: t('Lunes a sábado de 7 a 17 h', 'Segunda a sábado, das 7h às 17h', 'Mon–Sat, 7 am to 5 pm'),
+    reputacion: { recomendacion: 98, opiniones: 5120, ventas_12m: 18400, respuesta_min: 40, a_tiempo: 98 },
   },
 ]

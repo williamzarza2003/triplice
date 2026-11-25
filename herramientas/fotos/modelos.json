@@ -876,5 +876,305 @@
   ],
   "modo": "todo",
   "fuerza": 0.65
+ },
+ "tp_celular_media": {
+  "giro": 8,
+  "elev": 10,
+  "zoom": 1.05,
+  "colores": [
+   "agua",
+   "lila",
+   "arena"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar",
+  "lado_giro": -40
+ },
+ "tp_celular_pro": {
+  "giro": 8,
+  "elev": 10,
+  "zoom": 1.05,
+  "colores": [
+   "negro",
+   "arena",
+   "marino"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar",
+  "lado_giro": -40
+ },
+ "tp_celular_entrada": {
+  "giro": 8,
+  "elev": 10,
+  "zoom": 1.05,
+  "colores": [
+   "monte",
+   "rosa"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar",
+  "lado_giro": -40
+ },
+ "tp_celular_basico": {
+  "giro": 18,
+  "elev": 12,
+  "colores": [
+   "rojo"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_tablet": {
+  "giro": 8,
+  "elev": 10,
+  "colores": [
+   "plata"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar",
+  "lado_giro": -40
+ },
+ "tp_powerbank": {
+  "giro": 22,
+  "elev": 14,
+  "colores": [
+   "blanco",
+   "cielo"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_cargador": {
+  "giro": 25,
+  "elev": 28
+ },
+ "tp_notebook": {
+  "giro": 20,
+  "elev": 22,
+  "colores": [
+   "plata",
+   "marino"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_notebook_ultra": {
+  "giro": 20,
+  "elev": 22,
+  "colores": [
+   "rosa",
+   "grafito"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_notebook_gamer": {
+  "giro": 20,
+  "elev": 22
+ },
+ "tp_monitor": {
+  "giro": 18,
+  "elev": 10
+ },
+ "tp_teclado": {
+  "giro": 12,
+  "elev": 38,
+  "colores": [
+   "blanco"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_mouse": {
+  "giro": 205,
+  "elev": 38,
+  "colores": [
+   "blanco",
+   "rosa"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_ssd": {
+  "giro": 22,
+  "elev": 14,
+  "colores": [
+   "cielo",
+   "rojo"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_router": {
+  "giro": 18,
+  "elev": 18
+ },
+ "tp_tws": {
+  "giro": 14,
+  "elev": 26,
+  "colores": [
+   "blanco",
+   "menta"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_vincha": {
+  "giro": 28,
+  "elev": 14,
+  "colores": [
+   "arena",
+   "cielo",
+   "blanco"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_gamer": {
+  "giro": 28,
+  "elev": 14
+ },
+ "tp_parlante": {
+  "giro": 16,
+  "elev": 16,
+  "colores": [
+   "rojo",
+   "monte",
+   "negro"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_parlante_fiesta": {
+  "giro": 20,
+  "elev": 12
+ },
+ "tp_perfume_bloque": {
+  "giro": 14,
+  "elev": 12
+ },
+ "tp_perfume_redondo": {
+  "giro": 14,
+  "elev": 12
+ },
+ "tp_perfume_torre": {
+  "giro": 14,
+  "elev": 12
+ },
+ "tp_perfume_gema": {
+  "giro": 10,
+  "elev": 14
+ },
+ "tp_perfume_esfera": {
+  "giro": 14,
+  "elev": 12
+ },
+ "tp_secador": {
+  "giro": 70,
+  "elev": 14,
+  "colores": [
+   "rosa",
+   "lila"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_planchita": {
+  "giro": 30,
+  "elev": 14,
+  "colores": [
+   "rosa"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_afeitadora": {
+  "giro": 20,
+  "elev": 14
+ },
+ "tp_reloj_acero": {
+  "giro": 12,
+  "elev": 10,
+  "colores": [
+   "negro",
+   "monte"
+  ],
+  "material": "Esfera",
+  "modo": "reemplazar",
+  "lado_giro": 40
+ },
+ "tp_reloj_crono": {
+  "giro": 12,
+  "elev": 10,
+  "colores": [
+   "marino",
+   "blanco"
+  ],
+  "material": "Esfera",
+  "modo": "reemplazar",
+  "lado_giro": 40
+ },
+ "tp_reloj_cuero": {
+  "giro": 12,
+  "elev": 10,
+  "colores": [
+   "marino"
+  ],
+  "material": "Esfera",
+  "modo": "reemplazar",
+  "lado_giro": 40
+ },
+ "tp_smartwatch": {
+  "giro": 12,
+  "elev": 10,
+  "colores": [
+   "rosa",
+   "menta",
+   "arena"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar",
+  "lado_giro": 40
+ },
+ "tp_smartband": {
+  "giro": 12,
+  "elev": 10,
+  "colores": [
+   "lila",
+   "marino"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar",
+  "lado_giro": 40
+ },
+ "tp_tv": {
+  "giro": 16,
+  "elev": 8
+ },
+ "tp_consola": {
+  "giro": 30,
+  "elev": 16
+ },
+ "tp_joystick": {
+  "giro": 0,
+  "elev": 36,
+  "colores": [
+   "blanco",
+   "rojo"
+  ],
+  "material": "Pintura",
+  "modo": "reemplazar"
+ },
+ "tp_drone": {
+  "giro": 20,
+  "elev": 26
+ },
+ "tp_camara_accion": {
+  "giro": 22,
+  "elev": 12
+ },
+ "tp_mirrorless": {
+  "giro": 28,
+  "elev": 14
  }
 }

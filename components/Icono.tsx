@@ -23,6 +23,10 @@ const TRAZOS = {
   globo: <><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9s1.3-6.4 3.9-9z" /></>,
   conversa: <path d="M5 5h14v10H10l-4 4v-4H5z" />,
   // categorías
+  celular: <><rect x="7" y="2.5" width="10" height="19" rx="2.2" /><path d="M11 18.5h2" /></>,
+  notebook: <><rect x="5" y="5" width="14" height="10" rx="1.2" /><path d="M2.5 18.5h19L20 15H4z" /></>,
+  auricular: <><path d="M4.5 15v-3a7.5 7.5 0 0 1 15 0v3" /><rect x="3.5" y="14" width="4.5" height="6.5" rx="1.6" /><rect x="16" y="14" width="4.5" height="6.5" rx="1.6" /></>,
+  perfume: <><rect x="6" y="9.5" width="12" height="11.5" rx="2.2" /><path d="M10 9.5V7h4v2.5M9 3.5h6V7H9zM9.5 14.5h5" /></>,
   pantalla: <><rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M8 20h8M12 16v4" /></>,
   enchufe: <><path d="M9 3v4M15 3v4M6 7h12v3a6 6 0 0 1-12 0z" /><path d="M12 16v5" /></>,
   olla: <><path d="M4 10h16v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z" /><path d="M2 10h2M20 10h2M8 10V8a4 4 0 0 1 8 0v2M12 4V3" /></>,

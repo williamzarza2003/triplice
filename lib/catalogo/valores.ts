@@ -19,7 +19,15 @@ export const VALORES: Record<string, T> = {
   industrial: t('Industrial', 'Industrial', 'Industrial'), rustico: t('Rústico', 'Rústico', 'Rustic'), nordico: t('Nórdico', 'Nórdico', 'Nordic'),
   // conectividad y luz
   bluetooth: t('Bluetooth', 'Bluetooth', 'Bluetooth'), wifi: t('Wi-Fi', 'Wi-Fi', 'Wi-Fi'), cable: t('Con cable', 'Com fio', 'Wired'),
-  analogico: t('Analógico', 'Analógico', 'Analog'),
+  analogico: t('Analógico', 'Analógico', 'Analog'), 'usb-c': t('USB-C', 'USB-C', 'USB-C'), hdmi: t('HDMI', 'HDMI', 'HDMI'),
+  inalambrico: t('Inalámbrico', 'Sem fio', 'Wireless'), dual: t('Doble chip', 'Dois chips', 'Dual SIM'),
+  // perfumes y relojes
+  edp: t('Eau de parfum', 'Eau de parfum', 'Eau de parfum'), edt: t('Eau de toilette', 'Eau de toilette', 'Eau de toilette'),
+  amaderada: t('Amaderada', 'Amadeirada', 'Woody'), floral: t('Floral', 'Floral', 'Floral'), citrica: t('Cítrica', 'Cítrica', 'Citrus'),
+  oriental: t('Oriental', 'Oriental', 'Oriental'), ambarada: t('Ambarada', 'Ambarada', 'Amber'),
+  cuarzo: t('Cuarzo', 'Quartzo', 'Quartz'), automatico: t('Automático', 'Automático', 'Automatic'),
+  '8 núcleos': t('8 núcleos', '8 núcleos', '8 cores'), '10 núcleos': t('10 núcleos', '10 núcleos', '10 cores'),
+  '14 núcleos': t('14 núcleos', '14 núcleos', '14 cores'),
   calida: t('Cálida', 'Quente', 'Warm'), fria: t('Fría', 'Fria', 'Cool'), neutra: t('Neutra', 'Neutra', 'Neutral'),
   e27: t('E27', 'E27', 'E27'), e14: t('E14', 'E14', 'E14'),
   // usos

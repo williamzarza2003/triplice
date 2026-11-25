@@ -71,9 +71,18 @@ def estudio(muestras, lado):
 
 
 def importar(modelo):
-    archivo = next((MODELOS / modelo).glob("*.gltf"))
     antes = set(bpy.data.objects)
-    bpy.ops.import_scene.gltf(filepath=str(archivo))
+    propio = MODELOS / modelo / "modelo.blend"
+    if propio.exists():
+        # modelos propios (modelar.py): se agregan los objetos del .blend tal cual, con sus materiales
+        with bpy.data.libraries.load(str(propio), link=False) as (origen, destino):
+            destino.objects = origen.objects
+        for o in destino.objects:
+            if o is not None:
+                bpy.context.scene.collection.objects.link(o)
+    else:
+        archivo = next((MODELOS / modelo).glob("*.gltf"))
+        bpy.ops.import_scene.gltf(filepath=str(archivo))
     nuevos = [o for o in bpy.data.objects if o not in antes]
     mallas = [o for o in nuevos if o.type == "MESH"]
     bpy.context.view_layer.update()
@@ -167,6 +176,7 @@ def tenir(mat, hex_color, fuerza=0.9, modo="todo", tono=None, umbral_s=None):
       claro     superficies claras y poco saturadas (tela blanca, cerámica, plástico blanco) → multiplicar
       saturado  superficies de color (plástico, pintura, cuero); con `tono` se limita a un rango de matiz → mezcla 'Color'
       todo      todo el material → mezcla 'Color'
+      reemplazar  todo el material → el color exacto (modelos propios, donde cada parte tiene su material)
     Ojo: la textura llega al nodo en espacio lineal (no sRGB), así que los umbrales son lineales.
     umbral_s ajusta la saturación máxima de "claro" (por ejemplo, el acero beige de una pava).
     """
@@ -177,7 +187,8 @@ def tenir(mat, hex_color, fuerza=0.9, modo="todo", tono=None, umbral_s=None):
     entrada = bsdf.inputs["Base Color"]
     mezcla = arbol.nodes.new("ShaderNodeMix")
     mezcla.data_type = "RGBA"
-    mezcla.blend_type = "MULTIPLY" if modo == "claro" else "COLOR"
+    # reemplazar: los modelos propios tienen un material por parte, así que se pinta el color tal cual
+    mezcla.blend_type = {"claro": "MULTIPLY", "reemplazar": "MIX"}.get(modo, "COLOR")
     if entrada.links:
         origen = entrada.links[0].from_socket
         arbol.links.new(origen, mezcla.inputs["A"])
@@ -185,7 +196,7 @@ def tenir(mat, hex_color, fuerza=0.9, modo="todo", tono=None, umbral_s=None):
         origen = None
         mezcla.inputs["A"].default_value = entrada.default_value
     mezcla.inputs["B"].default_value = hex_a_lineal(hex_color)
-    if modo == "todo" or origen is None:
+    if modo in ("todo", "reemplazar") or origen is None:
         mezcla.inputs["Factor"].default_value = fuerza
     else:
         hsv = arbol.nodes.new("ShaderNodeSeparateColor")

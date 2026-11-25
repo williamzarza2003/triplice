@@ -179,6 +179,8 @@
       "luz": "la luz"
     },
     "opcionNombre": {
+      "almacenamiento": "Memoria",
+      "contenido": "Tamaño",
       "color": "Color",
       "medida": "Medida",
       "talle": "Talle",

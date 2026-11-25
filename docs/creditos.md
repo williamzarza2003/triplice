@@ -1,27 +1,25 @@
 # Créditos de las fotos
 
-Todas las fotos de producto son renders de modelos 3D **CC0 (dominio público)** de [Poly Haven](https://polyhaven.com/license),
-fotografiados en un mismo estudio de Blender con `herramientas/fotos/fotografiar.py`. Las variantes de color se tiñen en el render.
-CC0 no exige atribución; igual se lista cada modelo y su autor.
+Todas las fotos de producto son renders hechos en un mismo estudio de Blender (`herramientas/fotos/fotografiar.py`), de dos fuentes:
+
+- **Modelos propios** (celulares, tablets, notebooks, monitores, auriculares, parlantes, perfumes, relojes, TV, consolas, cámaras y
+  cuidado personal): modelados para Tríplice con `herramientas/fotos/modelar.py` (primitivas, biseles y materiales de Blender), porque
+  Poly Haven no tiene electrónica moderna y Sketchfab pide una cuenta para descargar. Marcas y diseños ficticios: ninguno copia un
+  producto real. Son parte del repositorio, con la misma licencia del proyecto.
+- **Modelos CC0 (dominio público) de [Poly Haven](https://polyhaven.com/license)** para el resto del catálogo. CC0 no exige
+  atribución; igual se lista cada modelo y su autor.
+
+Las variantes de color se tiñen en el render.
 
 | Modelo | Autor(es) |
 | --- | --- |
-| [Television 02](https://polyhaven.com/a/television_02) | Benny Weimer |
-| [Television 01](https://polyhaven.com/a/Television_01) | Gabriel Radić |
-| [Classic Laptop](https://polyhaven.com/a/classic_laptop) | Arrangemonk |
 | [Gaming Console](https://polyhaven.com/a/gaming_console) | Sean Buckley |
 | [Gamepad](https://polyhaven.com/a/gamepad) | Josh Dean |
 | [Boombox](https://polyhaven.com/a/boombox) | Thomas Paul Mouilleron |
-| [Cassette Player](https://polyhaven.com/a/cassette_player) | Oday Abuzaeed |
-| [Portable Cassette Player](https://polyhaven.com/a/portable_cassette_player) | Mateusz Sadek |
-| [Camera 01](https://polyhaven.com/a/Camera_01) | Rajil Jose Macatangay |
-| [Vintage Video Camera](https://polyhaven.com/a/vintage_video_camera) | James Ray Cock, Jenelle van Heerden |
 | [Digital Wrist Watch](https://polyhaven.com/a/digital_wrist_watch) | Adrian C |
 | [Security Camera 01](https://polyhaven.com/a/security_camera_01) | Alexander Otterbeck, Yann Kervran |
 | [Security Camera 02](https://polyhaven.com/a/security_camera_02) | Garrison Gager, Yann Kervran |
-| [Vintage Radio Transceiver](https://polyhaven.com/a/vintage_radio_transceiver) | Mateusz Sadek |
 | [Megaphone 01](https://polyhaven.com/a/Megaphone_01) | Ethan Simon-Law |
-| [Filmstrip Projector 8mm](https://polyhaven.com/a/filmstrip_projector_8mm) | PeterM |
 | [Metal Detector](https://polyhaven.com/a/metal_detector) | Kuutti Siitonen |
 | [Vintage Electric Kettle](https://polyhaven.com/a/vintage_electric_kettle) | SV Garip |
 | [Vintage Microwave](https://polyhaven.com/a/vintage_microwave) | Adam Nekola |
@@ -31,9 +29,6 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Portable Generator](https://polyhaven.com/a/portable_generator) | James Ray Cock |
 | [Pot Enamel 01](https://polyhaven.com/a/pot_enamel_01) | Kuutti Siitonen |
 | [Tea Set 01](https://polyhaven.com/a/tea_set_01) | James Ray Cock, Rico Cilliers, Jurita Burger |
-| [Brass Pan 01](https://polyhaven.com/a/brass_pan_01) | Rico Cilliers |
-| [Brass Pot 01](https://polyhaven.com/a/brass_pot_01) | Rico Cilliers |
-| [Brass Pot 02](https://polyhaven.com/a/brass_pot_02) | Rico Cilliers |
 | [Ceramic Pot](https://polyhaven.com/a/ceramic_pot) | Aron Łyczek |
 | [Wooden Cutting Board](https://polyhaven.com/a/wooden_cutting_board) | Kuutti Siitonen |
 | [Wooden Spoon](https://polyhaven.com/a/wooden_spoon) | Ronnie Barter |
@@ -43,18 +38,13 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Jug 01](https://polyhaven.com/a/jug_01) | Kuutti Siitonen |
 | [Metal Jug](https://polyhaven.com/a/metal_jug) | Anzor Lezhava |
 | [Fish Knife](https://polyhaven.com/a/fish_knife) | Mateusz Sadek |
-| [Brass Goblets](https://polyhaven.com/a/brass_goblets) | Tina |
 | [Plastic Thermos](https://polyhaven.com/a/plastic_thermos) | PierreB3D |
 | [Modified Thermos](https://polyhaven.com/a/modified_thermos) | Alex Weber |
 | [Wooden Bucket 01](https://polyhaven.com/a/wooden_bucket_01) | James Ray Cock |
-| [Arm Chair 01](https://polyhaven.com/a/ArmChair_01) | Kirill Sannikov |
-| [Sofa 01](https://polyhaven.com/a/Sofa_01) | Kirill Sannikov |
 | [Sofa 02](https://polyhaven.com/a/sofa_02) | Kirill Sannikov |
 | [Mid Century Lounge Chair](https://polyhaven.com/a/mid_century_lounge_chair) | Kuutti Siitonen |
 | [Modern Arm Chair 01](https://polyhaven.com/a/modern_arm_chair_01) | Vibrant Nordic |
-| [Green Chair 01](https://polyhaven.com/a/GreenChair_01) | Kirill Sannikov |
 | [Rockingchair 01](https://polyhaven.com/a/Rockingchair_01) | Jorge Camacho |
-| [Wooden Chair 01](https://polyhaven.com/a/WoodenChair_01) | Jake Mobley |
 | [Dining Chair 02](https://polyhaven.com/a/dining_chair_02) | James Ray Cock |
 | [Painted Wooden Chair 01](https://polyhaven.com/a/painted_wooden_chair_01) | Kuutti Siitonen |
 | [Painted Wooden Chair 02](https://polyhaven.com/a/painted_wooden_chair_02) | Kirill Sannikov |
@@ -66,7 +56,6 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Folding Wooden Stool](https://polyhaven.com/a/folding_wooden_stool) | Ulan Cabanilla |
 | [Plastic Monobloc Chair 01](https://polyhaven.com/a/plastic_monobloc_chair_01) | Kuutti Siitonen |
 | [Ottoman 01](https://polyhaven.com/a/Ottoman_01) | Caspian Fortune |
-| [Coffee Table 01](https://polyhaven.com/a/CoffeeTable_01) | Fernando Quinn |
 | [Modern Coffee Table 01](https://polyhaven.com/a/modern_coffee_table_01) | Amin |
 | [Modern Coffee Table 02](https://polyhaven.com/a/modern_coffee_table_02) | Amin |
 | [Coffee Table Round 01](https://polyhaven.com/a/coffee_table_round_01) | Ulan Cabanilla |
@@ -77,35 +66,24 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Dining Table](https://polyhaven.com/a/dining_table) | Aron Łyczek |
 | [Classic Nightstand 01](https://polyhaven.com/a/ClassicNightstand_01) | Kirill Sannikov |
 | [Painted Wooden Nightstand](https://polyhaven.com/a/painted_wooden_nightstand) | Kirill Sannikov |
-| [Vintage Day Bed](https://polyhaven.com/a/vintage_day_bed) | Aron Łyczek |
 | [Shelf 01](https://polyhaven.com/a/Shelf_01) | Gabriel Radić |
 | [Wooden Bookshelf Worn](https://polyhaven.com/a/wooden_bookshelf_worn) | Ulan Cabanilla |
 | [Steel Frame Shelves 01](https://polyhaven.com/a/steel_frame_shelves_01) | James Ray Cock |
-| [Vintage Cabinet 01](https://polyhaven.com/a/vintage_cabinet_01) | Rico Cilliers |
 | [Modern Wooden Cabinet](https://polyhaven.com/a/modern_wooden_cabinet) | Patrik Pangerl |
 | [Drawer Cabinet](https://polyhaven.com/a/drawer_cabinet) | Ulan Cabanilla |
 | [Metal Office Desk](https://polyhaven.com/a/metal_office_desk) | Ulan Cabanilla |
 | [School Desk 01](https://polyhaven.com/a/SchoolDesk_01) | Ethan Place |
-| [Chinese Tea Table](https://polyhaven.com/a/chinese_tea_table) | Kirill Sannikov |
 | [Ceramic Vase 01](https://polyhaven.com/a/ceramic_vase_01) | James Ray Cock |
 | [Ceramic Vase 02](https://polyhaven.com/a/ceramic_vase_02) | James Ray Cock |
 | [Ceramic Vase 03](https://polyhaven.com/a/ceramic_vase_03) | James Ray Cock |
 | [Ceramic Vase 04](https://polyhaven.com/a/ceramic_vase_04) | James Ray Cock |
-| [Antique Ceramic Vase 01](https://polyhaven.com/a/antique_ceramic_vase_01) | James Ray Cock |
-| [Brass Vase 01](https://polyhaven.com/a/brass_vase_01) | Rico Cilliers |
-| [Brass Vase 02](https://polyhaven.com/a/brass_vase_02) | Rico Cilliers |
-| [Brass Vase 03](https://polyhaven.com/a/brass_vase_03) | Rico Cilliers |
 | [Hanging Picture Frame 01](https://polyhaven.com/a/hanging_picture_frame_01) | James Ray Cock |
 | [Hanging Picture Frame 02](https://polyhaven.com/a/hanging_picture_frame_02) | James Ray Cock |
-| [Fancy Picture Frame 01](https://polyhaven.com/a/fancy_picture_frame_01) | Rob Tuytel, Rico Cilliers |
 | [Standing Picture Frame 01](https://polyhaven.com/a/standing_picture_frame_01) | James Ray Cock |
 | [Standing Picture Frame 02](https://polyhaven.com/a/standing_picture_frame_02) | James Ray Cock |
 | [Ornate Mirror 01](https://polyhaven.com/a/ornate_mirror_01) | James Ray Cock |
 | [Wall Clock](https://polyhaven.com/a/wall_clock) | PierreB3D |
-| [Mantel Clock 01](https://polyhaven.com/a/mantel_clock_01) | Yann Kervran, Rico Cilliers |
 | [Alarm Clock 01](https://polyhaven.com/a/alarm_clock_01) | Yann Kervran, James Ray Cock |
-| [Vintage Grandfather Clock 01](https://polyhaven.com/a/vintage_grandfather_clock_01) | Yann Kervran, James Ray Cock |
-| [Brass Candleholders](https://polyhaven.com/a/brass_candleholders) | Tina |
 | [Wooden Candlestick](https://polyhaven.com/a/wooden_candlestick) | Josh Dean |
 | [Throw Pillows 01](https://polyhaven.com/a/throw_pillows_01) | Serhii Khromov |
 | [Wicker Basket 01](https://polyhaven.com/a/wicker_basket_01) | Kuutti Siitonen |
@@ -113,21 +91,15 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Carved Wooden Elephant](https://polyhaven.com/a/carved_wooden_elephant) | Greg Zaal |
 | [Concrete Cat Statue](https://polyhaven.com/a/concrete_cat_statue) | Rico Cilliers, Riley Queen |
 | [Horse Statue 01](https://polyhaven.com/a/horse_statue_01) | Rico Cilliers |
-| [Bronze Whale Statue](https://polyhaven.com/a/bronze_whale_statue) | Tina |
 | [Desk Lamp Arm 01](https://polyhaven.com/a/desk_lamp_arm_01) | Yann Kervran, Kuutti Siitonen |
 | [Modern Ceiling Lamp 01](https://polyhaven.com/a/modern_ceiling_lamp_01) | James Ray Cock |
-| [Chandelier 01](https://polyhaven.com/a/Chandelier_01) | Kirill Sannikov |
-| [Chandelier 02](https://polyhaven.com/a/Chandelier_02) | Kirill Sannikov |
-| [Chinese Chandelier](https://polyhaven.com/a/chinese_chandelier) | Kirill Sannikov |
 | [Lantern Chandelier 01](https://polyhaven.com/a/lantern_chandelier_01) | Kirill Sannikov |
 | [Hanging Industrial Lamp](https://polyhaven.com/a/hanging_industrial_lamp) | Kuutti Siitonen |
 | [Caged Hanging Light](https://polyhaven.com/a/caged_hanging_light) | Ulan Cabanilla |
 | [Industrial Wall Lamp](https://polyhaven.com/a/industrial_wall_lamp) | Kuutti Siitonen |
 | [Industrial Wall Sconce](https://polyhaven.com/a/industrial_wall_sconce) | Ulan Cabanilla |
 | [Industrial Pipe Lamp](https://polyhaven.com/a/industrial_pipe_lamp) | Mateusz Sadek |
-| [Lantern 01](https://polyhaven.com/a/Lantern_01) | Rajil Jose Macatangay |
 | [Wooden Lantern 01](https://polyhaven.com/a/wooden_lantern_01) | James Ray Cock |
-| [Vintage Oil Lamp](https://polyhaven.com/a/vintage_oil_lamp) | Monsta3D |
 | [Lightbulb 01](https://polyhaven.com/a/lightbulb_01) | Josh Dean |
 | [Lightbulb Led](https://polyhaven.com/a/lightbulb_led) | Josh Dean |
 | [Security Light](https://polyhaven.com/a/security_light) | Maximilian Schuster |
@@ -144,7 +116,6 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Bolt Cutters 01](https://polyhaven.com/a/bolt_cutters_01) | Yann Kervran, Antanas Kep |
 | [Screwdriver](https://polyhaven.com/a/screwdriver) | PierreB3D |
 | [Flathead Screwdriver](https://polyhaven.com/a/flathead_screwdriver) | Dylan Detwiller |
-| [Screwdrivers 02](https://polyhaven.com/a/screwdrivers_02) | BKS |
 | [Cross Pein Hammer](https://polyhaven.com/a/cross_pein_hammer) | Tics |
 | [Wooden Hammer 01](https://polyhaven.com/a/wooden_hammer_01) | James Ray Cock |
 | [Sledgehammer 01](https://polyhaven.com/a/sledgehammer_01) | Dylan Guzman |
@@ -158,7 +129,6 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Wooden Ladder](https://polyhaven.com/a/wooden_ladder) | Miroslav Turura |
 | [Retro Multimeter](https://polyhaven.com/a/retro_multimeter) | elli moeller |
 | [Propane Torch](https://polyhaven.com/a/propane_torch) | Jan W |
-| [Vintage Hand Drill](https://polyhaven.com/a/vintage_hand_drill) | Yann Kervran, Benjamin McDonnell |
 | [Magnifying Glass 01](https://polyhaven.com/a/magnifying_glass_01) | Nazar Borodavka |
 | [Hand Truck](https://polyhaven.com/a/hand_truck) | Mutanzom3D |
 | [Watering Can Metal 01](https://polyhaven.com/a/watering_can_metal_01) | Charles Nderitu |
@@ -204,7 +174,6 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Baseball 01](https://polyhaven.com/a/baseball_01) | Rico Cilliers |
 | [Baseball Bat](https://polyhaven.com/a/baseball_bat) | Enrique Martín |
 | [Binoculars](https://polyhaven.com/a/binoculars) | Derek Wight |
-| [Vintage Binoculars](https://polyhaven.com/a/vintage_binocular) | Luke |
 | [Seadogs Compass](https://polyhaven.com/a/seadogs_compass) | Benny Weimer |
 | [Life Jacket](https://polyhaven.com/a/life_jacket) | PierreB3D |
 | [Rubber Duck Toy](https://polyhaven.com/a/rubber_duck_toy) | Plat251 |
@@ -217,13 +186,10 @@ CC0 no exige atribución; igual se lista cada modelo y su autor.
 | [Office Notepads](https://polyhaven.com/a/office_notepads) | Ulan Cabanilla |
 | [Clipboard](https://polyhaven.com/a/clipboard) | ProgrammerOnCoffee |
 | [Vintage Stapler](https://polyhaven.com/a/vintage_stapler) | Mateusz Sadek |
-| [Book Encyclopedia Set 01](https://polyhaven.com/a/book_encyclopedia_set_01) | John Malcolm |
 | [Standing Chalkboard 01](https://polyhaven.com/a/standing_chalkboard_01) | ParzivalCG |
 | [Round Spectacles](https://polyhaven.com/a/round_spectacles) | Sean Buckley |
 | [Fishermans Hat](https://polyhaven.com/a/fishermans_hat) | PierreB3D |
 | [Rubber Boots](https://polyhaven.com/a/rubber_boots) | L |
-| [Vintage Pocket Watch](https://polyhaven.com/a/vintage_pocket_watch) | Tal Swicegood |
-| [Pocket Watch](https://polyhaven.com/a/pocket_watch) | PierreB3D |
 | [Vintage Suitcase](https://polyhaven.com/a/vintage_suitcase) | Maximilian Schuster |
 | [Tire Pump](https://polyhaven.com/a/tire_pump) | Garrison Gager |
 | [Metal Jerrycan](https://polyhaven.com/a/metal_jerrycan) | Sean Buckley |
