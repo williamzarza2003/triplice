@@ -14,6 +14,7 @@ import { rpcServicio } from '@/lib/datos/fuente'
 import { REGLAS } from '@/lib/precios'
 import type { Moneda } from '@/lib/region'
 import { SITIO } from '@/lib/sitio'
+import { usuarioActual } from '@/lib/cuenta/sesion'
 
 export type EstadoPago = { errores: Partial<Record<Campo, ErrorCampo>>; general: 'sin_items' | 'cambio' | 'pago' | null; valores: Record<string, string> } | null
 
@@ -58,12 +59,14 @@ export async function pagarAccion(_: EstadoPago, f: FormData): Promise<EstadoPag
 
   // en la base (si hay rol de servicio): congelado, con los montos en la unidad mínima de la moneda
   const m = ctx.moneda
+  // con sesión, el pedido queda en la cuenta (Mis pedidos); el nombre y el teléfono van con la entrega
+  const comprador = await usuarioActual()
   await rpcServicio('registrar_pedido', {
-    numero: pedido.numero, clave: pedido.clave, email: pedido.email, region: ctx.region, idioma: ctx.idioma, moneda: m,
+    numero: pedido.numero, clave: pedido.clave, comprador_id: comprador?.id ?? '', email: pedido.email, region: ctx.region, idioma: ctx.idioma, moneda: m,
     cotizacion: m === 'USD' ? 1 : ctx.tasas[m], productos: minima(cot.desglose.productos, m), envio: minima(cot.desglose.envio, m),
     descuento: minima(cot.desglose.descuento, m), total: minima(cot.desglose.total, m),
     impuestos: cot.desglose.impuestos.map((x) => ({ ...x, monto: minima(x.monto, m) })), cupon: pedido.cupon,
-    entrega: pedido.entrega, proveedor: pedido.proveedor,
+    entrega: { ...pedido.entrega, nombre: pedido.nombre, telefono: pedido.telefono }, proveedor: pedido.proveedor,
     items: comprables.map((r) => ({ oferta: r.o, tienda_id: r.dato!.tienda.id, producto_id: r.dato!.producto.id, titulo: r.dato!.producto.titulo,
       opciones: r.dato!.variante.opciones, cantidad: r.cantidadCobrable, precio: minima(r.unitario, m),
       tasa: cot.items.find((i) => i.id === r.o)!.regla.tasa, impuesto: cot.items.find((i) => i.id === r.o)!.regla.nombre })),

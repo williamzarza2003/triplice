@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
   // la base embebida que arma `npm run db:construir` y las extensiones que PGlite abre en tiempo de ejecución
   outputFileTracingIncludes: {
     '/**': ['./.datos/**', './node_modules/@electric-sql/pglite/dist/**/*.{wasm,data,tar.gz}'],
+    // las fuentes de la marca para el comprobante en PDF
+    '/api/comprobante/**': ['./tokens/fuentes/pdf/*.ttf'],
   },
   images: {
     // las fotos ya salen optimizadas del script (WebP en 3 tamaños): el cargador elige el archivo

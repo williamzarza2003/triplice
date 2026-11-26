@@ -32,3 +32,37 @@
   .opiniones { grid-template-columns: minmax(0, 1fr); gap: var(--e-5); }
   .resumen { position: static; }
 }
+
+/* Fase 3: invitación a opinar, fotos de compradores y "Me fue útil" */
+.invitacion { margin-top: var(--e-4); padding-top: var(--e-4); border-top: 1px solid var(--linea-2); }
+.invitacion :global(.boton) { width: 100%; }
+.nota { display: flex; gap: 8px; align-items: flex-start; font-size: var(--t-14); color: var(--tinta-2); margin: 0; }
+.nota svg { flex: none; margin-top: 2px; color: var(--agua-900); }
+.fotos { list-style: none; margin: var(--e-2) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.fotos button { padding: 0; border: 1px solid var(--linea); border-radius: var(--r-control); background: var(--neblina); cursor: zoom-in; line-height: 0; overflow: hidden; }
+.fotos button[aria-expanded='true'] { outline: 2px solid var(--agua-900); outline-offset: 1px; }
+.fotos img { width: 72px; height: 72px; object-fit: cover; }
+.ampliada { display: block; margin-top: var(--e-2); max-width: min(100%, 480px); height: auto; border-radius: var(--r-tarjeta); }
+.util { margin-top: var(--e-2); }
+.util button {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: var(--r-pildora);
+  border: 1px solid var(--linea); background: var(--papel); color: var(--tinta-2); font: inherit; font-size: var(--t-13); cursor: pointer;
+}
+.util button:hover { border-color: var(--agua-700); color: var(--agua-900); }
+.util button[aria-pressed='true'] { background: var(--agua-100); border-color: var(--agua-900); color: var(--agua-900); font-weight: 700; }
+.util .numero { font-weight: 700; }
+
+/* Preguntas (fase 3) */
+.preguntar { display: grid; gap: 6px; margin-bottom: var(--e-5); max-width: 760px; }
+.preguntarFila { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--e-2); align-items: start; }
+.preguntar textarea, .responder textarea {
+  width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #a9b8b4; border-radius: var(--r-control); font: inherit; resize: vertical; background: var(--papel);
+}
+.preguntar textarea[aria-invalid='true'] { border: 2px solid var(--error); }
+.ayudaChica { font-size: var(--t-13); color: var(--tinta-3); margin: 0; display: flex; align-items: center; gap: 4px; }
+.errorChico { font-size: var(--t-13); color: var(--error); margin: 0; }
+.responder { margin-top: 4px; }
+.responder summary { cursor: pointer; color: var(--agua-900); font-size: var(--t-14); text-decoration: underline; width: max-content; min-height: 32px; display: flex; align-items: center; }
+.responder form { display: grid; gap: var(--e-2); margin-top: var(--e-2); max-width: 600px; }
+.responder :global(.boton) { justify-self: start; min-height: 40px; }
+@media (max-width: 600px) { .preguntarFila { grid-template-columns: 1fr; } }

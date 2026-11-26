@@ -98,6 +98,7 @@
 .lineaTiempo li[data-hecho='true']::before { background: var(--exito); border-color: var(--exito); }
 .lineaTiempo li[data-hecho='true']::after { background: var(--exito); }
 .lineaTiempo li[aria-current='step']::before { border-color: var(--agua-900); border-width: 6px; }
+.lineaTiempo li[data-hecho='true'][aria-current='step']::before { border-color: var(--exito); border-width: 2px; box-shadow: 0 0 0 4px var(--exito-100); }
 .lineaTiempo b { font-family: var(--f-titulo); }
 .lineaTiempo small { color: var(--tinta-2); font-size: var(--t-13); }
 .lineaTiempo li:not([data-hecho='true']):not([aria-current]) b { color: var(--tinta-3); font-weight: 600; }

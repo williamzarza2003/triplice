@@ -110,3 +110,40 @@ Rendimiento / Accesibilidad / Buenas prácticas / SEO. "Celular" es la configura
 ### Contra Amazon y Mercado Libre
 - **Mejor:** el precio de la tarjeta es el que se paga (impuesto incluido y la misma cifra en el carrito); el carrito agrupa por vendedor y dice qué envío cobra cada uno; el retiro en el local muestra en un mapa dónde queda cada tienda y en cuántas horas está listo; los errores del formulario dicen cómo arreglarlos (CEP de 8 números, código postal argentino).
 - **Todavía no:** no hay cuotas ni otros medios de pago (transferencia, Pix); el comprobante vive en el navegador hasta que haya cuentas (fase 3); el envío no se puede programar por franja horaria.
+
+## Fase 3: cuentas, pedidos y opiniones (26/11/2026)
+
+### Rondas de crítica (1440 y 390 px)
+
+**Ronda 1**
+1. En el celular, el botón de la cuenta mandaba el carrito a una segunda fila del encabezado. La cuenta pasó al menú ☰ y el encabezado quedó como antes.
+2. Las cuatro etiquetas del trayecto se pisaban en 390 px. En el celular quedan los puntos (con su texto para lectores de pantalla) y una línea "Estado: En camino".
+3. El paso marcado era el próximo que faltaba: "Entregado" aparecía en negrita en un pedido que estaba en camino. Ahora se marca dónde está el pedido.
+4. "Pedir devolución" cerrado se veía como una caja gris y estiraba el botón "Opinar". Cerrado es un botón; abierto ocupa todo el ancho.
+5. El `<title>` dentro del contenido dinámico no reemplazaba al del layout (pasaba también en el carrito, el pago y el comprobante de la fase 2). Todo pasó a `generateMetadata`.
+6. El pie seguía diciendo "Fase 2".
+
+**Ronda 2**
+1. La opinión recién publicada no aparecía entre las primeras de la ficha (se ordenaba por votos y se cortaba en 30). Ahora las que tienen fotos van primero.
+2. "Me fue útil" guardaba el voto pero la ficha no se actualizaba (el redirect a la misma URL no vuelve a pedir los datos). El botón se actualiza en el lugar con el número nuevo.
+3. Votar recalculaba el contador desde cero y borraba los votos del seed. Ahora suma y resta.
+4. Con una dirección guardada elegida, el pago repetía todos los campos. Se ocultan y viajan igual; aparecen con "Otra dirección" o si alguno no pasa la validación.
+5. El PDF: los números salían con el cero con barra de Atkinson y la hora en "p. m.". Montos y fechas en Schibsted, hora de 24 h y el isotipo real con los dos ríos.
+6. El menú de la cuenta no marcaba la página en una carga completa (`usePathname` traía el segmento interno `/py-pyg`).
+
+### Contra Amazon y Mercado Libre
+- **Mejor:** el trayecto con la fecha de cada parada y el retiro en el local; la devolución sale del mismo producto del pedido, con el plazo a la vista; las respuestas dicen si las dio la tienda o alguien que lo recibió; el comprobante dice en la cabecera que es simulado.
+- **Peor:** no hay seguimiento del envío con mapa ni avisos por correo o WhatsApp; las fotos de las opiniones no tienen galería a pantalla completa; el carrito con sesión sigue en la cookie (no se comparte entre dispositivos).
+
+### Lighthouse (build de producción, local, mediana de 3 corridas)
+
+| Página | Celular | Escritorio |
+| --- | --- | --- |
+| Entrar | 81 / 100 / 100 / 66 | 100 / 100 / 100 / 66 |
+| Mis pedidos (con sesión) | 85 / 100 / 100 / 66 | 99 / 100 / 100 / 66 |
+| Pedido (con sesión) | 80 / 100 / 100 / 66 | 99 / 100 / 100 / 66 |
+| Opinar (con sesión) | 83 / 100 / 100 / 66 | 99 / 100 / 100 / 66 |
+| Ficha del perfume (sin sesión) | 91 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Ficha del celular (sin sesión) | 75 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+
+SEO 66 en la cuenta es a propósito (`noindex`). En el celular, las páginas de la cuenta se arman en cada visita y el CSS de todo el sitio va incrustado (sumó ~27 KB sin comprimir con la cuenta); queda para la fase 6, junto con aligerar el JavaScript de la ficha (opiniones, votos y preguntas).

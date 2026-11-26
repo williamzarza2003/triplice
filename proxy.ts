@@ -1,6 +1,7 @@
 // Idioma en la URL (/es, /pt, /en) y región + moneda en una cookie.
 // La gente ve /es/p/pava-electrica; por dentro se reescribe a /es/py-pyg/p/pava-electrica, así cada
 // combinación de región y moneda es una página cacheable distinta y el precio sale bien desde el servidor.
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { esIdioma, IDIOMA_PREDETERMINADO, type Idioma } from './lib/i18n/idiomas'
 import {
@@ -21,7 +22,7 @@ function detectar(aceptado: string | null): { idioma: Idioma; region?: Region } 
   return { idioma: IDIOMA_PREDETERMINADO }
 }
 
-export function proxy(req: NextRequest) {
+function dirigir(req: NextRequest) {
   const url = req.nextUrl.clone()
   const partes = url.pathname.split('/')
   const detectado = detectar(req.headers.get('accept-language'))
@@ -44,6 +45,27 @@ export function proxy(req: NextRequest) {
 
   url.pathname = ['', idioma, segmentoMercado({ region, moneda }), ...partes.slice(2)].join('/').replace(/\/$/, '')
   return NextResponse.rewrite(url)
+}
+
+// Con Supabase, la sesión se renueva acá (los componentes de servidor no pueden escribir cookies). Solo si hay
+// una cookie de sesión: los visitantes sin cuenta no pagan una consulta a Supabase Auth en cada página.
+const URL_SB = process.env.NEXT_PUBLIC_SUPABASE_URL
+const CLAVE_SB = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+export async function proxy(req: NextRequest) {
+  const res = dirigir(req)
+  if (!URL_SB || !CLAVE_SB || !req.cookies.getAll().some((c) => c.name.startsWith('sb-'))) return res
+  const sb = createServerClient(URL_SB, CLAVE_SB, {
+    cookies: {
+      getAll: () => req.cookies.getAll(),
+      setAll: (lista, encabezados) => {
+        for (const { name, value, options } of lista) res.cookies.set(name, value, options)
+        for (const [k, v] of Object.entries(encabezados ?? {})) res.headers.set(k, v)
+      },
+    },
+  })
+  await sb.auth.getClaims()
+  return res
 }
 
 export const config = {

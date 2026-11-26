@@ -26,6 +26,8 @@ async function baseLocal() {
   local ??= (async () => {
     const { abrirBase } = await import('./pglite')
     const db = await abrirBase()
+    // la cuenta de prueba con las fechas de hoy (ver supabase/pglite/90_cuenta_demo.sql)
+    await db.exec('select public.demo_al_dia()')
     // mismo permiso que un visitante sin cuenta en Supabase
     await db.exec('set role anon')
     return db
@@ -69,5 +71,35 @@ export async function rpcServicio<T>(funcion: FuncionServicio, p: object): Promi
     await tx.exec('set local role service_role')
     const { rows } = await tx.query<{ r: T }>(`select public.${funcion}($1::jsonb) as r`, [JSON.stringify(p)])
     return rows[0].r
+  })
+}
+
+/** Las de la cuenta (fase 3): corren como el usuario que inició sesión y el RLS decide. */
+export type FuncionCuenta = 'mi_cuenta' | 'guardar_perfil' | 'mis_pedidos' | 'mi_pedido' | 'por_opinar' | 'mis_resenas'
+  | 'escribir_resena' | 'votar_resena' | 'mis_votos' | 'ficha_usuario' | 'preguntar' | 'responder' | 'mis_direcciones'
+  | 'guardar_direccion' | 'borrar_direccion' | 'solicitar_devolucion'
+
+/**
+ * En la base embebida: la función corre con el rol `authenticated` y el id del usuario en la variable que lee
+ * auth.uid(), igual que hace Supabase con el JWT. Con Supabase se usa el cliente de la sesión (lib/cuenta/sesion.ts).
+ */
+export async function rpcEmbebidaComo<T>(uid: string, funcion: FuncionCuenta, p: object): Promise<T> {
+  const db = await baseLocal()
+  return db.transaction(async (tx) => {
+    await tx.exec('set local role authenticated')
+    await tx.query(`select set_config('request.jwt.claim.sub', $1, true)`, [uid])
+    const { rows } = await tx.query<{ r: T }>(`select public.${funcion}($1::jsonb) as r`, [JSON.stringify(p)])
+    return rows[0].r
+  })
+}
+
+/** Cuenta de prueba (solo en la base embebida): sus datos públicos para iniciar la sesión. */
+export async function cuentaDemo() {
+  const db = await baseLocal()
+  return db.transaction(async (tx) => {
+    await tx.exec('set local role postgres') // solo dentro de esta transacción
+    const { rows } = await tx.query<{ id: string; email: string; nombre: string }>(
+      `select u.id::text, u.email, p.nombre from auth.users u join public.perfiles p on p.id = u.id where u.email = 'lorena@triplice.example'`)
+    return rows[0] ?? null
   })
 }

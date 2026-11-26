@@ -5,6 +5,8 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: 'e2e',
   timeout: 60_000,
+  // un solo servidor con la base embebida para todas las pruebas: con más de 2 a la vez, las más lentas vencen el tiempo
+  workers: 2,
   use: { baseURL: 'http://localhost:3200', channel: 'chrome', locale: 'es-PY' },
   projects: [
     { name: 'escritorio', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },

@@ -96,7 +96,7 @@ export type Variante = { id: string; sku: string; opciones: Record<string, strin
 
 export type Resena = {
   id: string; autor: string; pais: string; verificada: boolean; variante: string | null; estrellas: number
-  titulo: string; texto: string; idioma: 'es' | 'pt' | 'en'; util: number; fecha: string
+  titulo: string; texto: string; idioma: 'es' | 'pt' | 'en'; util: number; fecha: string; fotos?: string[]
 }
 
 export type Ficha = {
@@ -119,7 +119,7 @@ export type Ficha = {
   variantes: Variante[]
   resumen: { promedio: number; cantidad: number; verificadas: number; distribucion: [number, number, number, number, number] }
   resenas: Resena[]
-  preguntas: { id: string; autor: string; texto: string; idioma: string; fecha: string; respuestas: { autor: string; es_vendedor: boolean; texto: string; fecha: string }[] }[]
+  preguntas: { id: string; autor: string; texto: string; idioma: string; fecha: string; respuestas: { autor: string; es_vendedor: boolean; compro?: boolean; texto: string; fecha: string }[] }[]
   preguntas_total: number
   relacionados: TarjetaDatos[]
 }

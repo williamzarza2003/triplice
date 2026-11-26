@@ -22,6 +22,12 @@ const TRAZOS = {
   reloj: <><circle cx="12" cy="12" r="8" /><path d="M12 7.5V12l3 2" /></>,
   globo: <><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9s1.3-6.4 3.9-9z" /></>,
   conversa: <path d="M5 5h14v10H10l-4 4v-4H5z" />,
+  // cuenta (fase 3)
+  persona: <><circle cx="12" cy="8.5" r="3.8" /><path d="M4.5 20.5c.8-3.9 3.8-6 7.5-6s6.7 2.1 7.5 6" /></>,
+  descarga: <path d="M12 4v11m-4.5-4.5L12 15l4.5-4.5M5 19.5h14" />,
+  camara: <><path d="M4 8h3.2L9 5.5h6L16.8 8H20v11H4z" /><circle cx="12" cy="13.2" r="3.4" /></>,
+  devolver: <path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />,
+  pulgar: <path d="M7.5 10.5v9.5h-3v-9.5zM7.5 19.5h9.2a2 2 0 0 0 2-1.6l1.1-5.6a2 2 0 0 0-2-2.3H13l.8-3.6A1.8 1.8 0 0 0 12 4.2l-4.5 6.3" />,
   // categorías
   celular: <><rect x="7" y="2.5" width="10" height="19" rx="2.2" /><path d="M11 18.5h2" /></>,
   notebook: <><rect x="5" y="5" width="14" height="10" rx="1.2" /><path d="M2.5 18.5h19L20 15H4z" /></>,

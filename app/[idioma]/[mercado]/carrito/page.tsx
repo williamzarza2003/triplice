@@ -18,9 +18,12 @@ import { foto } from '@/lib/imagenes'
 import { formatear } from '@/lib/precios'
 import { aplicarCuponAccion, cambiarCantidadAccion, paraDespuesAccion, quitarAccion, quitarCuponAccion } from './acciones'
 
-// Metadata fija: el título va dentro del contenido dinámico (React lo sube al <head>), así nada se calcula
-// antes de leer la cookie del comprador.
-export const metadata: Metadata = { robots: { index: false } }
+// El título va en la metadata (con el idioma de la URL): un <title> dentro del contenido dinámico no reemplaza al del layout
+export async function generateMetadata(): Promise<Metadata> {
+  const ctx = await contexto()
+  const t = await getTranslations({ locale: ctx.idioma, namespace: 'compra' })
+  return { title: t('carritoTitulo'), robots: { index: false } }
+}
 
 export default function PaginaCarrito() {
   return (
@@ -60,7 +63,6 @@ async function Carrito() {
 
   return (
     <>
-      <title>{`${t('carritoTitulo')} · Tríplice`}</title>
       <h1 className={s.titulo}>{t('carritoTitulo')}</h1>
       {vacio ? (
         <section className={`panel ${s.vacio}`} aria-labelledby="t-vacio">

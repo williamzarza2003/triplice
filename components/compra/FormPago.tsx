@@ -37,16 +37,23 @@ type Props = {
   textos: Textos
   retiro: React.ReactNode
   resumenes: Record<string, React.ReactNode>
+  /** con sesión (fase 3): datos del perfil y direcciones guardadas del país; sin sesión, la invitación a entrar */
+  cuenta: { datos: Partial<Record<Campo, string>>; direcciones: { id: string; alias: string; linea: string; datos: Partial<Record<Campo, string>> }[];
+    textos: { usar: string; otra: string } } | null
+  entrar: React.ReactNode
 }
 
 const AUTOCOMPLETAR: Partial<Record<Campo, string>> = {
   nombre: 'name', email: 'email', telefono: 'tel', ciudad: 'address-level2', direccion: 'street-address', codigo: 'postal-code',
 }
 
-export function FormPago({ accion, idioma, mercado, region, opciones, camposDireccion, sugerencias, proveedor, textos, retiro, resumenes }: Props) {
+export function FormPago({ accion, idioma, mercado, region, opciones, camposDireccion, sugerencias, proveedor, textos, retiro, resumenes, cuenta, entrar }: Props) {
   const [estado, enviar, pendiente] = useActionState(accion, null)
   const [modo, setModo] = useState<'retiro' | 'domicilio'>(estado?.valores.modo === 'domicilio' ? 'domicilio' : 'retiro')
-  const [ciudad, setCiudad] = useState(estado?.valores.ciudad ?? '')
+  const guardadas = cuenta?.direcciones ?? []
+  const [guardada, setGuardada] = useState<string>(estado ? '' : guardadas[0]?.id ?? '')
+  const inicial = (c: Campo) => estado?.valores[c] ?? (guardadas.find((d) => d.id === guardada)?.datos[c] ?? cuenta?.datos[c] ?? '')
+  const [ciudad, setCiudad] = useState(estado?.valores.ciudad ?? guardadas[0]?.datos.ciudad ?? '')
   const router = useRouter()
   const form = useRef<HTMLFormElement>(null)
 
@@ -65,7 +72,7 @@ export function FormPago({ accion, idioma, mercado, region, opciones, camposDire
   const campo = (c: Campo, requerido: boolean, ancho: string) => (
     <label key={c} className={`${s.campo} ${s[ancho]}`} data-error={errores[c] ? true : undefined}>
       <span>{textos.campos[c]}{!requerido && <small> {textos.opcional}</small>}</span>
-      <input name={c} defaultValue={estado?.valores[c] ?? ''} autoComplete={AUTOCOMPLETAR[c]} required={requerido}
+      <input name={c} defaultValue={inicial(c)} autoComplete={AUTOCOMPLETAR[c]} required={requerido}
         type={c === 'email' ? 'email' : c === 'telefono' ? 'tel' : 'text'} inputMode={c === 'codigo' && region !== 'XX' ? (region === 'AR' ? 'text' : 'numeric') : undefined}
         list={sugerencias[c]?.length ? `sug-${c}` : undefined}
         onChange={c === 'ciudad' ? (e) => setCiudad(e.target.value) : undefined}
@@ -99,17 +106,37 @@ export function FormPago({ accion, idioma, mercado, region, opciones, camposDire
               <b>{modo === 'domicilio' ? elegida.envioTexto : domicilio.map((o) => o.envioTexto).sort()[0]}</b>
             </label>
           </fieldset>
-          {modo === 'retiro' ? <div className={s.retiro}>{retiro}</div> : (
-            <div className={s.grupo}>
-              {camposDireccion.map(({ campo: c, requerido }) => campo(c, requerido, c === 'direccion' || c === 'referencia' ? 'c6' : 'c3'))}
+          {modo === 'retiro' ? <div className={s.retiro}>{retiro}</div> : (<>
+            {guardadas.length > 0 && (
+              <fieldset className={s.opciones}>
+                <legend className={s.ayuda} style={{ margin: '0 0 8px' }}>{cuenta!.textos.usar}</legend>
+                {guardadas.map((d) => (
+                  <label key={d.id} className={s.opcion}>
+                    <input type="radio" name="guardada" checked={guardada === d.id}
+                      onChange={() => { setGuardada(d.id); setCiudad(d.datos.ciudad ?? '') }} />
+                    <span><b>{d.alias}</b><small>{d.linea}</small></span><span />
+                  </label>
+                ))}
+                <label className={s.opcion}>
+                  <input type="radio" name="guardada" checked={guardada === ''} onChange={() => { setGuardada(''); setCiudad('') }} />
+                  <span><b>{cuenta!.textos.otra}</b></span><span />
+                </label>
+              </fieldset>
+            )}
+            <div className={s.grupo} key={guardada}>
+              {/* con una dirección guardada elegida, sus datos viajan ocultos (si alguno no pasa la validación, se muestran) */}
+              {guardada && !camposDireccion.some(({ campo: c }) => errores[c])
+                ? camposDireccion.map(({ campo: c }) => <input key={c} type="hidden" name={c} value={inicial(c)} />)
+                : camposDireccion.map(({ campo: c, requerido }) => campo(c, requerido, c === 'direccion' || c === 'referencia' ? 'c6' : 'c3'))}
               <p className={`${s.c6} ${s.zona}`} role="status"><Icono nombre="camion" tam={16} />{textos.zonaElegida.replace('{zona}', elegida.nombre).replace('{plazo}', elegida.plazo).replace('{envio}', elegida.envioTexto)}</p>
             </div>
-          )}
+          </>)}
         </section>
 
         <section className="panel" aria-labelledby="t-datos">
           <h2 id="t-datos" className={s.paso}><span aria-hidden="true">2</span>{textos.pasoDatos}</h2>
           {modo === 'retiro' && <p className={s.ayuda}>{textos.datosRetiro}</p>}
+          {!cuenta && entrar}
           <div className={s.grupo}>
             {campo('nombre', true, 'c6')}
             {campo('email', true, 'c3')}

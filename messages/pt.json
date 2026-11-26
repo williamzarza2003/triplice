@@ -46,7 +46,10 @@
     "regionBoton": "Comprando do(a) {region}, preços em {moneda}, idioma {idioma}. Alterar",
     "carrito": "Carrinho",
     "regionAclaracion": "Mudar região, moeda ou idioma",
-    "carritoCon": "Carrinho: {n} unidades"
+    "carritoCon": "Carrinho: {n} unidades",
+    "entrar": "Entrar",
+    "hola": "Olá",
+    "tuCuenta": "Sua conta"
   },
   "sugerencias": {
     "enCategoria": "em {categoria}",
@@ -232,7 +235,6 @@
     "sinOpiniones": "Ninguém avaliou este produto ainda.",
     "preguntasTitulo": "Perguntas aos vendedores",
     "sinPreguntas": "Ninguém perguntou ainda.",
-    "preguntasLectura": "Nesta etapa as perguntas só podem ser lidas; escrever chega com as contas, na fase 3.",
     "respuestaTienda": "Resposta de {tienda}",
     "sinRespuesta": "Aguardando resposta do vendedor",
     "relacionados": "Mais de {categoria}",
@@ -253,7 +255,28 @@
       "AR": "Na Argentina"
     },
     "fronteraEquivale": "≈ {precio} na sua moeda",
-    "fronteraNota": "Com o imposto de cada país (simulação aproximada)."
+    "fronteraNota": "Com o imposto de cada país (simulação aproximada).",
+    "escribirOpinion": "Escrever minha avaliação",
+    "yaOpinaste": "Você já publicou sua avaliação deste produto.",
+    "soloCompradores": "Só avalia quem comprou na Tríplice e já recebeu.",
+    "fotoDe": "Foto {n} de {autor}",
+    "meFueUtil": "Foi útil",
+    "preguntarTitulo": "Ficou com dúvida? Pergunte à loja",
+    "preguntarEjemplo": "Por exemplo: vem com carregador? Funciona em 220 V?",
+    "preguntarAyuda": "Quem responde é a loja e, às vezes, outros compradores. É preciso entrar na sua conta.",
+    "preguntar": "Perguntar",
+    "enviando": "Enviando…",
+    "preguntaPublicada": "Pronto: sua pergunta já foi publicada.",
+    "errorPregunta": {
+      "largo": "Escreva a pergunta com um pouco mais de detalhe (entre 10 e 500 letras).",
+      "limite": "Você fez muitas perguntas seguidas. Tente de novo daqui a pouco.",
+      "servidor": "Não conseguimos publicar. Tente de novo em instantes."
+    },
+    "responder": "Responder",
+    "tuRespuesta": "Sua resposta",
+    "publicarRespuesta": "Publicar resposta",
+    "respuestaPublicada": "Sua resposta já foi publicada.",
+    "respuestaCompro": "{autor} · comprou"
   },
   "tienda": {
     "desde": "Vende na Tríplice desde {anio}",
@@ -281,7 +304,7 @@
     "proyecto": "O projeto",
     "codigo": "Código no GitHub",
     "arquitectura": "Como foi feito",
-    "fase": "Fase 2: carrinho, impostos por país e pagamento de teste",
+    "fase": "Fase 3: contas, pedidos, devoluções e avaliações",
     "legal": "Projeto de portfólio de William Zarza. Produtos, lojas, avaliações e pagamentos são fictícios ou de teste. Fotos: modelos próprios e modelos CC0 do Poly Haven, fotografados no Blender.",
     "datos": "Dados servidos por {origen}"
   },
@@ -437,7 +460,10 @@
         "codigo": "4 números (3370) ou o formato novo (N3370ABC)."
       },
       "XX": {}
-    }
+    },
+    "usarGuardada": "Usar um endereço salvo",
+    "otraDireccion": "Outro endereço",
+    "entrarParaUsar": "Tem conta? Entre para usar seus endereços e acompanhar o pedido em Meus pedidos."
   },
   "pedido": {
     "titulo": "Seu pedido",
@@ -478,6 +504,228 @@
     "incluye": "Inclui {lista}.",
     "notaStripe": "Pagamento de teste com Stripe: nada foi cobrado.",
     "notaSimulado": "Pagamento simulado: nada foi cobrado.",
-    "seguirComprando": "Continuar comprando"
+    "seguirComprando": "Continuar comprando",
+    "pdf": "Baixar comprovante (PDF)"
+  },
+  "cuenta": {
+    "hola": "Olá",
+    "salir": "Sair da conta",
+    "opcional": "opcional",
+    "enviando": "Enviando…",
+    "demo": "Conta de teste: esta prévia não está conectada ao Supabase, então o que você mudar fica no banco do servidor e é apagado quando ele reinicia.",
+    "menu": {
+      "pedidos": "Meus pedidos",
+      "opiniones": "Avaliações",
+      "direcciones": "Endereços",
+      "datos": "Dados e preferências"
+    },
+    "pedidos": {
+      "titulo": "Meus pedidos",
+      "cantidad": "{n, plural, one {# pedido} other {# pedidos}}",
+      "vacio": "Você ainda não comprou nada",
+      "vacioTexto": "Quando comprar, aqui você acompanha cada pedido até chegar ou ser retirado.",
+      "irAComprar": "Ver os mais vendidos",
+      "pedido": "Pedido {numero}",
+      "productos": "{n, plural, one {# produto} other {# produtos}}",
+      "retiro": "Retirada na loja",
+      "domicilio": "Entrega em casa",
+      "conDevolucion": "Com devolução",
+      "estado": "Situação: {estado}"
+    },
+    "paradas": {
+      "confirmado": "Confirmado",
+      "preparando": "Em preparação",
+      "enviado": "A caminho",
+      "listoRetiro": "Pronto para retirar",
+      "entregado": "Entregue"
+    },
+    "detalle": {
+      "volver": "← Meus pedidos",
+      "hecho": "Feito em {fecha}",
+      "pdf": "Baixar comprovante (PDF)",
+      "opinar": "Avaliar",
+      "opinaste": "Sua nota: {n} de 5",
+      "devolver": "Pedir devolução",
+      "trayecto": "O caminho do seu pedido"
+    },
+    "devolucion": {
+      "plazo": "Você pode pedir até {fecha}. A loja responde em até 48 horas úteis.",
+      "motivo": "O que aconteceu?",
+      "motivos": {
+        "fallado": "Chegou com defeito ou não funciona",
+        "distinto": "Não é o que pedi (outra cor, modelo ou tamanho)",
+        "incompleto": "Falta algo da caixa",
+        "arrepentido": "Me arrependi (sem uso, na caixa)",
+        "otro": "Outro motivo"
+      },
+      "preferis": "O que você prefere?",
+      "reembolso": "Receber o dinheiro de volta",
+      "cambio": "Trocar por outro igual",
+      "detalle": "Conte à loja o que aconteceu",
+      "enviar": "Enviar o pedido de devolução",
+      "enviada": "Pronto: enviamos seu pedido de devolução à loja. Ela responde por e-mail em até 48 horas úteis.",
+      "errores": {
+        "motivo": "Escolha o que aconteceu com o produto.",
+        "vencido": "Já passaram 7 dias desde a entrega. Escreva para a loja pela página do produto.",
+        "ya_pedida": "Você já pediu a devolução deste produto.",
+        "no_entregado": "Você pode pedir a devolução quando receber.",
+        "no_existe": "Não encontramos esse produto nos seus pedidos.",
+        "sin_sesion": "Sua sessão expirou. Entre de novo para pedir a devolução."
+      },
+      "estados": {
+        "solicitada": "Devolução pedida em {fecha}: a loja está analisando",
+        "aprobada": "Devolução aprovada: leve à loja ou aguarde a coleta",
+        "rechazada": "A loja recusou a devolução (o motivo foi por e-mail)",
+        "reembolsada": "Devolução concluída: o dinheiro foi devolvido"
+      },
+      "vencida": "O prazo de devolução acabou em {fecha}"
+    },
+    "entrar": {
+      "titulo": "Entre na sua conta",
+      "porque1": "Seus pedidos, passo a passo",
+      "porque1Texto": "Da loja até sua casa ou o balcão, com o comprovante em PDF.",
+      "porque2": "Devolução sem complicação",
+      "porque2Texto": "Até 7 dias depois de receber, pelo próprio pedido.",
+      "porque3": "Sua avaliação vale",
+      "porque3Texto": "Só avalia quem comprou: por isso as avaliações da Tríplice ajudam.",
+      "demoTitulo": "Entre com a conta de teste",
+      "demoPersona": "Hernandarias · 4 pedidos",
+      "demoTexto": "Tem um pedido entregue há 3 dias (para avaliar e pedir devolução), um a caminho, um recém-confirmado e dois endereços salvos.",
+      "demoBoton": "Entrar como Lorena",
+      "demoNota": "Com o Supabase conectado, aqui se entra com Google ou com um link por e-mail.",
+      "formTitulo": "Entrar ou criar sua conta",
+      "google": "Continuar com Google",
+      "o": "ou com seu e-mail",
+      "email": "Seu e-mail",
+      "mandarEnlace": "Me enviar o link para entrar",
+      "enviadoTitulo": "Confira seu e-mail",
+      "enviadoTexto": "Enviamos um link para entrar em",
+      "enviadoAyuda": "Vale por uma hora. Se não encontrar, procure em Spam ou Promoções.",
+      "privacidad": "Sem senhas para lembrar. Usamos seu e-mail só para pedidos e avisos da conta.",
+      "errores": {
+        "email": "Confira o e-mail: falta o arroba ou o domínio (por exemplo, nome@email.com).",
+        "servidor": "Não conseguimos enviar o link. Espere um minuto e tente de novo.",
+        "demo": "Não encontramos a conta de teste neste banco. Recarregue a página.",
+        "google": "Não conseguimos conectar com o Google. Tente de novo ou entre com seu e-mail.",
+        "enlace": "O link expirou ou já foi usado. Peça um novo."
+      }
+    },
+    "opinar": {
+      "tituloPagina": "Sua avaliação",
+      "volver": "← Pedido {numero}",
+      "verificada": "Compra verificada",
+      "estrellas": "Quantas estrelas você dá?",
+      "palabras": {
+        "1": "Ruim",
+        "2": "Fraco",
+        "3": "Cumpre",
+        "4": "Muito bom",
+        "5": "Excelente"
+      },
+      "titulo": "Título",
+      "tituloEjemplo": "Por exemplo: Segura o gelo a tarde inteira",
+      "texto": "Sua avaliação",
+      "faltan": "Faltam {n} letras (mínimo 20).",
+      "ayudaTexto": "Conte como foi: o que gostou, o que não, como chegou.",
+      "fotos": "Fotos",
+      "fotosAyuda": "(opcional, até {n})",
+      "fotoN": "Foto {n}",
+      "quitarFoto": "Remover a foto {n}",
+      "agregarFotos": "Adicionar fotos",
+      "otraFoto": "Adicionar outra",
+      "publicar": "Publicar minha avaliação",
+      "publicando": "Publicando…",
+      "reglas": "Publicada com seu nome e a inicial do sobrenome. Removemos das fotos a localização e os dados do celular.",
+      "errores": {
+        "estrellas": "Escolha de 1 a 5 estrelas.",
+        "titulo": "Coloque um título de 3 a 80 letras.",
+        "texto": "A avaliação precisa ter entre 20 e 2.000 letras.",
+        "tipo": "Um dos arquivos não é uma imagem. Escolha fotos JPG, PNG, WebP ou HEIC.",
+        "grande": "Uma foto tem mais de 8 MB. Escolha uma mais leve.",
+        "muchas": "Você pode enviar até 4 fotos.",
+        "ilegible": "Não conseguimos ler uma das fotos. Tente outra.",
+        "no_verificada": "Você só pode avaliar produtos que comprou e já recebeu.",
+        "ya_opinaste": "Você já avaliou este produto.",
+        "servidor": "Não conseguimos publicar sua avaliação. Tente de novo em instantes."
+      }
+    },
+    "opiniones": {
+      "titulo": "Avaliações",
+      "publicada": "Obrigado! Sua avaliação já foi publicada.",
+      "verEnFicha": "Ver na página do produto",
+      "pendientes": "Para avaliar",
+      "sinPendientes": "Você não tem compras recebidas sem avaliação.",
+      "mias": "O que você publicou",
+      "sinMias": "Você ainda não publicou avaliações.",
+      "estrellas": "{n} de 5 estrelas",
+      "util": "{n, plural, one {Útil para # pessoa} other {Útil para # pessoas}}"
+    },
+    "direcciones": {
+      "titulo": "Endereços",
+      "agregar": "Adicionar um endereço",
+      "nueva": "Novo endereço",
+      "editarAlias": "Editar «{alias}»",
+      "guardada": "Endereço salvo.",
+      "borrada": "Endereço apagado.",
+      "predeterminada": "Usado ao pagar",
+      "editar": "Editar",
+      "hacerPredeterminada": "Usar ao pagar",
+      "borrar": "Apagar",
+      "borrarAlias": "Apagar o endereço {alias}",
+      "alias": "Nome para reconhecer",
+      "aliasEjemplo": "Casa, Trabalho, Casa da mãe…",
+      "pais": "País",
+      "usarSiempre": "Usar este endereço ao pagar",
+      "faltaAlias": "Dê um nome para reconhecer o endereço.",
+      "guardar": "Salvar endereço"
+    },
+    "datos": {
+      "titulo": "Dados e preferências",
+      "guardados": "Alterações salvas.",
+      "firma": "Em avaliações e perguntas você assina como «{firma}».",
+      "email": "E-mail",
+      "emailNota": "é o que você usa para entrar",
+      "preferencias": "Quando você entrar, a loja abre em",
+      "region": "Região",
+      "moneda": "Moeda",
+      "idioma": "Idioma",
+      "preferenciasNota": "A região define os impostos e a entrega; a moeda, como você vê os preços. Dá para mudar quando quiser pelo cabeçalho.",
+      "guardar": "Salvar alterações"
+    }
+  },
+  "comprobante": {
+    "titulo": "Comprovante de compra",
+    "simulado": "Comprovante simulado de uma loja de demonstração: não é nota fiscal nem tem valor fiscal.",
+    "pedido": "Pedido",
+    "fecha": "Data",
+    "estado": "Situação",
+    "comprador": "Comprador",
+    "entrega": "Entrega",
+    "retiro": "Retirada na loja",
+    "domicilio": "Entrega em casa",
+    "producto": "Produto",
+    "cantidad": "Qtd.",
+    "unitario": "Preço unit.",
+    "impuesto": "Imposto",
+    "subtotal": "Subtotal",
+    "productos": "Produtos",
+    "cupon": "Cupom {codigo}",
+    "envio": "Frete",
+    "gratis": "Grátis",
+    "total": "Total",
+    "incluye": "Inclui {lista}",
+    "cotizacion": "Cotação congelada no pagamento: 1 US$ = {valor}",
+    "pie": "Tríplice é um projeto de portfólio: produtos, lojas e pagamentos são de teste. Preços com impostos incluídos.",
+    "pagina": "Página {n} de {total}",
+    "estados": {
+      "pendiente_pago": "Aguardando pagamento",
+      "confirmado": "Confirmado",
+      "preparando": "Em preparação",
+      "enviado": "A caminho",
+      "listo_retiro": "Pronto para retirar",
+      "entregado": "Entregue",
+      "cancelado": "Cancelado",
+      "devolucion": "Com devolução"
+    }
   }
 }

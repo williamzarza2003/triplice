@@ -2,6 +2,7 @@
 // Todos los montos de cada opción se calculan acá, en el servidor; el formulario solo elige cuál mostrar.
 import type { Metadata } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { connection } from 'next/server'
 import { Suspense } from 'react'
@@ -11,18 +12,22 @@ import { enElMapa, MapaRetiro } from '@/components/compra/MapaRetiro'
 import { Resumen } from '@/components/compra/Resumen'
 import s from '@/components/compra/Compra.module.css'
 import p from '@/components/compra/Pago.module.css'
-import { CAMPOS_DIRECCION, type Campo } from '@/lib/compra/direccion'
+import { CAMPOS_DIRECCION, direccionEnUnaLinea, type Campo } from '@/lib/compra/direccion'
 import { proveedorDePago } from '@/lib/compra/pago'
 import { aZona, cotizar, leerCookieCarrito, zonasEnvio, type Cotizacion } from '@/lib/compra/servidor'
+import { rpcCuenta, usuarioActual } from '@/lib/cuenta/sesion'
 import { contexto, ruta } from '@/lib/contexto'
 import { foto } from '@/lib/imagenes'
 import { formatear } from '@/lib/precios'
-import { segmentoMercado } from '@/lib/region'
+import { segmentoMercado, type Region } from '@/lib/region'
 import { pagarAccion } from './acciones'
 
-// Metadata fija: el título va dentro del contenido dinámico (React lo sube al <head>), así nada se calcula
-// antes de leer la cookie del comprador.
-export const metadata: Metadata = { robots: { index: false } }
+// El título va en la metadata (con el idioma de la URL): un <title> dentro del contenido dinámico no reemplaza al del layout
+export async function generateMetadata(): Promise<Metadata> {
+  const ctx = await contexto()
+  const t = await getTranslations({ locale: ctx.idioma, namespace: 'pagar' })
+  return { title: t('titulo'), robots: { index: false } }
+}
 
 export default function PaginaPagar() {
   return (
@@ -41,6 +46,24 @@ const SUGERENCIAS: Record<string, Partial<Record<Campo, string[]>>> = {
   XX: {},
 }
 
+/** Con sesión: nombre, correo y teléfono del perfil, y las direcciones guardadas del país en el que se compra. */
+async function datosDeLaCuenta(region: Region, t: (k: string) => string) {
+  const u = await usuarioActual()
+  if (!u) return null
+  const [perfil, direcciones] = await Promise.all([
+    rpcCuenta<{ nombre: string; telefono: string | null }>('mi_cuenta'),
+    rpcCuenta<{ id: string; alias: string; region: Region; nombre: string; telefono: string; datos: Record<string, string> }[]>('mis_direcciones'),
+  ])
+  return {
+    datos: { nombre: perfil?.nombre ?? '', email: u.email, telefono: perfil?.telefono ?? '' },
+    direcciones: (direcciones ?? []).filter((d) => d.region === region).map((d) => ({
+      id: d.id, alias: d.alias, linea: direccionEnUnaLinea(region, d.datos),
+      datos: { ...d.datos, nombre: d.nombre, telefono: d.telefono } as Partial<Record<Campo, string>>,
+    })),
+    textos: { usar: t('usarGuardada'), otra: t('otraDireccion') },
+  }
+}
+
 async function Pagar() {
   await connection() // se arma en cada visita: nada de esta página se puede prerenderizar
   // primero la cookie: hace que la página se arme en cada visita (sin ella Next intentaría prerenderizarla)
@@ -53,6 +76,7 @@ async function Pagar() {
   ])
   const r = (c: string) => ruta(ctx.idioma, c)
   const f = (n: number) => formatear(n, ctx.moneda)
+  const cuenta = await datosDeLaCuenta(ctx.region, t)
   const retiro = await cotizar(ctx, carrito, { modo: 'retiro' })
   if (retiro.items.length === 0) redirect(r('/carrito'))
 
@@ -118,11 +142,11 @@ async function Pagar() {
 
   return (
     <>
-      <title>{`${t('titulo')} · Tríplice`}</title>
       <h1 className={s.titulo}>{t('titulo')}</h1>
       <FormPago accion={pagarAccion} idioma={ctx.idioma} mercado={segmentoMercado(ctx)} region={ctx.region} opciones={opciones}
         camposDireccion={CAMPOS_DIRECCION[ctx.region]} sugerencias={SUGERENCIAS[ctx.region]} proveedor={proveedorDePago()}
-        retiro={mapa} resumenes={resumenes}
+        retiro={mapa} resumenes={resumenes} cuenta={cuenta}
+        entrar={<p className={p.ayuda}><Link href={r(`/entrar?volver=${encodeURIComponent(r('/pagar'))}`)}>{t('entrarParaUsar')}</Link></p>}
         textos={{
           pasoEntrega: t('pasoEntrega'), pasoDatos: t('pasoDatos'), pasoPago: t('pasoPago'), retiro: t('retiro'), domicilio: t('domicilio'),
           gratis: t('gratis'), datosRetiro: t('datosRetiro'), pagar: t('pagar', { total: '{total}' }), procesando: t('procesando'),
