@@ -8,27 +8,31 @@ Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil 
 
 > Proyecto de portafolio de William Zarza. Productos, tiendas, opiniones y pagos son ficticios o de prueba.
 
-**Estado: fase 2** (carrito, impuestos por país y pago con Stripe en modo de prueba). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha) y `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento).
+**Estado: fase 3** (cuentas, pedidos, devoluciones y opiniones). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha), `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento) y `fase-2` (carrito, impuestos y pago).
 
-| Carrito | Pago con retiro en el local | Comprobante en el celular |
+| Mis pedidos | Pedido con devolución | Opinar con fotos |
 | --- | --- | --- |
-| ![Carrito agrupado por tienda, con cupón y resumen](docs/capturas/f2-carrito-escritorio.webp) | ![Pago: retiro en el local con mapa de la frontera](docs/capturas/f2-pagar-escritorio.webp) | ![Pedido confirmado con su línea de tiempo](docs/capturas/f2-pedido-celular.webp) |
+| ![Mis pedidos, cada uno con su trayecto de cuatro paradas](docs/capturas/f3-pedidos-1440.webp) | ![Pedido entregado: recorrido con fechas, opinar y pedir devolución](docs/capturas/f3-devolucion-1440.webp) | ![Formulario de opinión con estrellas y fotos](docs/capturas/f3-opinar-1440.webp) |
 
-![Inicio en escritorio](docs/capturas/f1-inicio-escritorio.webp)
+| Celular: mis pedidos | Celular: opinar | Comprobante en PDF |
+| --- | --- | --- |
+| ![Lista de pedidos en el celular](docs/capturas/f3-pedidos-390.webp) | ![Opinar en el celular](docs/capturas/f3-opinar-390.webp) | ![Comprobante simulado en PDF con las fuentes de la marca](docs/capturas/f3-comprobante.webp) |
 
-| Ficha de producto | Búsqueda en el celular |
-| --- | --- |
-| ![Ficha con variantes, caja de compra y comparación de vendedores](docs/capturas/f1-ficha-escritorio.webp) | ![Resultados con corrección de tipeo](docs/capturas/f1-buscar-celular.webp) |
+## Qué hay en la fase 3
 
-| Categoría con filtros | Página de tienda |
-| --- | --- |
-| ![Muebles con facetas y contadores](docs/capturas/f1-categoria-escritorio.webp) | ![Casa Nubla con su reputación](docs/capturas/f1-tienda-escritorio.webp) |
+- **Cuentas con Supabase Auth**: entrar con **Google** o con un **enlace por email** (sin contraseñas). Sin Supabase, la vista previa ofrece una **cuenta de prueba** con pedidos en distintos estados. El mismo SQL y el mismo RLS en los dos modos: las funciones corren como el usuario.
+- **Perfil y preferencias**: nombre (se firma "Lorena B." en opiniones y preguntas), teléfono, y la región, moneda e idioma con los que se abre la tienda al entrar.
+- **Direcciones guardadas** con los campos de cada país (barrio en Paraguay, CEP en Brasil, código postal en Argentina). Al pagar con sesión, los datos y la dirección ya están, y el pedido queda en la cuenta.
+- **Mis pedidos** con su **trayecto** (confirmado → preparando → en camino o listo para retirar → entregado) y la fecha de cada parada.
+- **Devoluciones** hasta 7 días después de recibir el producto, con motivo y si preferís reembolso o cambio.
+- **Comprobante simulado en PDF** con las fuentes de la marca (también para quien compró sin cuenta).
+- **Opiniones solo con compra verificada**, con hasta 4 fotos (el servidor las achica y les saca la ubicación), **"Me fue útil"** y **preguntas y respuestas** con sello de la tienda o de quien lo compró.
 
 ## Qué hay en la fase 2
 
 - **Precios con el impuesto de cada país**, incluidos como se acostumbra en la región (simulación aproximada, configurable en la tabla `reglas_impuesto`): IVA 10 % y 5 % en Paraguay, IVA 21 % y 10,5 % en Argentina, y un "impuestos estimados" en Brasil que es más alto en electrónica importada. En "Internacional", sin impuestos locales. El mismo número en la tarjeta, la ficha, el carrito y el pago.
 - **Etiqueta de frontera** en la ficha: el mismo producto en los otros dos países, con su impuesto y en su moneda, y cuánto es en la tuya.
-- **Carrito** de invitado (en una cookie: no hace falta cuenta), agrupado por tienda, con **guardar para después**, **cupones** (con mensajes que explican por qué uno no aplica) y aviso de stock bajo. El carrito de la cuenta y su fusión al iniciar sesión ya están en la base (`fusionar_carrito`) para la fase 3.
+- **Carrito** de invitado (en una cookie: no hace falta cuenta), agrupado por tienda, con **guardar para después**, **cupones** (con mensajes que explican por qué uno no aplica) y aviso de stock bajo. El carrito de la cuenta y su fusión al iniciar sesión están en la base (`fusionar_carrito`), pero todavía no se usan: con sesión, el carrito sigue en la cookie del navegador.
 - **Entrega**: **retiro en el local** con un mapa de la triple frontera y el horario de cada tienda, o **envío a domicilio** por zona (la frontera es más barata) y por peso, cobrado por tienda.
 - **Pago con Stripe en modo de prueba**, en la moneda de la región, con el **desglose calculado en el servidor** (productos, cupón, envío, total e impuestos incluidos). Si el total cambió desde que se abrió la página, avisa en vez de cobrar otro monto. Sin claves de Stripe, un simulador de pago de prueba permite recorrer el flujo completo.
 - **Comprobante** con la línea de tiempo del pedido (confirmado → la tienda lo prepara → listo o en camino → entregado).
@@ -44,6 +48,9 @@ Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil 
 - **Comparar vendedores**: con el mismo precio gana la entrega más rápida, y "Más barato" solo aparece si no hay empate.
 
 ## Decisiones técnicas
+
+- **Cuentas sin romper la caché.** El encabezado y la ficha siguen prearmados igual para todos: el saludo sale de una cookie sin nada privado y lo personal de la ficha (mis votos, si puedo opinar) se pide después de cargar. La sesión real la verifica el servidor en cada página de la cuenta.
+- **El RLS decide también con sesión.** Opinar exige un ítem propio y entregado (política de la tabla), los sellos y contadores los pone la base, y las devoluciones validan dueño, estado y plazo en SQL. Con Supabase, el JWT llega a Postgres; en la base embebida, el mismo `auth.uid()` sale de una variable de la transacción.
 
 - **Next.js 16 con Cache Components.** Las fichas se prearman y todo el catálogo se cachea. La región y la moneda viajan en una cookie y en un segmento interno de la URL (`/es/py-pyg/…`, lo agrega `proxy.ts`): el precio sale del servidor ya convertido y cada combinación se cachea aparte, sin parpadeos.
 - **Una sola base, dos motores.** Las migraciones de Supabase corren también en **PGlite** (Postgres en WebAssembly). Sin claves de Supabase, la web usa esa base embebida; las pruebas corren contra Postgres real sin Docker. Siempre como rol `anon`: el **RLS** decide qué se ve.
@@ -63,13 +70,13 @@ Necesita Node 22 o más nuevo.
 ```
 npm install
 npm run dev        # http://localhost:3000 (sin Supabase usa la base embebida)
-npm test           # Vitest: base, búsqueda, RLS, precios, impuestos, cupones, envío y carrito
-npm run build && npm run test:e2e   # Playwright con el Chrome instalado (incluye la compra completa)
+npm test           # Vitest: base, búsqueda, RLS, precios, impuestos, cupones, envío, carrito, cuentas y PDF
+npm run build && npm run test:e2e   # Playwright con el Chrome instalado (compra completa y cuenta)
 ```
 
 Para el pago con Stripe en modo de prueba, en `.env.local`: `STRIPE_SECRET_KEY=sk_test_…` y, para el webhook, `STRIPE_WEBHOOK_SECRET=whsec_…` (con `stripe listen --forward-to localhost:3000/api/stripe/webhook`). Tarjeta aprobada: `4242 4242 4242 4242`; rechazada: `4000 0000 0000 0002`. Sin claves, el pago pasa por un simulador de prueba.
 
-Para conectarlo a un proyecto de Supabase, seguí [`docs/supabase.md`](docs/supabase.md). Para regenerar los datos o las fotos:
+Sin Supabase, en `/es/entrar` está la cuenta de prueba. Para conectarlo a un proyecto de Supabase (con Auth por email y Google), seguí [`docs/supabase.md`](docs/supabase.md). Para regenerar los datos o las fotos:
 
 ```
 npm run db:seed                       # supabase/seed.sql desde supabase/seed/*.ts
@@ -84,7 +91,7 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 ## Créditos
 
 - Modelos 3D: propios (en el repo) y de [Poly Haven](https://polyhaven.com) (CC0). Autor de cada uno en [`docs/creditos.md`](docs/creditos.md).
-- Tipografías: Schibsted Grotesk y Atkinson Hyperlegible Next (SIL Open Font License), servidas desde el repo.
+- Tipografías: Schibsted Grotesk y Atkinson Hyperlegible Next (SIL Open Font License), servidas desde el repo (y en TTF estático para el PDF).
 
 ---
 
@@ -96,11 +103,17 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 
 *Portfolio project. Products, sellers, reviews and payments are fictional or test-only.*
 
-**Status: phase 2** — cart, per-country taxes and Stripe test-mode checkout (earlier phases live on the `fase-0`, `fase-1` and `fase-1-ajustes` branches).
+**Status: phase 3** — accounts, orders, returns and reviews (earlier phases live on the `fase-0`, `fase-1`, `fase-1-ajustes` and `fase-2` branches).
+
+- **Accounts with Supabase Auth**: sign in with **Google** or an **email link** (no passwords). Without Supabase, the preview offers a **test account** with orders in every state. Same SQL and RLS in both modes: account functions run as the signed-in user (JWT in Supabase; `auth.uid()` from a transaction setting in the embedded database).
+- **Profile and preferences** (region, currency and language applied on sign-in) and **saved addresses** with each country's fields; checkout comes pre-filled and the order lands in the account.
+- **My orders** with a four-stop **journey** and dates, **returns** within 7 days of delivery, and a **simulated PDF receipt** set in the brand fonts (amounts in "Gs.", as Paraguayan invoices do).
+- **Verified-purchase reviews only**, with up to 4 photos (resized, EXIF stripped, WebP), **"Helpful" votes** that update in place, and **Q&A** where the database marks store answers and buyers who received the item.
+- The header and product pages stay statically cached: personal bits are fetched after load.
 
 - **Prices include each country's tax**, as is customary in the region (approximate simulation, configurable in the `reglas_impuesto` table): 10% and 5% VAT in Paraguay, 21% and 10.5% in Argentina, and an "estimated taxes" rate in Brazil that is higher for imported electronics. The same number on the card, the product page, the cart and the checkout.
 - **Border tag:** each product page shows the same item in the other two countries, with their tax and currency, and what that is in yours.
-- **Guest cart** in a cookie (no account needed), grouped by seller, with **save for later**, **coupons** (with messages that explain why one doesn't apply) and low-stock warnings. The account cart and its merge on sign-in are already in the database for phase 3.
+- **Guest cart** in a cookie (no account needed), grouped by seller, with **save for later**, **coupons** (with messages that explain why one doesn't apply) and low-stock warnings. The account cart and its merge on sign-in exist in the database (`fusionar_carrito`) but aren't wired yet: signed-in carts still live in the browser cookie.
 - **Delivery:** **store pickup** with a hand-drawn map of the Triple Frontier and each store's hours, or **home delivery** priced by zone and weight, per seller.
 - **Stripe test-mode checkout** in the region's currency with a **server-computed breakdown**. If the total changed since the page was opened, it warns instead of charging a different amount. Without Stripe keys, a test payment simulator walks through the whole flow. Orders are frozen (titles, prices, tax rates and exchange rate) by service-role-only SQL functions; confirmation is idempotent.
 - **323 products** across 18 departments, with what people come to Ciudad del Este for up front (phones, laptops, headphones, perfume, watches, TVs and consoles), 15 border stores, 5,531 reviews and 451 Q&As in Spanish, Portuguese and English.
@@ -114,4 +127,4 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 
 **Lighthouse (local production build):** desktop 100 across the board; mobile 100 Accessibility, Best Practices and SEO, 93–96 Performance depending on the page (search 90–94). Search and cart are `noindex` on purpose.
 
-Run it: `npm install && npm run dev`. Tests: `npm test` (Vitest) and `npm run build && npm run test:e2e` (Playwright, including the full purchase). Stripe test mode: set `STRIPE_SECRET_KEY=sk_test_…` (and `STRIPE_WEBHOOK_SECRET`); card `4242 4242 4242 4242`. Supabase setup: [`docs/supabase.md`](docs/supabase.md).
+Run it: `npm install && npm run dev` (test account at `/en/entrar`). Tests: `npm test` (Vitest) and `npm run build && npm run test:e2e` (Playwright, including the full purchase). Stripe test mode: set `STRIPE_SECRET_KEY=sk_test_…` (and `STRIPE_WEBHOOK_SECRET`); card `4242 4242 4242 4242`. Supabase setup: [`docs/supabase.md`](docs/supabase.md).
