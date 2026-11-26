@@ -13,6 +13,7 @@ import { contextoDe } from '@/lib/contexto'
 import { rpcServicio } from '@/lib/datos/fuente'
 import { REGLAS } from '@/lib/precios'
 import type { Moneda } from '@/lib/region'
+import { SITIO } from '@/lib/sitio'
 
 export type EstadoPago = { errores: Partial<Record<Campo, ErrorCampo>>; general: 'sin_items' | 'cambio' | 'pago' | null; valores: Record<string, string> } | null
 
@@ -73,7 +74,7 @@ export async function pagarAccion(_: EstadoPago, f: FormData): Promise<EstadoPag
   if (pedido.proveedor === 'stripe') {
     try {
       const h = await headers()
-      const origen = h.get('origin') ?? process.env.NEXT_PUBLIC_SITIO ?? `https://${h.get('host')}`
+      const origen = h.get('origin') ?? SITIO
       destino = await crearSesion(pedido, origen)
     } catch (e) {
       console.error('Stripe no creó la sesión de pago', e)

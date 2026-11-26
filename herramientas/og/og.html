@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- Imagen para redes (1200 × 630). Se fotografía con `node herramientas/og/generar.mjs`. Sin texto por idioma:
+     el nombre, las tres ciudades y el mapa se entienden en los tres. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Schibsted Grotesk'; src: url('../../tokens/fuentes/schibsted.woff2') format('woff2'); font-weight: 400 800; }
+  @font-face { font-family: 'Atkinson Hyperlegible Next'; src: url('../../tokens/fuentes/atkinson.woff2') format('woff2'); font-weight: 400 700; }
+  html, body { margin: 0; }
+  body { width: 1200px; height: 630px; background: #0f3d3e; color: #fff; overflow: hidden; position: relative;
+         font-family: 'Atkinson Hyperlegible Next', sans-serif; }
+  .mapa { position: absolute; right: -130px; top: -40px; width: 760px; height: 710px; }
+  .texto { position: absolute; left: 72px; top: 76px; width: 540px; }
+  .logo { width: 300px; height: auto; display: block; }
+  h1 { font-family: 'Schibsted Grotesk', sans-serif; font-weight: 750; font-size: 58px; line-height: 1.06;
+       letter-spacing: -0.02em; margin: 64px 0 0; }
+  .monedas { position: absolute; left: 72px; bottom: 64px; display: flex; gap: 12px; }
+  .monedas span { font-family: 'Schibsted Grotesk', sans-serif; font-weight: 650; font-size: 26px; padding: 8px 16px;
+                  border: 2px solid #5fa3a3; border-radius: 6px; font-variant-numeric: tabular-nums; }
+  .paises { font-family: 'Schibsted Grotesk', sans-serif; font-size: 30px; fill: #cfe2df; font-weight: 600; }
+  .ciudades { font-size: 22px; fill: #fff; }
+</style>
+</head>
+<body>
+  <svg class="mapa" viewBox="40 -20 460 420" aria-hidden="true">
+    <g fill="none" stroke-linecap="round">
+      <path d="M210 -10 C240 80 180 150 214 230 S196 360 232 420" stroke="#2e6f70" stroke-width="30"/>
+      <path d="M520 170 C390 160 320 220 220 228" stroke="#2e6f70" stroke-width="24"/>
+      <path d="M210 -10 C240 80 180 150 214 230 S196 360 232 420" stroke="#5fa3a3" stroke-width="2" stroke-dasharray="1 10"/>
+      <path d="M520 170 C390 160 320 220 220 228" stroke="#5fa3a3" stroke-width="2" stroke-dasharray="1 10"/>
+    </g>
+    <g class="paises" transform="scale(.5)">
+      <text x="190" y="220">Paraguay</text>
+      <text x="640" y="200">Brasil</text>
+      <text x="560" y="640">Argentina</text>
+    </g>
+    <g class="ciudades" transform="scale(.5)">
+      <circle cx="356" cy="392" r="14" fill="#F2C230"/>
+      <text x="332" y="352" text-anchor="end" font-weight="700">Ciudad del Este</text>
+      <circle cx="524" cy="392" r="8" fill="#fff"/>
+      <text x="548" y="400">Foz do Iguaçu</text>
+      <circle cx="500" cy="524" r="8" fill="#fff"/>
+      <text x="524" y="532">Puerto Iguazú</text>
+    </g>
+  </svg>
+  <div class="texto">
+    <img class="logo" src="../../public/marca/logotipo-claro.svg" alt="">
+    <h1>Las tiendas de la triple frontera, con el precio en tu moneda.</h1>
+  </div>
+  <div class="monedas"><span>₲</span><span>R$</span><span>$ AR</span><span>US$</span></div>
+</body>
+</html>

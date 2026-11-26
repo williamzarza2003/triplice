@@ -56,12 +56,12 @@ En vercel.com → proyecto **triplice** → *Settings → Environment Variables*
 | `NEXT_PUBLIC_SUPABASE_URL` | la Project URL (`https://xxxx.supabase.co`) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | la clave anon public |
 | `SUPABASE_SERVICE_ROLE_KEY` | la clave service_role (**sin** `NEXT_PUBLIC_`: nunca llega al navegador) |
-| `NEXT_PUBLIC_SITIO` | la URL de la vista previa o del dominio (para las imágenes de redes y la vuelta de Stripe) |
+| `NEXT_PUBLIC_SITIO` | `https://triplice-beta.vercel.app` (imágenes para redes, robots.txt y la vuelta de Stripe; si falta, se usa esa misma) |
 | `STRIPE_SECRET_KEY` | la clave secreta **de prueba** de Stripe (`sk_test_…`) |
 | `STRIPE_WEBHOOK_SECRET` | el secreto del webhook de prueba (`whsec_…`), ver PENDIENTES |
 | `TRIPLICE_SECRETO` | 32 caracteres al azar: firma el comprobante que se guarda en el navegador |
 
-Después, **Redeploy** del último deploy de `fase-2`. En el pie de página dice de dónde salen los datos:
+Después, **Redeploy** del último deploy de producción (https://triplice-beta.vercel.app). En el pie de página dice de dónde salen los datos:
 "Datos servidos por Supabase" o "por PostgreSQL (PGlite)".
 
 ## Para desarrollar en local con Supabase

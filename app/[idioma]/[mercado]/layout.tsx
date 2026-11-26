@@ -7,6 +7,7 @@ import { contexto } from '@/lib/contexto'
 import { IDIOMAS, LOCALE } from '@/lib/i18n/idiomas'
 import { Textos } from '@/lib/i18n/textos'
 import { TODOS_LOS_MERCADOS } from '@/lib/region'
+import { SITIO } from '@/lib/sitio'
 import '@/tokens/tokens.css'
 import '../../globales.css'
 
@@ -26,10 +27,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const { idioma } = await contexto()
   const t = await getTranslations({ locale: idioma, namespace: 'meta' })
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITIO ?? 'https://triplice.vercel.app'),
+    metadataBase: new URL(SITIO),
     title: { default: t('titulo'), template: '%s · Tríplice' },
     description: t('descripcion'),
-    openGraph: { siteName: 'Tríplice', locale: LOCALE[idioma], type: 'website' },
+    // public/og.png sale de herramientas/og (la ficha la reemplaza por la foto del producto)
+    openGraph: { siteName: 'Tríplice', locale: LOCALE[idioma], type: 'website', images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Tríplice' }] },
+    twitter: { card: 'summary_large_image' },
   }
 }
 

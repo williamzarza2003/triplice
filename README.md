@@ -4,6 +4,8 @@
 
 Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil y Argentina): tiendas de Ciudad del Este, Foz do Iguaçu y Puerto Iguazú, precios en tu moneda, opiniones de compradores de los tres países y, con un toque, el mismo producto del otro lado del río.
 
+**En vivo:** [triplice-beta.vercel.app](https://triplice-beta.vercel.app)
+
 > Proyecto de portafolio de William Zarza. Productos, tiendas, opiniones y pagos son ficticios o de prueba.
 
 **Estado: fase 2** (carrito, impuestos por país y pago con Stripe en modo de prueba). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha) y `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento).
@@ -89,6 +91,8 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 ## English
 
 **Tríplice** is a multi-vendor marketplace for the **Triple Frontier** (Paraguay, Brazil and Argentina): stores from Ciudad del Este, Foz do Iguaçu and Puerto Iguazú, prices in your currency, reviews from buyers in all three countries and, with one tap, the same product on the other side of the river.
+
+**Live:** [triplice-beta.vercel.app](https://triplice-beta.vercel.app)
 
 *Portfolio project. Products, sellers, reviews and payments are fictional or test-only.*
 
