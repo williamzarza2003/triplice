@@ -3,8 +3,9 @@
 // la vista previa en Vercel abre una copia de la base por instancia: la cookie firmada es lo que permite
 // mostrar el comprobante aunque el pago se confirme en otra instancia.
 import 'server-only'
-import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import { cookies } from 'next/headers'
+import { abrirSello, sellar as sellarDatos } from '../sello'
 import type { Desglose } from './desglose'
 
 export type Estado = 'pendiente_pago' | 'confirmado'
@@ -38,36 +39,8 @@ export function nuevoNumero() {
 }
 export const nuevaClave = () => randomBytes(18).toString('base64url')
 
-function secreto() {
-  const s = process.env.TRIPLICE_SECRETO
-  if (s && s.length >= 32) return s
-  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production') {
-    throw new Error('Falta TRIPLICE_SECRETO (32 caracteres o más) para firmar los comprobantes. Ver PENDIENTES.')
-  }
-  // vista previa y desarrollo: una clave fija alcanza (no hay plata real en juego: Stripe en modo de prueba)
-  return 'triplice-vista-previa-sin-secreto-configurado-2026'
-}
-
-const firmar = (datos: string) => createHmac('sha256', secreto()).update(datos).digest('base64url')
-
-export function sellar(p: Pedido): string {
-  const datos = Buffer.from(JSON.stringify(p)).toString('base64url')
-  return `${datos}.${firmar(datos)}`
-}
-
-export function abrir(valor: string | undefined): Pedido | null {
-  if (!valor) return null
-  const [datos, firma] = valor.split('.')
-  if (!datos || !firma) return null
-  const esperada = Buffer.from(firmar(datos))
-  const recibida = Buffer.from(firma)
-  if (esperada.length !== recibida.length || !timingSafeEqual(esperada, recibida)) return null
-  try {
-    return JSON.parse(Buffer.from(datos, 'base64url').toString('utf8')) as Pedido
-  } catch {
-    return null
-  }
-}
+export const sellar = (p: Pedido) => sellarDatos(p)
+export const abrir = (valor: string | undefined) => abrirSello<Pedido>(valor)
 
 export async function leerPedido(): Promise<Pedido | null> {
   return abrir((await cookies()).get(COOKIE_PEDIDO)?.value)

@@ -34,7 +34,7 @@
 .c3 { grid-column: span 3; }
 .c6 { grid-column: span 6; }
 .campo { display: grid; gap: 6px; align-content: start; }
-.campo > span:first-child { font-weight: 700; font-size: var(--t-14); }
+.campo > span:first-child, .campo > label:first-child { font-weight: 700; font-size: var(--t-14); }
 .campo > span small { font-weight: 400; color: var(--tinta-3); }
 .campo > small { color: var(--tinta-3); font-size: var(--t-13); }
 .campo input {

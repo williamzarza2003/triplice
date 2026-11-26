@@ -24,9 +24,12 @@ export function generateStaticParams() {
   return [{ numero: 'TR-MUESTR' }]
 }
 
-// Metadata fija: el título va dentro del contenido dinámico (React lo sube al <head>), así nada se calcula
-// antes de leer la cookie del comprador.
-export const metadata: Metadata = { robots: { index: false } }
+// El título va en la metadata (con el idioma de la URL): un <title> dentro del contenido dinámico no reemplaza al del layout
+export async function generateMetadata(): Promise<Metadata> {
+  const ctx = await contexto()
+  const t = await getTranslations({ locale: ctx.idioma, namespace: 'pedido' })
+  return { title: t('titulo'), robots: { index: false } }
+}
 
 export default function PaginaPedido(props: PageProps<'/[idioma]/[mercado]/pedido/[numero]'>) {
   return (
@@ -46,10 +49,9 @@ async function Contenido({ params }: PageProps<'/[idioma]/[mercado]/pedido/[nume
   ])
   const r = (c: string) => ruta(ctx.idioma, c)
 
-  const titulo = <title>{`${t('titulo')} · Tríplice`}</title>
   if (!pedido || pedido.numero !== numero) {
     return (
-      <>{titulo}<section className={`panel ${s.vacio}`} aria-labelledby="t-no">
+      <><section className={`panel ${s.vacio}`} aria-labelledby="t-no">
         <h1 id="t-no" className={s.titulo}>{t('noEncontrado')}</h1>
         <p>{t('noEncontradoTexto')}</p>
         <Link className="boton boton--marca" href={r('')}>{t('volverInicio')}</Link>
@@ -71,7 +73,7 @@ async function Contenido({ params }: PageProps<'/[idioma]/[mercado]/pedido/[nume
 
   return (
     <>
-      {titulo}
+      
       <div className={s.confirmacion}>
         <Icono nombre={confirmado ? 'check' : 'reloj'} tam={32} />
         <div>
@@ -135,6 +137,7 @@ async function Contenido({ params }: PageProps<'/[idioma]/[mercado]/pedido/[nume
           </dl>
           {pedido.desglose.impuestos.length > 0 && <p className={s.incluye}>{t('incluye', { lista: pedido.desglose.impuestos.map((x) => `${x.nombre}: ${f(x.monto)}`).join(' · ') })}</p>}
           <p className={s.nota}><Icono nombre="info" tam={16} />{pedido.proveedor === 'stripe' ? t('notaStripe') : t('notaSimulado')}</p>
+          {confirmado && <a className="boton boton--sec boton--ancho" href={`/api/comprobante/${pedido.numero}?idioma=${ctx.idioma}`} download><Icono nombre="descarga" tam={18} />{t('pdf')}</a>}
           <Link className="boton boton--sec boton--ancho" href={r('')}>{t('seguirComprando')}</Link>
         </aside>
       </div>

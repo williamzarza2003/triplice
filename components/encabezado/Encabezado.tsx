@@ -5,6 +5,7 @@ import { categorias } from '@/lib/datos/consultas'
 import { ruta, type Contexto } from '@/lib/contexto'
 import { Icono } from '../Icono'
 import { BotonCarrito } from './BotonCarrito'
+import { BotonCuenta } from './BotonCuenta'
 import { Buscador } from './Buscador'
 import { MenuCategorias } from './MenuCategorias'
 import { SelectorRegion } from './SelectorRegion'
@@ -26,6 +27,7 @@ export async function Encabezado({ ctx }: { ctx: Contexto }) {
         </Link>
         <Buscador idioma={ctx.idioma} moneda={ctx.moneda} tasas={ctx.tasas} impuestos={ctx.impuestos} />
         <SelectorRegion idioma={ctx.idioma} region={ctx.region} moneda={ctx.moneda} />
+        <BotonCuenta idioma={ctx.idioma} entrar={t('entrar')} hola={t('hola')} tuCuenta={t('tuCuenta')} />
         <BotonCarrito href={ruta(ctx.idioma, '/carrito')} etiqueta={t('carrito')} etiquetaCon={t.raw('carritoCon') as string} />
       </div>
       <nav id="categorias" className={s.categorias} aria-label={t('categorias')}>
@@ -33,6 +35,7 @@ export async function Encabezado({ ctx }: { ctx: Contexto }) {
           <Link href={ruta(ctx.idioma, '/buscar')} className={s.todas}>
             <Icono nombre="menu" tam={16} />{t('todas')}
           </Link>
+          <Link href={ruta(ctx.idioma, '/cuenta')} className={s.soloCelular}><Icono nombre="persona" tam={16} />{t('tuCuenta')}</Link>
           <Link href={ruta(ctx.idioma, '/buscar?orden=vendidos')}>{t('masVendidos')}</Link>
           {arbol.map((c) => (
             <Link key={c.slug} href={ruta(ctx.idioma, `/c/${c.slug}`)}>{c.nombre}</Link>

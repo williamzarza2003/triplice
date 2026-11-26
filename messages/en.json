@@ -46,7 +46,10 @@
     "regionBoton": "Shopping from {region}, prices in {moneda}, language {idioma}. Change",
     "carrito": "Cart",
     "regionAclaracion": "Change region, currency or language",
-    "carritoCon": "Cart: {n} items"
+    "carritoCon": "Cart: {n} items",
+    "entrar": "Sign in",
+    "hola": "Hi",
+    "tuCuenta": "Your account"
   },
   "sugerencias": {
     "enCategoria": "in {categoria}",
@@ -232,7 +235,6 @@
     "sinOpiniones": "No one has reviewed this product yet.",
     "preguntasTitulo": "Questions for the sellers",
     "sinPreguntas": "No questions yet.",
-    "preguntasLectura": "At this stage questions are read-only; asking arrives with accounts in phase 3.",
     "respuestaTienda": "Answer from {tienda}",
     "sinRespuesta": "Waiting for the seller's answer",
     "relacionados": "More in {categoria}",
@@ -253,7 +255,28 @@
       "AR": "In Argentina"
     },
     "fronteraEquivale": "≈ {precio} in your currency",
-    "fronteraNota": "With each country’s tax (approximate simulation)."
+    "fronteraNota": "With each country’s tax (approximate simulation).",
+    "escribirOpinion": "Write my review",
+    "yaOpinaste": "You already posted your review of this product.",
+    "soloCompradores": "Only people who bought it on Tríplice and received it can review it.",
+    "fotoDe": "Photo {n} by {autor}",
+    "meFueUtil": "Helpful",
+    "preguntarTitulo": "Have a question? Ask the store",
+    "preguntarEjemplo": "For example: does it come with a charger? Does it work on 220 V?",
+    "preguntarAyuda": "The store answers and, sometimes, other buyers do too. You need to sign in.",
+    "preguntar": "Ask",
+    "enviando": "Sending…",
+    "preguntaPublicada": "Done: your question is posted.",
+    "errorPregunta": {
+      "largo": "Add a bit more detail to your question (10 to 500 characters).",
+      "limite": "You asked a lot of questions in a row. Try again in a while.",
+      "servidor": "We couldn't post it. Try again in a moment."
+    },
+    "responder": "Answer",
+    "tuRespuesta": "Your answer",
+    "publicarRespuesta": "Post answer",
+    "respuestaPublicada": "Your answer is posted.",
+    "respuestaCompro": "{autor} · bought it"
   },
   "tienda": {
     "desde": "Selling on Tríplice since {anio}",
@@ -281,7 +304,7 @@
     "proyecto": "The project",
     "codigo": "Code on GitHub",
     "arquitectura": "How it's built",
-    "fase": "Phase 2: cart, per-country taxes and test checkout",
+    "fase": "Phase 3: accounts, orders, returns and reviews",
     "legal": "Portfolio project by William Zarza. Products, stores, reviews and payments are fictional or test-only. Photos: original models and CC0 Poly Haven models, shot in Blender.",
     "datos": "Data served by {origen}"
   },
@@ -437,7 +460,10 @@
         "codigo": "4 digits (3370) or the new format (N3370ABC)."
       },
       "XX": {}
-    }
+    },
+    "usarGuardada": "Use a saved address",
+    "otraDireccion": "Another address",
+    "entrarParaUsar": "Have an account? Sign in to use your saved addresses and track the order in My orders."
   },
   "pedido": {
     "titulo": "Your order",
@@ -478,6 +504,228 @@
     "incluye": "Includes {lista}.",
     "notaStripe": "Stripe test payment: nothing was charged.",
     "notaSimulado": "Simulated payment: nothing was charged.",
-    "seguirComprando": "Keep shopping"
+    "seguirComprando": "Keep shopping",
+    "pdf": "Download receipt (PDF)"
+  },
+  "cuenta": {
+    "hola": "Hi",
+    "salir": "Sign out",
+    "opcional": "optional",
+    "enviando": "Sending…",
+    "demo": "Test account: this preview isn't connected to Supabase, so your changes are stored in the server's database and wiped when it restarts.",
+    "menu": {
+      "pedidos": "My orders",
+      "opiniones": "Reviews",
+      "direcciones": "Addresses",
+      "datos": "Details and preferences"
+    },
+    "pedidos": {
+      "titulo": "My orders",
+      "cantidad": "{n, plural, one {# order} other {# orders}}",
+      "vacio": "You haven't bought anything yet",
+      "vacioTexto": "Once you buy something, you'll follow each order here until it arrives or you pick it up.",
+      "irAComprar": "See best sellers",
+      "pedido": "Order {numero}",
+      "productos": "{n, plural, one {# item} other {# items}}",
+      "retiro": "Store pickup",
+      "domicilio": "Home delivery",
+      "conDevolucion": "Return requested",
+      "estado": "Status: {estado}"
+    },
+    "paradas": {
+      "confirmado": "Confirmed",
+      "preparando": "Preparing",
+      "enviado": "On its way",
+      "listoRetiro": "Ready for pickup",
+      "entregado": "Delivered"
+    },
+    "detalle": {
+      "volver": "← My orders",
+      "hecho": "Placed on {fecha}",
+      "pdf": "Download receipt (PDF)",
+      "opinar": "Review",
+      "opinaste": "You rated it {n} out of 5",
+      "devolver": "Request a return",
+      "trayecto": "Your order’s journey"
+    },
+    "devolucion": {
+      "plazo": "You can request it until {fecha}. The store replies within 48 business hours.",
+      "motivo": "What happened?",
+      "motivos": {
+        "fallado": "It arrived damaged or doesn't work",
+        "distinto": "It's not what I ordered (different color, model or size)",
+        "incompleto": "Something from the box is missing",
+        "arrepentido": "I changed my mind (unused, in its box)",
+        "otro": "Other reason"
+      },
+      "preferis": "What would you prefer?",
+      "reembolso": "Get my money back",
+      "cambio": "Exchange it for the same item",
+      "detalle": "Tell the store what happened",
+      "enviar": "Send the return request",
+      "enviada": "Done: we sent your return request to the store. They'll email you within 48 business hours.",
+      "errores": {
+        "motivo": "Choose what happened with the product.",
+        "vencido": "It's been more than 7 days since delivery. Message the store from the product page.",
+        "ya_pedida": "You already requested a return for this product.",
+        "no_entregado": "You can request a return once you receive it.",
+        "no_existe": "We couldn't find that product in your orders.",
+        "sin_sesion": "Your session expired. Sign in again to request the return."
+      },
+      "estados": {
+        "solicitada": "Return requested on {fecha}: the store is reviewing it",
+        "aprobada": "Return approved: take it to the store or wait for pickup",
+        "rechazada": "The store declined the return (they emailed you why)",
+        "reembolsada": "Return completed: your money was refunded"
+      },
+      "vencida": "The return window closed on {fecha}"
+    },
+    "entrar": {
+      "titulo": "Sign in to your account",
+      "porque1": "Your orders, step by step",
+      "porque1Texto": "From the store to your door or the counter, with a PDF receipt.",
+      "porque2": "Hassle-free returns",
+      "porque2Texto": "Up to 7 days after delivery, right from the order.",
+      "porque3": "Your review counts",
+      "porque3Texto": "Only buyers can review, which is why Tríplice reviews are useful.",
+      "demoTitulo": "Sign in with the test account",
+      "demoPersona": "Hernandarias · 4 orders",
+      "demoTexto": "It has an order delivered 3 days ago (to review and request a return), one on its way, one just confirmed and two saved addresses.",
+      "demoBoton": "Sign in as Lorena",
+      "demoNota": "With Supabase connected, this is where you sign in with Google or an email link.",
+      "formTitulo": "Sign in or create your account",
+      "google": "Continue with Google",
+      "o": "or with your email",
+      "email": "Your email",
+      "mandarEnlace": "Email me a sign-in link",
+      "enviadoTitulo": "Check your email",
+      "enviadoTexto": "We sent a sign-in link to",
+      "enviadoAyuda": "It expires in an hour. If you don't see it, check Spam or Promotions.",
+      "privacidad": "No passwords to remember. We only use your email for your orders and account notices.",
+      "errores": {
+        "email": "Check the email address: it's missing the @ or the domain (for example, name@mail.com).",
+        "servidor": "We couldn't send the link. Wait a minute and try again.",
+        "demo": "We couldn't find the test account in this database. Reload the page.",
+        "google": "We couldn't connect to Google. Try again or sign in with your email.",
+        "enlace": "The link expired or was already used. Request a new one."
+      }
+    },
+    "opinar": {
+      "tituloPagina": "Your review",
+      "volver": "← Order {numero}",
+      "verificada": "Verified purchase",
+      "estrellas": "How many stars do you give it?",
+      "palabras": {
+        "1": "Poor",
+        "2": "Meh",
+        "3": "Does the job",
+        "4": "Very good",
+        "5": "Excellent"
+      },
+      "titulo": "Title",
+      "tituloEjemplo": "For example: Keeps ice all afternoon",
+      "texto": "Your review",
+      "faltan": "{n} more characters to go (20 minimum).",
+      "ayudaTexto": "Tell us how it went: what you liked, what you didn't, how it arrived.",
+      "fotos": "Photos",
+      "fotosAyuda": "(optional, up to {n})",
+      "fotoN": "Photo {n}",
+      "quitarFoto": "Remove photo {n}",
+      "agregarFotos": "Add photos",
+      "otraFoto": "Add another",
+      "publicar": "Post my review",
+      "publicando": "Posting…",
+      "reglas": "Posted with your first name and last initial. We strip location and phone details from photos.",
+      "errores": {
+        "estrellas": "Choose 1 to 5 stars.",
+        "titulo": "Add a title of 3 to 80 characters.",
+        "texto": "Reviews need 20 to 2,000 characters.",
+        "tipo": "One of the files isn't an image. Choose JPG, PNG, WebP or HEIC photos.",
+        "grande": "One photo is over 8 MB. Choose a smaller one.",
+        "muchas": "You can upload up to 4 photos.",
+        "ilegible": "We couldn't read one of the photos. Try another one.",
+        "no_verificada": "You can only review products you bought and received.",
+        "ya_opinaste": "You already reviewed this product.",
+        "servidor": "We couldn't post your review. Try again in a moment."
+      }
+    },
+    "opiniones": {
+      "titulo": "Reviews",
+      "publicada": "Thanks! Your review is live.",
+      "verEnFicha": "See it on the product page",
+      "pendientes": "To review",
+      "sinPendientes": "You have no delivered purchases left to review.",
+      "mias": "What you posted",
+      "sinMias": "You haven't posted any reviews yet.",
+      "estrellas": "{n} out of 5 stars",
+      "util": "{n, plural, one {# person found it helpful} other {# people found it helpful}}"
+    },
+    "direcciones": {
+      "titulo": "Addresses",
+      "agregar": "Add an address",
+      "nueva": "New address",
+      "editarAlias": "Edit “{alias}”",
+      "guardada": "Address saved.",
+      "borrada": "Address deleted.",
+      "predeterminada": "Used at checkout",
+      "editar": "Edit",
+      "hacerPredeterminada": "Use at checkout",
+      "borrar": "Delete",
+      "borrarAlias": "Delete the {alias} address",
+      "alias": "Name to recognize it",
+      "aliasEjemplo": "Home, Work, Mom's place…",
+      "pais": "Country",
+      "usarSiempre": "Use this address at checkout",
+      "faltaAlias": "Give it a name so you can recognize it.",
+      "guardar": "Save address"
+    },
+    "datos": {
+      "titulo": "Details and preferences",
+      "guardados": "Changes saved.",
+      "firma": "On reviews and questions you sign as “{firma}”.",
+      "email": "Email",
+      "emailNota": "the one you sign in with",
+      "preferencias": "When you sign in, the store opens in",
+      "region": "Region",
+      "moneda": "Currency",
+      "idioma": "Language",
+      "preferenciasNota": "The region sets taxes and delivery; the currency, how you see prices. You can change them anytime from the header.",
+      "guardar": "Save changes"
+    }
+  },
+  "comprobante": {
+    "titulo": "Purchase receipt",
+    "simulado": "Simulated receipt from a demo store: it is not an invoice and has no tax value.",
+    "pedido": "Order",
+    "fecha": "Date",
+    "estado": "Status",
+    "comprador": "Buyer",
+    "entrega": "Delivery",
+    "retiro": "Store pickup",
+    "domicilio": "Home delivery",
+    "producto": "Item",
+    "cantidad": "Qty",
+    "unitario": "Unit price",
+    "impuesto": "Tax",
+    "subtotal": "Subtotal",
+    "productos": "Items",
+    "cupon": "Coupon {codigo}",
+    "envio": "Shipping",
+    "gratis": "Free",
+    "total": "Total",
+    "incluye": "Includes {lista}",
+    "cotizacion": "Exchange rate frozen at payment: US$ 1 = {valor}",
+    "pie": "Tríplice is a portfolio project: products, stores and payments are for testing. Prices include taxes.",
+    "pagina": "Page {n} of {total}",
+    "estados": {
+      "pendiente_pago": "Awaiting payment",
+      "confirmado": "Confirmed",
+      "preparando": "Preparing",
+      "enviado": "On its way",
+      "listo_retiro": "Ready for pickup",
+      "entregado": "Delivered",
+      "cancelado": "Cancelled",
+      "devolucion": "Return requested"
+    }
   }
 }

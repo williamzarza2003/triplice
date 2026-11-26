@@ -6,6 +6,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { EstrellasCompletas } from '@/components/Estrellas'
 import { Compra, type VarianteVista } from '@/components/ficha/Compra'
 import { Opiniones } from '@/components/ficha/Opiniones'
+import { FormPregunta, FormRespuesta } from '@/components/ficha/Preguntar'
 import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
 import { Migas } from '@/components/Migas'
@@ -18,6 +19,7 @@ import type { Ficha } from '@/lib/datos/tipos'
 import { esIdioma, LOCALE } from '@/lib/i18n/idiomas'
 import { Textos } from '@/lib/i18n/textos'
 import { agregarAlCarrito } from '../../carrito/acciones'
+import { fichaUsuarioAccion, preguntarAccion, responderAccion, votarAccion } from '../../cuenta/acciones'
 import { masBarata, ordenarOfertas } from '@/lib/ofertas'
 import { descuento, formatear, precioEn } from '@/lib/precios'
 import { MONEDA_DE, mercadoPredeterminado, MONEDAS, segmentoMercado } from '@/lib/region'
@@ -196,28 +198,33 @@ async function Contenido({ params }: Props) {
       <section id="opiniones" className="seccion fuera-de-pantalla" aria-labelledby="t-opiniones">
         <div className="seccion__cabeza"><h2 id="t-opiniones">{t('opinionesTitulo')}</h2></div>
         <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
-          <Opiniones idioma={ctx.idioma} resenas={f.resenas} resumen={f.resumen} paises={paises} />
+          <Opiniones idioma={ctx.idioma} slug={slug} resenas={f.resenas} resumen={f.resumen} paises={paises} votar={votarAccion} personal={fichaUsuarioAccion} />
         </Textos>
       </section>
 
       <section id="preguntas" className="seccion fuera-de-pantalla" aria-labelledby="t-preguntas">
         <div className="seccion__cabeza"><h2 id="t-preguntas">{t('preguntasTitulo')}</h2></div>
-        <p className={s.nota}><Icono nombre="info" tam={16} />{t('preguntasLectura')}</p>
-        {f.preguntas.length === 0 ? <p className={s.vacio}>{t('sinPreguntas')}</p> : (
-          <ul className={s.preguntas}>
-            {f.preguntas.map((q) => (
-              <li key={q.id}>
-                <p lang={q.idioma}><Icono nombre="conversa" tam={18} /><b>{q.texto}</b></p>
-                {q.respuestas.length > 0 ? q.respuestas.map((a, i) => (
-                  <p key={i} className={s.respuesta} lang={q.idioma}>
-                    <span className={s.quien} lang={ctx.idioma}>{a.es_vendedor ? t('respuestaTienda', { tienda: a.autor }) : a.autor}</span>
-                    {a.texto}
-                  </p>
-                )) : <p className={s.respuesta}>{t('sinRespuesta')}</p>}
-              </li>
-            ))}
-          </ul>
-        )}
+        <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
+          <FormPregunta accion={preguntarAccion} slug={slug} idioma={ctx.idioma} />
+          {f.preguntas.length === 0 ? <p className={s.vacio}>{t('sinPreguntas')}</p> : (
+            <ul className={s.preguntas}>
+              {f.preguntas.map((q) => (
+                <li key={q.id}>
+                  <p lang={q.idioma}><Icono nombre="conversa" tam={18} /><b>{q.texto}</b></p>
+                  {q.respuestas.length > 0 ? q.respuestas.map((a, i) => (
+                    <p key={i} className={s.respuesta} lang={q.idioma}>
+                      <span className={s.quien} lang={ctx.idioma}>
+                        {a.es_vendedor ? t('respuestaTienda', { tienda: a.autor }) : a.compro ? t('respuestaCompro', { autor: a.autor }) : a.autor}
+                      </span>
+                      {a.texto}
+                    </p>
+                  )) : <p className={s.respuesta}>{t('sinRespuesta')}</p>}
+                  <FormRespuesta accion={responderAccion} slug={slug} idioma={ctx.idioma} pregunta={q.id} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Textos>
       </section>
 
       {f.relacionados.length > 0 && (

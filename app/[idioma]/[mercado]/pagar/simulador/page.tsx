@@ -14,9 +14,12 @@ import { formatear } from '@/lib/precios'
 import type { Moneda } from '@/lib/region'
 import { simularPagoAccion } from '../acciones'
 
-// Metadata fija: el título va dentro del contenido dinámico (React lo sube al <head>), así nada se calcula
-// antes de leer la cookie del comprador.
-export const metadata: Metadata = { robots: { index: false } }
+// El título va en la metadata (con el idioma de la URL): un <title> dentro del contenido dinámico no reemplaza al del layout
+export async function generateMetadata(): Promise<Metadata> {
+  const ctx = await contexto()
+  const t = await getTranslations({ locale: ctx.idioma, namespace: 'pagar' })
+  return { title: t('simuladorTitulo'), robots: { index: false } }
+}
 
 export default function PaginaSimulador() {
   return (
@@ -35,7 +38,6 @@ async function Contenido() {
   if (pedido.estado === 'confirmado') redirect(ruta(ctx.idioma, `/pedido/${pedido.numero}`))
   return (
     <>
-      <title>{`${t('simuladorTitulo')} · Tríplice`}</title>
       <h1 className={s.titulo}>{t('simuladorTitulo')}</h1>
       <Simulador accion={simularPagoAccion} textos={{
         explicacion: t('simuladorTexto'), pedido: t('simuladorPedido', { numero: pedido.numero }),

@@ -12,6 +12,10 @@ export async function construirBase({ conSeed = true } = {}) {
   await db.exec(await leer('supabase/pglite/00_supabase.sql'))
   const migraciones = (await readdir(path.join(raiz, 'supabase', 'migrations'))).filter((f) => f.endsWith('.sql')).sort()
   for (const m of migraciones) await db.exec(await leer(`supabase/migrations/${m}`))
-  if (conSeed) await db.exec(await leer('supabase/seed.sql'))
+  if (conSeed) {
+    await db.exec(await leer('supabase/seed.sql'))
+    // cuenta de prueba de la fase 3 (solo en la base embebida: en Supabase cada uno crea la suya)
+    await db.exec(await leer('supabase/pglite/90_cuenta_demo.sql'))
+  }
   return db
 }

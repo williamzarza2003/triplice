@@ -39,3 +39,22 @@
   .categorias[data-abierto='true'] .categoriasFila { flex-direction: column; align-items: stretch; height: auto; padding: 8px 0; }
   .categorias[data-abierto='true'] a { padding: 10px 12px; font-size: var(--t-16); }
 }
+
+/* Cuenta (fase 3): ícono y saludo en escritorio, solo el ícono en el celular */
+.cuenta {
+  flex: none; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; color: #fff; text-decoration: none;
+  border-radius: var(--r-control); border: 1px solid rgb(255 255 255 / .25); font-size: var(--t-14); font-weight: 700; max-width: 180px;
+}
+.cuenta:hover { color: #fff; border-color: rgb(255 255 255 / .6); }
+.cuenta:focus-visible { box-shadow: var(--foco-oscuro); }
+.cuentaTexto { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 1100px) {
+  .cuenta { width: 48px; padding: 0; justify-content: center; }
+  .cuentaTexto { display: none; }
+}
+/* en el celular la fila ya está llena (menú, logo, región, carrito): la cuenta va dentro del menú ☰ */
+.soloCelular { display: none !important; }
+@media (max-width: 860px) {
+  .cuenta { display: none; }
+  .soloCelular { display: flex !important; font-weight: 700; color: #fff !important; border-bottom: 1px solid rgb(255 255 255 / .12); }
+}
