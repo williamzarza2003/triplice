@@ -12,12 +12,3 @@ export function EsqueletoResultados() {
     </div>
   )
 }
-
-export function EsqueletoFicha() {
-  return (
-    <div className={s.ficha} aria-hidden="true">
-      <span className={s.foto} />
-      <div className={s.lineas}>{Array.from({ length: 6 }, (_, i) => <span key={i} />)}</div>
-    </div>
-  )
-}

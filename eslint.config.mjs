@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     "maquetas/**",
     "herramientas/**",
     ".datos/**",
+    // worktrees de Claude Code (copias del repo en otra rama)
+    ".claude/**",
   ]),
 ]);
 

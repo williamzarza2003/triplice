@@ -1,16 +1,14 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Suspense } from 'react'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { EstrellasCompletas } from '@/components/Estrellas'
-import { Compra, type VarianteVista } from '@/components/ficha/Compra'
+import { Compra, type FronteraPais, type TiendaVista, type VarianteVista } from '@/components/ficha/Compra'
 import { Opiniones } from '@/components/ficha/Opiniones'
 import { FormPregunta, FormRespuesta } from '@/components/ficha/Preguntar'
 import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
 import { Migas } from '@/components/Migas'
-import { EsqueletoFicha } from '@/components/resultados/Esqueleto'
 import { valor } from '@/lib/catalogo/valores'
 import { contexto, precio, precioNumero, ruta, type Contexto } from '@/lib/contexto'
 import { precioFinal, reglaDe } from '@/lib/compra/impuestos'
@@ -27,11 +25,12 @@ import s from './ficha.module.css'
 
 type Props = PageProps<'/[idioma]/[mercado]/p/[slug]'>
 
-// Se prearman los productos más vendidos en la combinación habitual de cada idioma; el resto, a pedido.
+// Se prearman todas las fichas en la combinación habitual de cada idioma (idioma + su región y moneda); las otras
+// combinaciones, a pedido: la primera visita espera el armado y las siguientes salen de la caché.
 export async function generateStaticParams({ params }: { params: { idioma: string; mercado: string } }) {
   const slugs = await slugsProductos()
   const habitual = esIdioma(params.idioma) && segmentoMercado(mercadoPredeterminado(params.idioma)) === params.mercado
-  return slugs.slice(0, habitual ? 24 : 1).map((x) => ({ slug: x.slug }))
+  return slugs.slice(0, habitual ? slugs.length : 1).map((x) => ({ slug: x.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -46,12 +45,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
+// Sin <Suspense> alrededor de la ficha: con un límite de Suspense, React manda primero el esqueleto y la ficha
+// después, oculta (`<div hidden>`), y la revela con un script que espera al menos 300 ms después del primer
+// pintado. En el celular eso atrasaba la foto (el LCP) más de 2 s. Como todo sale de la caché, la ficha va
+// completa en el HTML inicial. Las fichas que no se prearman se arman en la primera visita y quedan en la
+// caché (ISR) para las siguientes.
 export default function Producto(props: Props) {
   return (
     <main id="contenido" className="contenedor">
-      <Suspense fallback={<EsqueletoFicha />}>
-        <Contenido {...props} />
-      </Suspense>
+      <Contenido {...props} />
     </main>
   )
 }
@@ -63,14 +65,20 @@ function tiempoRespuesta(min: number | undefined, idioma: Contexto['idioma']) {
   return idioma === 'en' ? `${h} h` : `${h} h`
 }
 
-/** Precios de cada oferta, con el impuesto de la región, ya convertidos y formateados para el navegador. */
-function vistas(f: Ficha, ctx: Contexto): VarianteVista[] {
+/**
+ * Precios de cada oferta, con el impuesto de la región, ya convertidos y formateados para el navegador.
+ * Lo que se repite (la tienda, los países de la etiqueta de frontera y su impuesto) va una sola vez:
+ * todo esto viaja en el payload de React y antes pesaba 22 KB en un celular con nueve variantes.
+ */
+function vistas(f: Ficha, ctx: Contexto): { variantes: VarianteVista[]; tiendas: Record<string, TiendaVista>; fronteraPaises: FronteraPais[] } {
   const otras = MONEDAS.filter((m) => m !== ctx.moneda)
   const cat = { sub: f.categoria.slug, padre: f.categoria_padre?.slug ?? null }
   const tasa = reglaDe(ctx.impuestos, cat).tasa
   // etiqueta de frontera: el mismo precio base en cada país, con su impuesto y en su moneda, y cuánto es en la tuya
   const paises = (['PY', 'BR', 'AR'] as const).filter((p) => p !== ctx.region)
-  return f.variantes.map((v) => {
+  const reglas = paises.map((pais) => reglaDe({ reglas: ctx.impuestosPaises[pais] ?? [] }, cat))
+  const tiendas: Record<string, TiendaVista> = {}
+  const variantes = f.variantes.map((v) => {
     // se compara el precio tal como lo ve el comprador (convertido, con impuesto y redondeado en su moneda)
     const comparables = v.ofertas.map((o) => ({ o, precio: precioNumero(ctx, o.precio, cat), stock: o.stock,
       preparacionH: o.preparacion_h, recomendacion: o.tienda.recomendacion !== undefined ? Number(o.tienda.recomendacion) : null }))
@@ -78,31 +86,31 @@ function vistas(f: Ficha, ctx: Contexto): VarianteVista[] {
     const barata = masBarata(comparables)
     return {
       id: v.id, sku: v.sku, opciones: v.opciones, imagenes: v.imagenes,
-      ofertas: ordenadas.map(({ o }) => ({
-        id: o.id,
-        masBarato: barata?.o.id === o.id,
-        precio: precio(ctx, o.precio, cat),
-        lista: o.precio_lista ? precio(ctx, o.precio_lista, cat) : null,
-        descuento: descuento(o.precio, o.precio_lista),
-        equivalencias: otras.map((m) => formatear(precioFinal(o.precio, tasa, m, ctx.tasas), m)).join(' · '),
-        frontera: paises.map((pais) => {
-          const regla = reglaDe({ reglas: ctx.impuestosPaises[pais] ?? [] }, cat)
-          const local = precioFinal(o.precio, regla.tasa, MONEDA_DE[pais], ctx.tasas)
-          // cuánto es ese precio local en la moneda del comprador
-          const usd = MONEDA_DE[pais] === 'USD' ? local : local / ctx.tasas[MONEDA_DE[pais] as 'PYG' | 'BRL' | 'ARS']
-          return { pais, precio: formatear(local, MONEDA_DE[pais]), impuesto: regla.nombre,
-            enTuMoneda: formatear(precioEn(Math.round(usd * 100), ctx.moneda, ctx.tasas), ctx.moneda), masCaro: precioFinal(o.precio, regla.tasa, ctx.moneda, ctx.tasas) > precioFinal(o.precio, tasa, ctx.moneda, ctx.tasas) }
-        }),
-        stock: o.stock, envioGratis: o.envio_gratis, preparacionH: o.preparacion_h, cerca: o.tienda.pais === ctx.region,
-        tienda: {
+      ofertas: ordenadas.map(({ o }) => {
+        tiendas[o.tienda.slug] ??= {
           slug: o.tienda.slug, nombre: o.tienda.nombre, ciudad: o.tienda.ciudad, color: o.tienda.color,
           recomendacion: o.tienda.recomendacion !== undefined ? Number(o.tienda.recomendacion) : null,
-          opiniones: o.tienda.opiniones ?? null, aTiempo: o.tienda.a_tiempo !== undefined ? Number(o.tienda.a_tiempo) : null,
-          respuesta: tiempoRespuesta(o.tienda.respuesta_min, ctx.idioma),
-        },
-      })),
+          respuesta: tiempoRespuesta(o.tienda.respuesta_min, ctx.idioma), cerca: o.tienda.pais === ctx.region,
+        }
+        return {
+          id: o.id,
+          masBarato: barata?.o.id === o.id,
+          precio: precio(ctx, o.precio, cat),
+          lista: o.precio_lista ? precio(ctx, o.precio_lista, cat) : null,
+          descuento: descuento(o.precio, o.precio_lista),
+          equivalencias: otras.map((m) => formatear(precioFinal(o.precio, tasa, m, ctx.tasas), m)).join(' · '),
+          frontera: paises.map((pais, i) => {
+            const local = precioFinal(o.precio, reglas[i].tasa, MONEDA_DE[pais], ctx.tasas)
+            // cuánto es ese precio local en la moneda del comprador
+            const usd = MONEDA_DE[pais] === 'USD' ? local : local / ctx.tasas[MONEDA_DE[pais] as 'PYG' | 'BRL' | 'ARS']
+            return { precio: formatear(local, MONEDA_DE[pais]), enTuMoneda: formatear(precioEn(Math.round(usd * 100), ctx.moneda, ctx.tasas), ctx.moneda) }
+          }),
+          stock: o.stock, envioGratis: o.envio_gratis, preparacionH: o.preparacion_h, tienda: o.tienda.slug,
+        }
+      }),
     }
   })
+  return { variantes, tiendas, fronteraPaises: paises.map((pais, i) => ({ pais, impuesto: reglas[i].nombre })) }
 }
 
 async function Contenido({ params }: Props) {
@@ -169,7 +177,7 @@ async function Contenido({ params }: Props) {
       ]} />
 
       <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
-        <Compra idioma={ctx.idioma} titulo={f.titulo} variantes={vistas(f, ctx)} info={info} detalles={detalles}
+        <Compra idioma={ctx.idioma} titulo={f.titulo} {...vistas(f, ctx)} info={info} detalles={detalles}
           impuesto={ctx.region === 'XX' ? tp('sinImpuesto') : tp('incluido', { impuesto: reglaDe(ctx.impuestos, { sub: f.categoria.slug, padre: f.categoria_padre?.slug ?? null }).nombre })}
           agregar={agregarAlCarrito} carrito={r('/carrito')} />
       </Textos>

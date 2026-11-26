@@ -21,18 +21,25 @@ export type OfertaVista = {
   lista: string | null
   descuento: number
   equivalencias: string | null
-  /** el mismo producto en los otros países, con su impuesto (la etiqueta de frontera) */
-  frontera: { pais: string; precio: string; impuesto: string; enTuMoneda: string; masCaro: boolean }[]
+  /** el mismo producto en los otros países (la etiqueta de frontera), en el orden de `Frontera.paises` */
+  frontera: { precio: string; enTuMoneda: string }[]
   stock: number
   envioGratis: boolean
   preparacionH: number
-  cerca: boolean
-  tienda: { slug: string; nombre: string; ciudad: string; color: string; recomendacion: number | null; opiniones: number | null; aTiempo: number | null; respuesta: string | null }
+  /** slug de la tienda: sus datos van una sola vez en `tiendas` */
+  tienda: string
 }
+export type TiendaVista = { slug: string; nombre: string; ciudad: string; color: string; recomendacion: number | null; respuesta: string | null; cerca: boolean }
+/** Los países de la etiqueta de frontera y su impuesto: dependen de la categoría, no de cada oferta. */
+export type FronteraPais = { pais: string; impuesto: string }
 export type VarianteVista = { id: string; sku: string; opciones: Record<string, string>; imagenes: string[]; ofertas: OfertaVista[] }
 
 type Props = {
-  idioma: Idioma; titulo: string; variantes: VarianteVista[]; info: React.ReactNode; detalles: React.ReactNode
+  idioma: Idioma; titulo: string; variantes: VarianteVista[]
+  /** Cada tienda una sola vez: antes viajaba completa en cada oferta de cada variante (22 KB en un celular con 9 variantes). */
+  tiendas: Record<string, TiendaVista>
+  fronteraPaises: FronteraPais[]
+  info: React.ReactNode; detalles: React.ReactNode
   /** "IVA 10 % incluido" o, en Internacional, que no lleva impuestos locales */
   impuesto: string
   /** agrega la oferta al carrito (Server Action): devuelve las unidades que quedan en el carrito */
@@ -42,7 +49,7 @@ type Props = {
 
 const NOMBRE_COLOR = COLORES as Record<string, { hex: string; es: string; pt: string; en: string }>
 
-export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, agregar, carrito }: Props) {
+export function Compra({ idioma, titulo, variantes, tiendas, fronteraPaises, info, detalles, impuesto, agregar, carrito }: Props) {
   const t = useTextos('ficha')
   const tp = useTextos('precio')
   // la oferta elegida por defecto es la primera con stock: vienen ordenadas por precio y, con el mismo precio,
@@ -56,6 +63,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
   const [agregando, empezar] = useTransition()
   const v = variantes[vi]
   const oferta = v.ofertas[oi] ?? v.ofertas[0]
+  const tienda = oferta ? tiendas[oferta.tienda] : undefined
 
   // ?v=SKU en la URL: la variante elegida se puede compartir
   useEffect(() => {
@@ -156,8 +164,8 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
               <ul className={s.entrega}>
                 {oferta.envioGratis && <li className={s.gratis}><Icono nombre="camion" tam={18} />{t('envioGratis')}</li>}
                 <li><Icono nombre="mapa" tam={18} />
-                  {oferta.cerca ? t('retiroHoy', { ciudad: oferta.tienda.ciudad, horas: oferta.preparacionH })
-                    : t('preparacion', { ciudad: oferta.tienda.ciudad, horas: oferta.preparacionH })}
+                  {tienda!.cerca ? t('retiroHoy', { ciudad: tienda!.ciudad, horas: oferta.preparacionH })
+                    : t('preparacion', { ciudad: tienda!.ciudad, horas: oferta.preparacionH })}
                 </li>
               </ul>
               <button type="button" className="boton boton--accion boton--ancho" disabled={oferta.stock === 0 || agregando}
@@ -176,11 +184,11 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
               </p>
               <div className={s.vendedor}>
                 <span>{t('vendido')}</span>
-                <Link href={`/${idioma}/tienda/${oferta.tienda.slug}`}><b>{oferta.tienda.nombre}</b></Link>
-                {oferta.tienda.recomendacion !== null && (
-                  <span className={s.rep}>{t('recomienda', { n: oferta.tienda.recomendacion })}</span>
+                <Link href={`/${idioma}/tienda/${tienda!.slug}`}><b>{tienda!.nombre}</b></Link>
+                {tienda!.recomendacion !== null && (
+                  <span className={s.rep}>{t('recomienda', { n: tienda!.recomendacion })}</span>
                 )}
-                {oferta.tienda.respuesta && <span>{t('responde', { tiempo: oferta.tienda.respuesta })}</span>}
+                {tienda!.respuesta && <span>{t('responde', { tiempo: tienda!.respuesta })}</span>}
               </div>
             </>
           ) : <p className={s.sinStock}>{t('sinStock')}</p>}
@@ -192,9 +200,9 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
             <table>
               <caption className="sr-only">{t('fronteraTitulo')}</caption>
               <tbody>
-                {oferta.frontera.map((x) => (
-                  <tr key={x.pais}>
-                    <th scope="row">{t(`fronteraPais.${x.pais}`)}<small>{x.impuesto}</small></th>
+                {oferta.frontera.map((x, i) => (
+                  <tr key={fronteraPaises[i].pais}>
+                    <th scope="row">{t(`fronteraPais.${fronteraPaises[i].pais}`)}<small>{fronteraPaises[i].impuesto}</small></th>
                     <td><b className="precio">{x.precio}</b><small>{t('fronteraEquivale', { precio: x.enTuMoneda })}</small></td>
                   </tr>
                 ))}
@@ -218,13 +226,13 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
               <tr><th scope="col">{t('columnaTienda')}</th><th scope="col">{t('columnaPrecio')}</th><th scope="col">{t('columnaEntrega')}</th><th scope="col"><span className="sr-only">{t('verTienda')}</span></th></tr>
             </thead>
             <tbody>
-              {v.ofertas.map((o, i) => (
+              {v.ofertas.map((o, i) => { const ti = tiendas[o.tienda]; return (
                 <tr key={o.id} aria-current={i === oi ? 'true' : undefined}>
                   <td>
-                    <span className={s.logoTienda} style={{ background: o.tienda.color, color: textoSobre(o.tienda.color) }} aria-hidden="true">{o.tienda.nombre[0]}</span>
+                    <span className={s.logoTienda} style={{ background: ti.color, color: textoSobre(ti.color) }} aria-hidden="true">{ti.nombre[0]}</span>
                     <span>
-                      <Link href={`/${idioma}/tienda/${o.tienda.slug}`}><b>{o.tienda.nombre}</b></Link>
-                      <small>{o.tienda.ciudad}{o.tienda.recomendacion !== null && ` · ${t('recomienda', { n: o.tienda.recomendacion })}`}</small>
+                      <Link href={`/${idioma}/tienda/${ti.slug}`}><b>{ti.nombre}</b></Link>
+                      <small>{ti.ciudad}{ti.recomendacion !== null && ` · ${t('recomienda', { n: ti.recomendacion })}`}</small>
                     </span>
                   </td>
                   <td className={s.celdaPrecio}>
@@ -233,7 +241,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
                   </td>
                   <td className={s.celdaEntrega}>
                     {o.envioGratis && <b className={s.gratis}>{t('envioGratis')}</b>}
-                    <small>{o.cerca ? t('retiroHoy', { ciudad: o.tienda.ciudad, horas: o.preparacionH }) : t('preparacion', { ciudad: o.tienda.ciudad, horas: o.preparacionH })}</small>
+                    <small>{ti.cerca ? t('retiroHoy', { ciudad: ti.ciudad, horas: o.preparacionH }) : t('preparacion', { ciudad: ti.ciudad, horas: o.preparacionH })}</small>
                   </td>
                   <td>
                     <button type="button" className="boton boton--sec" aria-pressed={i === oi} disabled={o.stock === 0}
@@ -242,7 +250,7 @@ export function Compra({ idioma, titulo, variantes, info, detalles, impuesto, ag
                     </button>
                   </td>
                 </tr>
-              ))}
+              ) })}
             </tbody>
           </table>
         </section>
