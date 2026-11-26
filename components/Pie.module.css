@@ -1,0 +1,15 @@
+.pie { background: var(--agua-900); color: #cfe2df; padding: var(--e-10) 0 var(--e-6); }
+.grilla { display: grid; grid-template-columns: 1.3fr repeat(3, 1fr); gap: var(--e-6); }
+.pie h2 { font-size: var(--t-16); color: #fff; margin-bottom: var(--e-2); }
+.pie a { display: block; color: #cfe2df; text-decoration: none; font-size: var(--t-14); padding: 4px 0; }
+.pie a:hover { color: var(--ipe-400); }
+.pie a:focus-visible { box-shadow: var(--foco-oscuro); }
+.lema { font-size: var(--t-14); margin-top: var(--e-3); max-width: 28ch; }
+.fase { font-size: var(--t-13); color: #a9c4bf; margin-top: var(--e-2); }
+.legal { border-top: 1px solid rgb(255 255 255 / .14); margin-top: var(--e-8); padding-top: var(--e-4); font-size: var(--t-13); color: #a9c4bf; }
+
+@media (max-width: 860px) {
+  .grilla { grid-template-columns: 1fr 1fr; }
+  .grilla > :first-child { grid-column: 1 / -1; }
+  .grilla > :last-child { grid-column: 1 / -1; }
+}

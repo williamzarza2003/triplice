@@ -1,0 +1,5 @@
+.migas { display: flex; flex-wrap: wrap; gap: 6px; font-size: var(--t-13); color: var(--tinta-3); padding: var(--e-4) 0 0; margin: 0; list-style: none; }
+.migas li + li::before { content: '›'; margin-right: 6px; }
+.migas a { color: var(--tinta-2); }
+/* en el celular, la página actual ya está en el título: las migas muestran solo el camino */
+@media (max-width: 860px) { .migas li:last-child:not(:first-child) { display: none; } .migas { padding-top: var(--e-3); } }

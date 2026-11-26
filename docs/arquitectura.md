@@ -187,3 +187,33 @@ triplice/
 | Flujo completo | **Playwright** | Buscar → ficha → elegir variante → carrito → checkout con la tarjeta de prueba `4242…` → pedido confirmado con su línea de tiempo. Lo mismo en región Brasil (BRL). Tarjeta rechazada (`4000 0000 0000 0002`) con el mensaje de ayuda. Todo con teclado. |
 | Accesibilidad | Playwright + axe-core | Cero violaciones serias en las 7 páginas principales. |
 | Rendimiento | Lighthouse CI en cada PR | ≥ 95 en las cuatro categorías en inicio, búsqueda y ficha. |
+
+## Fase 1: cómo quedó implementado (y qué cambió respecto del plan)
+
+| Tema | Plan de la fase 0 | Lo que se hizo y por qué |
+| --- | --- | --- |
+| Datos | Supabase | Las **mismas migraciones** corren en Supabase y en **PGlite** (Postgres compilado a WebAssembly). Sin variables de Supabase, el servidor abre una copia embebida de la base (`.datos/triplice.tar.gz`, se arma en `prebuild`). Así la vista previa funciona antes de crear el proyecto y las pruebas usan Postgres de verdad, sin Docker. Ver [`supabase.md`](supabase.md). |
+| Acceso | Server Actions y cliente de Supabase | La web solo llama funciones SQL (`buscar`, `sugerir`, `ficha`, `inicio`, `tienda`, `categorias_arbol`, `cotizaciones_vigentes`) con un único `jsonb` de entrada y salida, **como rol `anon`**: el RLS decide qué se ve en los dos modos (`lib/datos/fuente.ts`). |
+| Tarjetas | Vista | **Vista materializada** `tarjetas` (precio mínimo con stock, tiendas distintas, promedio de reseñas). Calculado al vuelo bajo RLS costaba ~350 ms por búsqueda; leído de la vista, ~6 ms. Solo contiene lo público, así que no necesita RLS. Se refresca con `refrescar_catalogo()` (`security definer`, sin permiso para `anon`). |
+| Búsqueda | `websearch_to_tsquery` + trigramas | Prefijos en todas las palabras (sirve para buscar mientras se escribe). Si no hay resultados, se corrige cada palabra con el **vocabulario del catálogo** (`ts_stat` sobre las tarjetas públicas: una palabra de un producto oculto nunca aparece como sugerencia) y, si tampoco, trigramas con umbral 0,4. La página avisa qué buscó. |
+| Región y moneda | Selector en el encabezado | Cookie + **segmento interno** `/es/py-pyg/…` que agrega `proxy.ts`. La URL pública no cambia y cada combinación (3 idiomas × 4 regiones × 4 monedas) se cachea por separado: el precio sale del servidor ya convertido, sin parpadeo. |
+| Caché | ISR | Next.js 16 con **Cache Components**: consultas con `'use cache'` y `cacheLife`; layout y fichas prearmados; búsqueda y categorías con prerender parcial (la parte que depende de los filtros llega en streaming). Idioma y mercado se leen con `next/root-params`, nunca con `headers()`. |
+| Impuestos | En la fase 1 | Quedan para la fase 2, como dice el plan de fases: los precios se muestran **sin impuestos** y la ficha muestra la equivalencia en las otras tres monedas. |
+
+Pruebas de esta fase:
+- **Vitest** sobre PGlite: búsqueda con errores, acentos y en tres idiomas; facetas que suman; ficha; RLS (un producto de una tienda pendiente no aparece ni en la búsqueda ni en las sugerencias).
+- **Vitest** de `lib/precios.ts` y `lib/busqueda.ts`: conversión, redondeo por moneda, montos con los separadores de cada país.
+- **Playwright** (`e2e/`) contra el build de producción, en escritorio y celular.
+
+## Fase 2: cómo quedó implementado
+
+| Tema | Plan | Lo que se hizo y por qué |
+| --- | --- | --- |
+| Impuestos | `reglas_impuesto` por país y categoría | Igual, con la regla más específica primero (subcategoría → categoría → general). **Los precios llevan el impuesto incluido** en Paraguay, Brasil y Argentina (es lo que se acostumbra en la región) y en "Internacional" no hay impuestos locales. La web aplica la tasa con `lib/compra/impuestos.ts` sobre la categoría que trae cada tarjeta; la búsqueda filtra y ordena con el mismo precio (`tasa_impuesto` en SQL). |
+| Redondeo | Cada renglón al paso de la moneda, total = suma de lo que se ve | Igual. Como el precio ya incluye el impuesto, el desglose **informa** el impuesto incluido ("Incluye IVA 10 %: ₲ 70.000"), calculado sobre lo que se cobra después del cupón. Así el total del carrito es la suma de los precios que el comprador vio en las tarjetas. |
+| Carrito | `carritos` con usuario o token de invitado | El de **invitado vive en una cookie** (solo ids de oferta y cantidades; precios, stock e impuestos se leen de la base cada vez). La vista previa sin Supabase abre una copia de la base por instancia: guardar el carrito ahí se perdería entre pedidos. El de la cuenta está en `carritos`/`carrito_items` con RLS y `fusionar_carrito` (misma regla que `fusionar()` en TypeScript) para la fase 3. |
+| Envío | `zonas_envio` por región y peso | Zona de la frontera (más barata y rápida) y resto del país, por kilo cobrable (al medio kilo, como las transportadoras), **por tienda**: cada vendedor despacha lo suyo y el envío gratis de una tienda no regala el de otra. |
+| Retiro | Puntos de retiro con mapa | `puntos_retiro` (el local de cada tienda). El mapa es un SVG propio de la triple frontera con los locales numerados igual que la lista: sin mosaicos de terceros (ni cookies ni peticiones a otro servidor). |
+| Pago | Server Action + Stripe | Stripe Checkout **solo en modo de prueba** (una clave `sk_live_` se rechaza), en la moneda de la región, con un solo renglón por el total calculado en el servidor. Si el total que vio el comprador no es el que se va a cobrar, se avisa. Sin claves, un **simulador de prueba** (no pide datos de tarjeta) permite recorrer el flujo. |
+| Pedidos | Los crea el webhook | `registrar_pedido` (al pagar, todo congelado, estado `pendiente_pago`) y `confirmar_pago` (descuenta stock, cuenta el cupón, idempotente), las dos solo con el rol de servicio. Confirman el webhook (con firma) y la vuelta de Stripe (verifica con la API). El comprobante se guarda además en una **cookie firmada** (HMAC): sin Supabase, es lo que permite mostrarlo aunque el pago se confirme en otra instancia. |
+| Rendimiento | | next-intl solo en el servidor (en el navegador, `lib/i18n/formato.ts`, probado contra next-intl), fotos de las vidrieras pedidas al acercarse (`FotoDiferida`) y fuentes recortadas al rango de pesos que se usa. |

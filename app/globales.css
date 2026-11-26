@@ -1,0 +1,86 @@
+/* Tríplice · base global. Los tokens (colores, escala, espacios, radios) vienen de tokens/tokens.css (fase 0);
+   cada componente tiene su CSS Module. Acá solo lo que se comparte en todo el sitio. */
+
+:root {
+  /* next/font arma estas variables con la fuente local y un respaldo con las mismas métricas (sin saltos al cargar) */
+  --f-titulo: var(--fuente-titulo), 'Segoe UI', system-ui, sans-serif;
+  --f-texto: var(--fuente-texto), 'Segoe UI', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 120px; scrollbar-gutter: stable; }
+body {
+  margin: 0; font-family: var(--f-texto); font-size: var(--t-16); line-height: var(--lh-texto);
+  color: var(--tinta); background: var(--neblina);
+}
+img, svg { display: block; max-width: 100%; }
+h1, h2, h3, h4 { font-family: var(--f-titulo); line-height: var(--lh-ajustado); margin: 0; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: var(--agua-900); text-underline-offset: 2px; }
+a:hover { color: var(--agua-700); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: none; box-shadow: var(--foco); border-radius: var(--r-control); }
+main { display: block; padding-bottom: var(--e-14); min-height: 60vh; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+.contenedor { width: min(var(--ancho-max), 100% - 32px); margin-inline: auto; }
+.saltar {
+  position: absolute; left: -999px; top: 8px; z-index: 50; background: var(--ipe-400); color: var(--tinta);
+  padding: 8px 14px; border-radius: var(--r-control); font-weight: 700;
+}
+.saltar:focus { left: 8px; }
+
+/* ---------------------------------------------------------------- botones y sellos */
+.boton {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--e-2); min-height: 44px;
+  padding: 0 var(--e-5); border: 1px solid transparent; border-radius: var(--r-control); font-weight: 700;
+  font-size: var(--t-16); cursor: pointer; text-decoration: none;
+  transition: background var(--dur-rapida) var(--curva), border-color var(--dur-rapida);
+}
+.boton--accion { background: var(--lapacho-700); color: #fff; }
+.boton--accion:hover { background: var(--lapacho-800); color: #fff; }
+.boton--marca { background: var(--agua-900); color: #fff; }
+.boton--marca:hover { background: var(--agua-700); color: #fff; }
+.boton--sec { background: var(--papel); border-color: var(--linea); color: var(--agua-900); }
+.boton--sec:hover { border-color: var(--agua-700); }
+.boton--ancho { width: 100%; }
+.boton:disabled, .boton[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
+
+.sello {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--r-control);
+  font-size: var(--t-13); font-weight: 700; line-height: 1.5; font-family: var(--f-titulo);
+}
+.sello--oferta { background: var(--ipe-400); color: var(--tinta); }
+.sello--exito { background: var(--exito-100); color: var(--exito); }
+.sello--info { background: var(--agua-100); color: var(--agua-900); }
+.sello--neutro { background: var(--linea-2); color: var(--tinta-2); }
+
+/* Importes siempre en Schibsted: Atkinson Hyperlegible tiene el cero con barra, que en un precio se lee "Ø" */
+.precio {
+  font-family: var(--f-titulo); font-weight: 700; font-size: var(--t-19); font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em; line-height: 1.2;
+}
+.numero { font-family: var(--f-titulo); font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- secciones */
+.seccion { margin-top: var(--e-10); }
+/* lo que está fuera de pantalla no se calcula ni se pinta hasta acercarse (el celular lo agradece) */
+.fuera-de-pantalla { content-visibility: auto; contain-intrinsic-size: auto 520px; }
+.seccion__cabeza { display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-4); margin-bottom: var(--e-4); }
+.seccion__cabeza h2 { font-size: var(--t-23); }
+.seccion__cabeza a { font-size: var(--t-14); font-weight: 700; white-space: nowrap; }
+.panel { background: var(--papel); border: 1px solid var(--linea-2); border-radius: var(--r-panel); padding: var(--e-6); }
+
+@media (max-width: 860px) {
+  html { scroll-padding-top: 150px; }
+  .panel { padding: var(--e-4); }
+  .seccion { margin-top: var(--e-8); }
+  .seccion__cabeza h2 { font-size: var(--t-19); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}

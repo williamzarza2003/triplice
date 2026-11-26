@@ -1,0 +1,34 @@
+.opiniones { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 0 var(--e-8); }
+.resumen { position: sticky; top: 130px; align-self: start; }
+.grande { font-family: var(--f-titulo); font-size: var(--t-40); font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.base { font-size: var(--t-14); color: var(--tinta-2); margin-top: 6px; }
+.barras { list-style: none; margin: var(--e-4) 0 0; padding: 0; display: grid; gap: 4px; font-size: var(--t-13); }
+.barras button {
+  width: 100%; display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; gap: 8px; background: none; border: 0;
+  padding: 4px 6px; cursor: pointer; color: var(--agua-900); text-align: left; border-radius: var(--r-control); font-family: var(--f-titulo);
+}
+.barras button:hover:not(:disabled) { background: var(--agua-50); }
+.barras button[aria-pressed='true'] { background: var(--agua-100); font-weight: 700; }
+.barras button:disabled { cursor: default; color: var(--tinta-3); }
+.barras i { height: 8px; background: var(--linea-2); border-radius: var(--r-pildora); overflow: hidden; display: block; }
+.barras i::before { content: ''; display: block; height: 100%; width: var(--p); background: var(--ipe-400); }
+.barras span:last-child { text-align: right; color: var(--tinta-2); }
+.todas { margin-top: var(--e-3); background: none; border: 0; color: var(--agua-900); font-weight: 700; cursor: pointer; padding: 4px 6px; text-decoration: underline; }
+
+.lista { list-style: none; margin: 0; padding: 0; }
+.opinion { border-top: 1px solid var(--linea); padding: var(--e-4) 0; display: grid; gap: 6px; }
+.opinion:first-child { border-top: 0; padding-top: 0; }
+.cabeza { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cabeza b { font-family: var(--f-titulo); }
+.meta { font-size: var(--t-13); color: var(--tinta-3); }
+.sellos { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.sellos :global(.sello) { font-size: var(--t-11); font-family: var(--f-texto); }
+.variante { font-size: var(--t-13); color: var(--tinta-2); }
+.util { font-size: var(--t-13); color: var(--tinta-2); }
+.mas { margin-top: var(--e-3); }
+.vacio { color: var(--tinta-2); }
+
+@media (max-width: 860px) {
+  .opiniones { grid-template-columns: minmax(0, 1fr); gap: var(--e-5); }
+  .resumen { position: static; }
+}

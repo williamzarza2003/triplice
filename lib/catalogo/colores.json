@@ -1,0 +1,110 @@
+{
+ "negro": {
+  "hex": "#232526",
+  "es": "Negro",
+  "pt": "Preto",
+  "en": "Black"
+ },
+ "blanco": {
+  "hex": "#e9eae6",
+  "es": "Blanco",
+  "pt": "Branco",
+  "en": "White"
+ },
+ "grafito": {
+  "hex": "#4a4f52",
+  "es": "Grafito",
+  "pt": "Grafite",
+  "en": "Graphite"
+ },
+ "arena": {
+  "hex": "#cdb898",
+  "es": "Arena",
+  "pt": "Areia",
+  "en": "Sand"
+ },
+ "terracota": {
+  "hex": "#b4593b",
+  "es": "Terracota",
+  "pt": "Terracota",
+  "en": "Terracotta"
+ },
+ "lapacho": {
+  "hex": "#b0306a",
+  "es": "Lapacho",
+  "pt": "Ipê-roxo",
+  "en": "Lapacho pink"
+ },
+ "ipe": {
+  "hex": "#e3b22c",
+  "es": "Amarillo ipê",
+  "pt": "Amarelo ipê",
+  "en": "Ipê yellow"
+ },
+ "monte": {
+  "hex": "#3d5a3a",
+  "es": "Verde monte",
+  "pt": "Verde mata",
+  "en": "Forest green"
+ },
+ "agua": {
+  "hex": "#2e6f70",
+  "es": "Verde agua",
+  "pt": "Verde-água",
+  "en": "River teal"
+ },
+ "cielo": {
+  "hex": "#5b8fb9",
+  "es": "Celeste",
+  "pt": "Azul-céu",
+  "en": "Sky blue"
+ },
+ "marino": {
+  "hex": "#22345a",
+  "es": "Azul marino",
+  "pt": "Azul-marinho",
+  "en": "Navy"
+ },
+ "rojo": {
+  "hex": "#b3302a",
+  "es": "Rojo",
+  "pt": "Vermelho",
+  "en": "Red"
+ },
+ "naranja": {
+  "hex": "#d9772b",
+  "es": "Naranja",
+  "pt": "Laranja",
+  "en": "Orange"
+ },
+ "menta": {
+  "hex": "#9cc9b0",
+  "es": "Menta",
+  "pt": "Menta",
+  "en": "Mint"
+ },
+ "rosa": {
+  "hex": "#e2a3b3",
+  "es": "Rosa",
+  "pt": "Rosa",
+  "en": "Pink"
+ },
+ "plata": {
+  "hex": "#b9bcbd",
+  "es": "Plateado",
+  "pt": "Prateado",
+  "en": "Silver"
+ },
+ "natural": {
+  "hex": "#a8784f",
+  "es": "Madera natural",
+  "pt": "Madeira natural",
+  "en": "Natural wood"
+ },
+ "lila": {
+  "hex": "#a88bc7",
+  "es": "Lila",
+  "pt": "Lilás",
+  "en": "Lilac"
+ }
+}

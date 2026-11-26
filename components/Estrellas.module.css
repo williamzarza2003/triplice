@@ -1,0 +1,6 @@
+.estrellas { display: inline-flex; align-items: center; gap: 3px; font-size: var(--t-13); color: var(--tinta-2); font-family: var(--f-titulo); font-weight: 500; }
+.estrellas b { color: var(--tinta); }
+.icono { width: 14px; height: 14px; fill: var(--ipe-400); stroke: #b88a00; stroke-width: 1.2; }
+.n { color: var(--tinta-3); }
+.vacia { color: var(--tinta-3); font-family: var(--f-texto); }
+.fila { display: inline-flex; gap: 1px; vertical-align: middle; }
