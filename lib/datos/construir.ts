@@ -16,6 +16,8 @@ export async function construirBase({ conSeed = true } = {}) {
     await db.exec(await leer('supabase/seed.sql'))
     // cuenta de prueba de la fase 3 (solo en la base embebida: en Supabase cada uno crea la suya)
     await db.exec(await leer('supabase/pglite/90_cuenta_demo.sql'))
+    // vendedor de prueba de la fase 4 (Casa Nubla), con pedidos y preguntas de hoy
+    await db.exec(await leer('supabase/pglite/91_vendedor_demo.sql'))
   }
   return db
 }
