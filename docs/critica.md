@@ -143,6 +143,7 @@ Rendimiento / Accesibilidad / Buenas prácticas / SEO. "Celular" es la configura
 | Mis pedidos (con sesión) | 85 / 100 / 100 / 66 | 99 / 100 / 100 / 66 |
 | Pedido (con sesión) | 80 / 100 / 100 / 66 | 99 / 100 / 100 / 66 |
 | Opinar (con sesión) | 83 / 100 / 100 / 66 | 99 / 100 / 100 / 66 |
-| Ficha (sin sesión) | 91 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Ficha del perfume (sin sesión) | 91 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Ficha del celular (sin sesión) | 75 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
 
-SEO 66 en la cuenta es a propósito (`noindex`). En el celular, las páginas de la cuenta se arman en cada visita y el CSS de todo el sitio va incrustado (sumó ~27 KB sin comprimir con la cuenta); queda para la fase 6.
+SEO 66 en la cuenta es a propósito (`noindex`). En el celular, las páginas de la cuenta se arman en cada visita y el CSS de todo el sitio va incrustado (sumó ~27 KB sin comprimir con la cuenta); queda para la fase 6, junto con aligerar el JavaScript de la ficha (opiniones, votos y preguntas).
