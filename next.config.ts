@@ -20,8 +20,13 @@ const nextConfig: NextConfig = {
     loaderFile: './lib/imagenes.ts',
   },
   poweredByHeader: false,
-  // el CSS de todo el sitio pesa ~8 KB comprimido: incrustado en el HTML, el primer pintado no espera otro archivo
-  experimental: { inlineCss: true },
+  experimental: {
+    // El CSS va incrustado en el HTML: el primer pintado no espera otro archivo.
+    inlineCss: true,
+    // Por defecto Turbopack junta el CSS de todas las páginas en un solo bloque (72 KB en cada página con la fase 3).
+    // Como va incrustado, un bloque más no cuesta un pedido: con requestCost 0 cada página lleva solo lo que importa.
+    cssChunking: { type: 'graph', requestCost: 0 },
+  },
 }
 
 export default conIntl(nextConfig)
