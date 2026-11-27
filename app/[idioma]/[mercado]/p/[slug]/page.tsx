@@ -10,6 +10,7 @@ import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
 import { Migas } from '@/components/Migas'
 import { valor } from '@/lib/catalogo/valores'
+import { foto } from '@/lib/imagenes'
 import { contexto, precio, precioNumero, ruta, type Contexto } from '@/lib/contexto'
 import { precioFinal, reglaDe } from '@/lib/compra/impuestos'
 import { ficha, slugsProductos } from '@/lib/datos/consultas'
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: f.titulo,
     description: f.descripcion,
-    openGraph: { title: f.titulo, description: f.descripcion, images: imagen ? [`/productos/${imagen}-800.webp`] : [] },
+    openGraph: { title: f.titulo, description: f.descripcion, images: imagen ? [`${foto(imagen)}-800.webp`] : [] },
   }
 }
 

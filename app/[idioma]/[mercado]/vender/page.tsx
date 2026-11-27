@@ -64,7 +64,8 @@ async function Contenido() {
       <div className={s.cabeza}>
         <div>
           <h1>{t(`saludo.${momentoDelDia()}`, { tienda: r.tienda.nombre })}</h1>
-          <p>{t('bajada', {
+          {/* si el pedido más urgente ya pasó su hora límite, no tiene sentido decir "antes de las…" */}
+          <p>{t(r.pedidos.proximo_limite && new Date(r.pedidos.proximo_limite).getTime() < Date.now() ? 'bajadaAtrasado' : 'bajada', {
             n: porPreparar, hora: r.pedidos.proximo_limite ? hora(r.pedidos.proximo_limite) : '',
             fecha: hoy.charAt(0).toUpperCase() + hoy.slice(1),
           })}</p>

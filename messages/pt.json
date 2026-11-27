@@ -758,6 +758,7 @@
       "noche": "Boa noite, {tienda}"
     },
     "bajada": "{n, plural, =0 {{fecha}. Você não tem pedidos para preparar.} one {{fecha}. Você tem # pedido para preparar até as {hora}.} other {{fecha}. Você tem # pedidos para preparar: o primeiro, até as {hora}.}}",
+    "bajadaAtrasado": "{n, plural, one {{fecha}. Você tem # pedido para preparar e o prazo já passou: despache primeiro.} other {{fecha}. Você tem # pedidos para preparar e o prazo do primeiro já passou: despache primeiro.}}",
     "publicar": "Publicar um produto",
     "ventas": {
       "titulo": "Vendas dos últimos 30 dias",

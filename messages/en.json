@@ -758,6 +758,7 @@
       "noche": "Good evening, {tienda}"
     },
     "bajada": "{n, plural, =0 {{fecha}. No orders to prepare.} one {{fecha}. You have # order to prepare by {hora}.} other {{fecha}. You have # orders to prepare: the first one by {hora}.}}",
+    "bajadaAtrasado": "{n, plural, one {{fecha}. You have # order to prepare and it is already past its deadline: ship it first.} other {{fecha}. You have # orders to prepare and the first one is already past its deadline: ship it first.}}",
     "publicar": "List a product",
     "ventas": {
       "titulo": "Sales in the last 30 days",
