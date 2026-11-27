@@ -14,6 +14,7 @@ import { contexto } from '@/lib/contexto'
 import { LOCALE } from '@/lib/i18n/idiomas'
 import { Textos } from '@/lib/i18n/textos'
 import { entrarDemoAccion, entrarEmailAccion, entrarGoogleAccion, volverSeguro } from '../cuenta/acciones'
+import { entrarVendedorDemoAccion } from '../vender/acciones'
 
 export async function generateMetadata(): Promise<Metadata> {
   const ctx = await contexto()
@@ -63,6 +64,19 @@ async function Formulario({ searchParams }: PageProps<'/[idioma]/[mercado]/entra
           <button type="submit" className="boton boton--marca boton--ancho">{t('entrar.demoBoton')}</button>
         </form>
         <p className={s.letraChica}>{t('entrar.demoNota')}</p>
+        {/* fase 4: el vendedor de prueba, para recorrer el panel de la tienda */}
+        <div className={s.otraCuenta} aria-labelledby="t-demo-vendedor">
+          <h2 id="t-demo-vendedor">{t('entrar.vendedorTitulo')}</h2>
+          <div className={s.persona}>
+            <span className={s.inicial} aria-hidden="true">CN</span>
+            <p><b>Rubén Ayala</b><small>{t('entrar.vendedorPersona')}</small></p>
+          </div>
+          <p>{t('entrar.vendedorTexto')}</p>
+          <form action={entrarVendedorDemoAccion}>
+            <input type="hidden" name="idioma" value={ctx.idioma} />
+            <button type="submit" className="boton boton--sec boton--ancho">{t('entrar.vendedorBoton')}</button>
+          </form>
+        </div>
       </section>
     )
   }

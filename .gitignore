@@ -19,3 +19,4 @@ next-env.d.ts
 *.tsbuildinfo
 herramientas/fotos/segunda_tanda.txt
 herramientas/fotos/rehacer.txt
+.claude/worktrees/

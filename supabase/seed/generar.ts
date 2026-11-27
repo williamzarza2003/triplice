@@ -339,12 +339,12 @@ CATEGORIAS.forEach((c, ci) => {
 for (const t of TIENDAS) {
   const id = uuid(`tienda:${t.slug}`)
   L.push(`insert into public.tiendas (id, slug, nombre, lema, descripcion, color, pais, ciudad, direccion, lat, lng, horario, desde, estado) values (${q(id)}, ${q(t.slug)}, ${q(t.nombre)}, ${j(t.lema)}, ${j(t.descripcion)}, ${q(t.color)}, ${q(t.pais)}, ${q(t.ciudad)}, ${q(t.direccion)}, ${t.lat}, ${t.lng}, ${j(t.horario)}, ${t.desde}, 'aprobada');`)
-  const rp = t.reputacion
-  L.push(`insert into public.reputacion_tiendas values (${q(id)}, ${rp.recomendacion}, ${rp.opiniones}, ${rp.ventas_12m}, ${rp.respuesta_min}, ${rp.a_tiempo});`)
+  // la reputación ya no se carga a mano: la calcula la base (fase 4) con el historial de pedidos de más abajo
 }
 
 for (const p of PRODUCTOS) {
-  L.push(`insert into public.productos (id, slug, categoria_id, marca, titulo, vinetas, descripcion, atributos, peso_g, medidas_mm, garantia_meses, condicion, pais_origen, en_caja, ventas_30d, creado) values (${q(p.id)}, ${q(p.slug)}, (select id from public.categorias where slug = ${q(p.sub)}), ${q(p.marca)}, ${j(p.titulo)}, ${j(p.vinetas)}, ${j(p.descripcion)}, ${j(p.atributos)}, ${p.peso_g ?? 'null'}, ${p.medidas_mm ? `'{${p.medidas_mm.join(',')}}'` : 'null'}, ${p.garantia}, ${q(p.condicion)}, ${q(p.pais_origen)}, ${j(p.en_caja)}, ${p.ventas_30d}, ${fecha(p.creado)});`)
+  // tienda_id: la que lo publica (la única que edita sus datos desde el panel); las demás lo venden con su oferta
+  L.push(`insert into public.productos (id, slug, categoria_id, marca, titulo, vinetas, descripcion, atributos, peso_g, medidas_mm, garantia_meses, condicion, pais_origen, en_caja, ventas_30d, creado, tienda_id) values (${q(p.id)}, ${q(p.slug)}, (select id from public.categorias where slug = ${q(p.sub)}), ${q(p.marca)}, ${j(p.titulo)}, ${j(p.vinetas)}, ${j(p.descripcion)}, ${j(p.atributos)}, ${p.peso_g ?? 'null'}, ${p.medidas_mm ? `'{${p.medidas_mm.join(',')}}'` : 'null'}, ${p.garantia}, ${q(p.condicion)}, ${q(p.pais_origen)}, ${j(p.en_caja)}, ${p.ventas_30d}, ${fecha(p.creado)}, ${q(uuid(`tienda:${tiendaPrincipal.get(p.id)!.slug}`))});`)
   const filas = p.variantes.map((v, vi) => `(${q(v.id)}, ${q(p.id)}, ${q(v.sku)}, ${j(v.opciones)}, '{${v.imagenes.join(',')}}', ${vi})`)
   L.push(`insert into public.variantes (id, producto_id, sku, opciones, imagenes, orden) values ${filas.join(', ')};`)
 }
@@ -414,6 +414,110 @@ for (const c of CUPONES) {
   L.push(`insert into public.cupones (codigo, tipo, valor, minimo_usd_cent, descripcion, vence) values (${q(c.codigo)}, ${q(c.tipo)}, ${c.valor}, ${c.minimo}, ${j(c.descripcion)}, ${c.vence ? q(c.vence) : 'null'});`)
 }
 
+// ------------------------------------------------------------------ fase 4: historial de pedidos de 12 meses
+// De acá salen las métricas del panel del vendedor y la reputación calculada de cada tienda. Se arma en SQL (unos
+// 5.700 pedidos con su línea de tiempo y algunas devoluciones), con fechas relativas al momento de cargar el seed y
+// el azar con semilla fija. Cada tienda tiene su ritmo y sus costumbres: cuántos pedidos recibe por día, qué parte
+// despacha tarde y cuánto le devuelven (sale de su perfil en tiendas.ts). Los compradores son ficticios.
+const COMPRADORES = (['PY', 'BR', 'AR'] as const).flatMap((pais) => NOMBRES[pais].map((nombre) => ({ pais, nombre })))
+L.push(`insert into auth.users (id, email, raw_user_meta_data) values ${COMPRADORES.map((c, i) => `(${q(uuid(`comprador:${i}`))}, ${q(`cliente-${String(i + 1).padStart(2, '0')}@triplice.example`)}, ${j({ full_name: c.nombre })})`).join(', ')};`)
+for (const pais of ['BR', 'AR'] as const) {
+  L.push(`update public.perfiles set region = ${q(pais)}, moneda = ${q(pais === 'BR' ? 'BRL' : 'ARS')}, idioma = ${q(pais === 'BR' ? 'pt' : 'es')} where id in (${COMPRADORES.map((c, i) => (c.pais === pais ? q(uuid(`comprador:${i}`)) : null)).filter(Boolean).join(', ')});`)
+}
+L.push(`create temp table hist_tiendas (slug text, ritmo numeric, tarde numeric, devuelve numeric) on commit drop;`)
+L.push(`insert into hist_tiendas values ${TIENDAS.map((t) => `(${q(t.slug)}, ${(t.reputacion.ventas_12m / 365 / 14).toFixed(3)}, ${((100 - t.reputacion.a_tiempo) / 100 * 1.6).toFixed(3)}, ${((100 - t.reputacion.recomendacion) / 100 * 0.6).toFixed(3)})`).join(', ')};`)
+L.push(`select setseed(0.2026);
+create temp table hist_compradores on commit drop as
+  select u.id, u.raw_user_meta_data->>'full_name' as nombre, u.email, pf.region,
+         row_number() over (partition by pf.region order by u.email) - 1 as n, count(*) over (partition by pf.region) as total
+    from auth.users u join public.perfiles pf on pf.id = u.id where u.email like 'cliente-%@triplice.example';
+create temp table hist_ofertas on commit drop as
+  select o.id as oferta, o.tienda_id, o.precio_usd_cent, o.preparacion_h, v.opciones, pr.id as producto_id, pr.titulo, c.id as cat, c.padre_id as padre,
+         row_number() over (partition by o.tienda_id order by pr.ventas_30d desc, o.id) - 1 as n, count(*) over (partition by o.tienda_id) as total
+    from public.ofertas o join public.variantes v on v.id = o.variante_id join public.productos pr on pr.id = v.producto_id
+    join public.categorias c on c.id = pr.categoria_id where o.activa;
+create temp table hist on commit drop as
+with dias as (
+  select t.id as tienda_id, t.pais, h.tarde, h.devuelve, d,
+         h.ritmo * case extract(isodow from now() - make_interval(days => d)) when 5 then 1.3 when 6 then 1.5 when 7 then 0.6 else 1 end as ritmo
+    from public.tiendas t join hist_tiendas h on h.slug = t.slug cross join generate_series(0, 364) d
+), pedidos as (
+  select x.*, now() - make_interval(days => x.d, mins => (random() * 660)::int) as creado,
+         random() as r_oferta, random() as r_cant, random() as r_region, random() as r_modo, random() as r_tarde, random() as r_prep,
+         random() as r_desp, random() as r_entrega, random() as r_cancela, random() as r_devuelve, random() as r_comprador
+    from dias x cross join lateral generate_series(1, floor(x.ritmo * (0.5 + random()) + random())::int) s
+), con_oferta as (
+  select pe.*, ho.oferta, ho.precio_usd_cent, ho.preparacion_h, ho.opciones, ho.producto_id, ho.titulo, ho.cat, ho.padre,
+         case when pe.r_region < 0.78 then pe.pais when pe.r_region < 0.9 then (case pe.pais when 'PY' then 'BR' else 'PY' end)
+              else (case pe.pais when 'AR' then 'BR' else 'AR' end) end as region
+    from pedidos pe join hist_ofertas ho on ho.tienda_id = pe.tienda_id and ho.n = floor(power(pe.r_oferta, 1.7) * ho.total)
+), con_precio as (
+  select c.*, m.moneda, m.cot, m.paso, public.tasa_impuesto(c.region, c.cat, c.padre) as tasa,
+         case when c.r_cant < 0.85 then 1 else 2 end as cantidad,
+         case when c.region = c.pais and c.r_modo < 0.45 then 'retiro' else 'domicilio' end as modo,
+         case when c.region = c.pais then 2 else 5 end as dias_max,
+         c.r_tarde < c.tarde as es_tarde
+    from con_oferta c
+    join lateral (select x.moneda, x.paso, (select por_usd from public.cotizaciones k where k.moneda = x.moneda order by vigente_desde desc limit 1) as cot
+                    from (values ('PY', 'PYG', 1000), ('BR', 'BRL', 10), ('AR', 'ARS', 100)) x(region, moneda, paso) where x.region = c.region) m on true
+)
+select row_number() over (order by p.creado, p.tienda_id, p.oferta) as rn, gen_random_uuid() as id, p.*,
+       round(p.precio_usd_cent / 100.0 * (1 + p.tasa) * p.cot * 10 ^ public.decimales(p.moneda) / p.paso) * p.paso as precio,
+       p.creado + interval '2 minutes' as t_confirmado,
+       p.creado + make_interval(secs => p.preparacion_h * 3600 * (0.1 + 0.25 * p.r_prep)) as t_preparando,
+       p.creado + interval '20 minutes' + make_interval(secs => p.preparacion_h * 3600 * case when p.es_tarde then 1.15 + 1.2 * p.r_desp else 0.3 + 0.6 * p.r_desp end) as t_despacho,
+       p.r_cancela < 0.012 as cancelado
+  from con_precio p;
+alter table hist add column t_entregado timestamptz;
+update hist set t_entregado = case when modo = 'retiro' then t_despacho + make_interval(secs => 3600 * (1 + 46 * r_entrega))
+  else t_despacho + make_interval(secs => 3600 * (6 + (dias_max * 24 - 10) * r_entrega * case when es_tarde then 1.5 else 0.85 end)) end;
+insert into public.pedidos (id, numero, clave, comprador_id, email, region, idioma, moneda, cotizacion, productos, envio, descuento, total,
+                            impuestos, entrega, estado, proveedor_pago, referencia_pago, creado)
+select h.id, 'TR-H' || lpad(upper(to_hex(h.rn)), 5, '0'), md5(h.id::text), b.id, b.email, h.region, case when h.region = 'BR' then 'pt' else 'es' end,
+       h.moneda, h.cot, h.precio * h.cantidad, e.envio, 0, h.precio * h.cantidad + e.envio,
+       jsonb_build_array(jsonb_build_object('nombre', case when h.region = 'BR' then 'Impostos estimados ' else 'IVA ' end
+                                                      || replace(rtrim(rtrim(to_char(h.tasa * 100, 'FM990.0'), '0'), '.'), '.', ',') || ' %',
+                                            'monto', round(h.precio * h.cantidad * h.tasa / (1 + h.tasa)))),
+       case when h.modo = 'retiro'
+            then jsonb_build_object('modo', 'retiro', 'nombre', b.nombre, 'puntos', (select jsonb_agg(jsonb_build_object('tienda', t.nombre,
+                   'nombre', pu.nombre, 'direccion', pu.direccion, 'ciudad', pu.ciudad, 'lat', pu.lat, 'lng', pu.lng,
+                   'horario', public.txt(pu.horario, 'es'), 'listoEnH', h.preparacion_h)) from public.puntos_retiro pu join public.tiendas t on t.id = pu.tienda_id where pu.tienda_id = h.tienda_id))
+            else jsonb_build_object('modo', 'domicilio', 'nombre', b.nombre, 'zona', case when h.region = h.pais then 'Triple frontera' else 'Resto del país' end,
+                   'diasMin', h.dias_max - 1, 'diasMax', h.dias_max,
+                   'direccion', (array['Avda. San Blas 1820, Ciudad del Este', 'Rua Tarobá 455, Foz do Iguaçu', 'Av. Tres Fronteras 220, Puerto Iguazú',
+                                       'Calle Itá Ybaté 310, Hernandarias', 'Av. Brasil 1290, Cascavel', 'Calle Bertoni 88, Encarnación'])[1 + (h.rn % 6)]) end,
+       case when h.cancelado then 'cancelado' when h.t_entregado <= now() then 'entregado'
+            when h.t_despacho <= now() then (case when h.modo = 'retiro' then 'listo_retiro' else 'enviado' end)
+            when h.t_preparando <= now() then 'preparando' else 'confirmado' end,
+       'simulado', 'hist-' || h.rn, h.creado
+  from hist h
+  join hist_compradores b on b.region = h.region and b.n = floor(h.r_comprador * b.total)
+  cross join lateral (select case when h.modo = 'retiro' then 0 else (case h.moneda when 'PYG' then 25000 when 'BRL' then 1990 else 6000 end) end as envio) e;
+insert into public.pedido_items (pedido_id, oferta_id, tienda_id, producto_id, titulo, opciones, cantidad, precio_unitario, tasa_impuesto, impuesto_nombre, preparacion_h)
+select h.id, h.oferta, h.tienda_id, h.producto_id, public.txt(h.titulo, case when h.region = 'BR' then 'pt' else 'es' end), h.opciones, h.cantidad, h.precio, h.tasa,
+       (select impuestos->0->>'nombre' from public.pedidos where id = h.id), h.preparacion_h
+  from hist h;
+insert into public.pedido_eventos (pedido_id, estado, tienda_id, creado)
+select id, estado, tienda, creado from (
+  select h.id, 'pendiente_pago' as estado, null::uuid as tienda, h.creado from hist h
+  union all select h.id, 'confirmado', null, h.t_confirmado from hist h
+  union all select h.id, 'cancelado', null, h.creado + interval '1 hour' from hist h where h.cancelado
+  union all select h.id, 'preparando', h.tienda_id, h.t_preparando from hist h where not h.cancelado
+  union all select h.id, case when h.modo = 'retiro' then 'listo_retiro' else 'enviado' end, h.tienda_id, h.t_despacho from hist h where not h.cancelado
+  union all select h.id, 'entregado', null, h.t_entregado from hist h where not h.cancelado
+) e where e.creado <= now();
+insert into public.devoluciones (pedido_id, item_id, usuario_id, motivo, detalle, resolucion, estado, creado)
+select h.id, i.id, pe.comprador_id, (array['fallado', 'distinto', 'incompleto', 'arrepentido'])[1 + (h.rn % 4)], '',
+       case when h.rn % 3 = 0 then 'cambio' else 'reembolso' end, (array['aprobada', 'reembolsada', 'rechazada'])[1 + (h.rn % 3)],
+       h.t_entregado + interval '2 days'
+  from hist h join public.pedidos pe on pe.id = h.id join public.pedido_items i on i.pedido_id = h.id
+ where not h.cancelado and h.r_devuelve < h.devuelve and h.t_entregado + interval '2 days' <= now();
+insert into public.pedido_eventos (pedido_id, estado, creado)
+select d.pedido_id, 'devolucion_solicitada', d.creado from public.devoluciones d join hist h on h.id = d.pedido_id;`)
+
+// estadísticas al día: sin esto el planificador cree que las tablas están vacías y arma las tarjetas en segundos
+// en vez de milisegundos (lo mismo hace solo el autovacuum de Supabase un rato después)
+L.push('analyze;')
 L.push('select public.refrescar_catalogo();')
 L.push('commit;')
 

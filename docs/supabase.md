@@ -24,8 +24,15 @@ En el proyecto nuevo → **SQL Editor** → **New query**, pegá y ejecutá, **e
 3. `supabase/migrations/20261126000100_compra.sql` (fase 2: impuestos, envío, retiro, cupones, carrito y pedidos)
 4. `supabase/migrations/20261126000200_precios_con_impuestos.sql` (fase 2: precios con el impuesto de la región)
 5. `supabase/migrations/20261127000100_cuentas.sql` (fase 3: perfiles, direcciones, devoluciones, opiniones con fotos, votos, preguntas y el bucket `resenas` de Storage)
-6. `supabase/seed.sql` (323 productos, 15 tiendas, 5.500 reseñas, reglas de impuesto, zonas y cupones; pesa 2,7 MB:
-   si el editor se queja del tamaño, usá la opción B)
+6. `supabase/migrations/20261128000100_vendedor.sql` (fase 4: panel del vendedor, reputación calculada, RLS de escritura para las tiendas y el bucket `productos` de Storage)
+7. `supabase/seed.sql` (323 productos, 15 tiendas, 5.500 reseñas, reglas de impuesto, zonas, cupones y un historial de
+   unos 6.000 pedidos de los últimos 12 meses con 45 compradores ficticios, de donde salen las métricas y la reputación;
+   pesa 2,8 MB: si el editor se queja del tamaño, usá la opción B)
+
+Si ya habías cargado las fases 1 a 3 con el seed anterior, alcanza con correr la migración 6: la reputación pasa a
+calcularse con los datos que haya (opiniones y preguntas; sin el historial de pedidos del seed nuevo, las entregas a
+tiempo y las devoluciones no cuentan hasta que haya pedidos). Para tener todo, lo más simple es cargar todo en orden en
+un proyecto vacío.
 
 Opción B, desde tu PC (sin pegar archivos grandes): en el proyecto → **Connect** → copiá la *connection string* de
 tipo **Session pooler** y corré, desde la carpeta del repo:
@@ -79,3 +86,20 @@ Sin esto, la vista previa usa la cuenta de prueba (solo existe en la base embebi
 2. **Email.** *Authentication → Sign In / Providers → Email*: dejalo prendido (viene así). Entra con un enlace; no hace falta contraseña. El plan gratuito manda pocos correos por hora: para más, configurá un SMTP propio en *Authentication → Emails*.
 3. **Google.** En [console.cloud.google.com](https://console.cloud.google.com) → *APIs y servicios → Credenciales → Crear credenciales → ID de cliente de OAuth* (tipo *Aplicación web*). En *URI de redireccionamiento autorizados* poné la que muestra Supabase en *Sign In / Providers → Google* (termina en `/auth/v1/callback`). Copiá el *ID de cliente* y el *secreto* en ese mismo panel de Supabase y prendé Google.
 4. Las fotos de las opiniones usan el bucket `resenas`, que crea la migración de la fase 3 (público, 1 MB por foto, solo WebP: el servidor ya las convierte).
+
+## 5. Panel del vendedor (fase 4)
+
+Sin Supabase, la vista previa ofrece un **vendedor de prueba** (Rubén Ayala, dueño de Casa Nubla) en `/entrar`. Con
+Supabase, un vendedor es una cuenta común (entra con email o Google) a la que vos le das la tienda. En el SQL Editor,
+con el email de la persona:
+
+```sql
+update public.perfiles set rol = 'vendedor' where id = (select id from auth.users where email = 'vendedor@ejemplo.com');
+update public.tiendas set duenio_id = (select id from auth.users where email = 'vendedor@ejemplo.com') where slug = 'casa-nubla';
+```
+
+Desde ese momento ve **solo** lo de esa tienda en `/vender` (el RLS no le deja leer ni tocar productos, ofertas,
+pedidos ni preguntas de otra). Las fotos de los productos van al bucket `productos`, que crea la migración de la
+fase 4 (público, 2 MB por foto, solo WebP; cada tienda sube solo a su carpeta). La reputación se recalcula sola cuando
+la tienda avanza un pedido o responde una pregunta; para que también se ponga al día con el paso del tiempo (la ventana
+es de 12 meses), programá en *Integrations → Cron* (pg_cron) cada hora: `select public.refrescar_catalogo();`.
