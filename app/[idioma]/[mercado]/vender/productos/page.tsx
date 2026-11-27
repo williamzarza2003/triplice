@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function PaginaProductos(props: PageProps<'/[idioma]/[mercado]/vender/productos'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 480 }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
 }
 
 async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/vender/productos'>) {
@@ -92,7 +92,7 @@ async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/vender
         {lista.items.length === 0 ? (
           <div className={s.vacio}><p>{q ? t('vacioBuscar', { q }) : t('vacio')}</p></div>
         ) : (
-          <table className={s.tabla}>
+          <table className={`${s.tabla} ${s.tablaProductos}`}>
             <thead>
               <tr>
                 <th scope="col">{t('producto')}</th><th scope="col">{t('estado')}</th><th scope="col" className={s.num}>{t('precio')}</th>

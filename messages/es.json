@@ -1058,7 +1058,8 @@
         "limite": "Respondiste muchas seguidas: esperá unos minutos y probá de nuevo.",
         "no_existe": "Esa pregunta ya no está o no es de un producto que vendés.",
         "servidor": "No pudimos publicar la respuesta. Probá de nuevo en un momento."
-      }
+      },
+      "abrir": "Responder esta pregunta"
     }
   }
 }

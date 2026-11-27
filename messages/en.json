@@ -1058,7 +1058,8 @@
         "limite": "You answered many in a row: wait a few minutes and try again.",
         "no_existe": "That question is gone or is not about a product you sell.",
         "servidor": "We could not publish the answer. Try again in a moment."
-      }
+      },
+      "abrir": "Answer this question"
     }
   }
 }

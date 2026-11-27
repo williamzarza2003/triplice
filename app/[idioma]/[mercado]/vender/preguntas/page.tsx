@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function PaginaPreguntas(props: PageProps<'/[idioma]/[mercado]/vender/preguntas'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 480 }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
 }
 
 async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/vender/preguntas'>) {
@@ -56,7 +56,7 @@ async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/vender
         <section className={`panel ${s.vacio}`}><p>{filtro === 'todas' ? t('vacioTodas') : t('vacio')}</p></section>
       ) : (
         <ul className={s.preguntas}>
-          {lista.items.map((q) => {
+          {lista.items.map((q, n) => {
             const conError = preguntaError === q.id ? codigoError : null
             const idioma = t.has(`idiomas.${q.idioma}`) ? t(`idiomas.${q.idioma}`) : ''
             return (
@@ -74,6 +74,9 @@ async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/vender
                     </ul>
                   )}
                   {!q.respuestas.some((a) => a.mia) && (
+                    // el formulario se abre de a uno (16 cajas de texto abiertas pesan); la primera ya viene abierta
+                    <details className={s.abrirRespuesta} open={n === 0 || !!conError}>
+                    <summary className="boton boton--sec">{t('abrir')}</summary>
                     <form action={responderAccion} className={s.responder}>
                       <input type="hidden" name="idioma" value={ctx.idioma} />
                       <input type="hidden" name="volver" value={aqui} />
@@ -85,6 +88,7 @@ async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/vender
                       {conError && <p id={`e-${q.id}`} className={s.error} role="alert">{t.has(`errores.${conError}`) ? t(`errores.${conError}`) : t('errores.servidor')}</p>}
                       <button type="submit" className="boton boton--marca">{t('responder')}</button>
                     </form>
+                    </details>
                   )}
                 </div>
               </li>

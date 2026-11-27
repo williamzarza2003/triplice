@@ -172,6 +172,11 @@
 .pregunta blockquote { margin: 6px 0 0; font-size: var(--t-19); font-family: var(--f-titulo); font-weight: 600; line-height: 1.3; color: var(--tinta); }
 .respuestas { list-style: none; margin: var(--e-3) 0 0; padding: 0 0 0 var(--e-3); border-left: 2px solid var(--linea); display: grid; gap: var(--e-2); font-size: var(--t-14); }
 .respuestas small { display: block; color: var(--tinta-2); font-size: var(--t-13); }
+.abrirRespuesta { margin-top: var(--e-3); }
+.abrirRespuesta > summary { list-style: none; min-height: 36px; font-size: var(--t-14); padding: 0 14px; }
+.abrirRespuesta > summary::-webkit-details-marker { display: none; }
+.abrirRespuesta[open] > summary { display: none; }
+.preguntas .pregunta { padding: var(--e-5); }
 .responder { display: grid; gap: var(--e-2); margin-top: var(--e-3); }
 .responder textarea { width: 100%; min-height: 84px; padding: 10px 12px; border: 1px solid #a9b8b4; border-radius: var(--r-control); background: var(--papel); font: inherit; resize: vertical; }
 .responder textarea:hover { border-color: var(--agua-700); }
@@ -260,6 +265,14 @@
   .items { min-width: 0; }
   .acciones :global(.boton) { flex: 1 1 auto; }
   .tablaPedidos td:last-child :global(.boton) { width: 100%; min-height: 44px; }
+  /* productos en el celular: producto arriba; estado y precio en una línea; stock y acciones en otra */
+  .tablaProductos tr { grid-template-columns: auto minmax(0, 1fr); align-items: center; column-gap: var(--e-3); }
+  .tablaProductos td:first-child { grid-column: 1 / -1; }
+  .tablaProductos td[data-etiqueta]::before { display: none; }
+  .tablaProductos td.num { text-align: right; }
+  .tablaProductos td.num small { display: inline; margin-left: 4px; }
+  .tablaProductos td:nth-child(4), .tablaProductos td:nth-child(5) { grid-column: 1 / -1; }
+  .tablaProductos td:nth-child(5) .acciones { justify-content: space-between; }
 
   .factores thead { display: none; }
   .factores, .factores tbody, .factores tfoot, .factores tr, .factores td { display: block; }
@@ -274,6 +287,9 @@
   .factores td.num { text-align: left; }
   .factores tfoot tr { border-bottom: 0; }
 
+  /* la ficha técnica son datos cortos: dos por fila en el celular */
+  .campos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--e-3); }
+  .campo > small { font-size: var(--t-11); }
   .pregunta { grid-template-columns: 48px minmax(0, 1fr); gap: var(--e-3); }
   .pregunta > img, .pregunta > .sinFoto { width: 48px; height: 48px; }
   .pregunta blockquote { font-size: var(--t-16); }

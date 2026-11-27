@@ -16,7 +16,7 @@ export function generateStaticParams() {
 }
 
 export default function PaginaEditar(props: PageProps<'/[idioma]/[mercado]/vender/productos/[id]'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 640 }} aria-hidden="true" />}><Editar {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Editar {...props} /></Suspense>
 }
 
 async function Editar({ params }: PageProps<'/[idioma]/[mercado]/vender/productos/[id]'>) {

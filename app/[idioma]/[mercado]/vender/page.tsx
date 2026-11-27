@@ -12,7 +12,7 @@ import { GraficoVentas } from '@/components/vender/GraficoVentas'
 import { ReputacionExplicada } from '@/components/vender/ReputacionExplicada'
 import s from '@/components/vender/Vender.module.css'
 import { conSesion, montoMinimo, opcionesTexto } from '@/lib/cuenta/pagina'
-import { rpcCuenta } from '@/lib/cuenta/sesion'
+import { modoCuentas, rpcCuenta } from '@/lib/cuenta/sesion'
 import { contexto, ruta } from '@/lib/contexto'
 import { LOCALE } from '@/lib/i18n/idiomas'
 import { foto } from '@/lib/imagenes'
@@ -25,13 +25,22 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t('titulo'), robots: { index: false } }
 }
 
-export default function PaginaResumen() {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 480 }} aria-hidden="true" />}><Contenido /></Suspense>
+// El aviso de la vista previa no depende de la sesión: va en la parte prearmada y se pinta enseguida, mientras el
+// resto llega en streaming. El hueco de espera ocupa la pantalla entera para que el pie no salte (CLS).
+export default async function PaginaResumen() {
+  const ctx = await contexto()
+  const t = await getTranslations({ locale: ctx.idioma, namespace: 'vender' })
+  return (
+    <>
+      {modoCuentas === 'demo' && <AvisoDemo texto={t('demo')} />}
+      <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Contenido /></Suspense>
+    </>
+  )
 }
 
 async function Contenido() {
   const ctx = await contexto()
-  const { demo } = await conSesion(ctx.idioma, '/vender')
+  await conSesion(ctx.idioma, '/vender')
   const [t, r] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'vender' }),
     rpcCuenta<Resumen>('vendedor_resumen', { moneda: ctx.moneda, idioma: ctx.idioma, dias: 30 }),
@@ -62,7 +71,6 @@ async function Contenido() {
         </div>
         <Link className="boton boton--accion" href={ruta(ctx.idioma, '/vender/productos/nuevo')}><Icono nombre="mas" tam={18} />{t('publicar')}</Link>
       </div>
-      {demo && <AvisoDemo texto={t('demo')} />}
 
       <section className={`panel ${s.ventas}`} aria-labelledby="t-ventas">
         <div className={s.ventasCabeza}>

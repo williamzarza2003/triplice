@@ -11,5 +11,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function PaginaNuevo() {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 640 }} aria-hidden="true" />}><PaginaFormulario id={null} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><PaginaFormulario id={null} /></Suspense>
 }

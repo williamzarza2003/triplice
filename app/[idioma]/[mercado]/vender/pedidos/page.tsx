@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function PaginaPedidos(props: PageProps<'/[idioma]/[mercado]/vender/pedidos'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 480 }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
 }
 
 /** Lo que el comprador va a ver de mi parte: en qué estado quedó (para el sello). */
