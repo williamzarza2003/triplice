@@ -78,6 +78,10 @@ export async function rpcServicio<T>(funcion: FuncionServicio, p: object): Promi
 export type FuncionCuenta = 'mi_cuenta' | 'guardar_perfil' | 'mis_pedidos' | 'mi_pedido' | 'por_opinar' | 'mis_resenas'
   | 'escribir_resena' | 'votar_resena' | 'mis_votos' | 'ficha_usuario' | 'preguntar' | 'responder' | 'mis_direcciones'
   | 'guardar_direccion' | 'borrar_direccion' | 'solicitar_devolucion'
+  // panel del vendedor (fase 4): el RLS y mi_tienda() deciden qué tienda ve cada uno
+  | 'mi_tienda_datos' | 'mi_reputacion' | 'vendedor_resumen' | 'vendedor_productos' | 'vendedor_producto' | 'vendedor_categorias'
+  | 'guardar_producto' | 'pausar_producto' | 'guardar_stock' | 'vendedor_pedidos' | 'avanzar_pedido' | 'vendedor_preguntas'
+  | 'vendedor_responder'
 
 /**
  * En la base embebida: la función corre con el rol `authenticated` y el id del usuario en la variable que lee
@@ -93,13 +97,16 @@ export async function rpcEmbebidaComo<T>(uid: string, funcion: FuncionCuenta, p:
   })
 }
 
+/** Las dos cuentas de prueba de la base embebida: la compradora (fase 3) y el vendedor de Casa Nubla (fase 4). */
+export const CUENTAS_DEMO = { compradora: 'lorena@triplice.example', vendedor: 'casa-nubla@triplice.example' } as const
+
 /** Cuenta de prueba (solo en la base embebida): sus datos públicos para iniciar la sesión. */
-export async function cuentaDemo() {
+export async function cuentaDemo(cual: keyof typeof CUENTAS_DEMO = 'compradora') {
   const db = await baseLocal()
   return db.transaction(async (tx) => {
     await tx.exec('set local role postgres') // solo dentro de esta transacción
     const { rows } = await tx.query<{ id: string; email: string; nombre: string }>(
-      `select u.id::text, u.email, p.nombre from auth.users u join public.perfiles p on p.id = u.id where u.email = 'lorena@triplice.example'`)
+      `select u.id::text, u.email, p.nombre from auth.users u join public.perfiles p on p.id = u.id where u.email = $1`, [CUENTAS_DEMO[cual]])
     return rows[0] ?? null
   })
 }

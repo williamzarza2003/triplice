@@ -135,7 +135,8 @@ export type Inicio = {
 export type TiendaDatos = {
   slug: string; nombre: string; color: string; pais: 'PY' | 'BR' | 'AR'; ciudad: string; direccion: string | null
   lat: number | null; lng: number | null; horario: Record<string, string>; desde: number; lema: string; descripcion: string
-  reputacion: { recomendacion: number; opiniones: number; ventas_12m: number; respuesta_min: number; a_tiempo: number } | null
+  // calculada en la base (fase 4): sin pedidos o sin preguntas todavía, esos dos vienen vacíos
+  reputacion: { recomendacion: number; opiniones: number; ventas_12m: number; respuesta_min: number | null; a_tiempo: number | null } | null
   productos: number
   resenas: { autor: string; pais: string; estrellas: number; texto: string; idioma: string; producto: string; slug: string }[]
 }
