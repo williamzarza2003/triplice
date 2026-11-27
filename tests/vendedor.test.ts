@@ -293,7 +293,11 @@ describe('pedidos: cada tienda avanza su parte', () => {
     expect(antes.items.map((x) => x.numero).sort()).toEqual(['TR-B00001', 'TR-BC0001'])
     expect(antes.cuentas.por_preparar).toBe(2)
 
+    type Tareas = { pedidos: { por_preparar: number; preparando: number; atrasado: boolean } }
+    expect((await como<Tareas>(BETO, 'vendedor_resumen', {})).pedidos).toMatchObject({ por_preparar: 2, preparando: 0, atrasado: false })
     expect(await como(BETO, 'avanzar_pedido', { numero: 'TR-B00001', estado: 'preparando' })).toMatchObject({ estado: 'preparando', mia: 1 })
+    // el resumen dice "2 pedidos para preparar" (de esos, 1 en preparación): la suma es la misma que antes
+    expect((await como<Tareas>(BETO, 'vendedor_resumen', {})).pedidos).toMatchObject({ por_preparar: 1, preparando: 1 })
     await expect(como(BETO, 'avanzar_pedido', { numero: 'TR-B00001', estado: 'preparando' })).rejects.toThrow(/orden/)
     expect(await como(BETO, 'avanzar_pedido', { numero: 'TR-B00001', estado: 'enviado' })).toMatchObject({ estado: 'listo_retiro', mia: 2 })
 

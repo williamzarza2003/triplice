@@ -783,8 +783,8 @@
     },
     "tareas": {
       "titulo": "Para hacer hoy",
-      "pedidos": "{n, plural, one {# pedido por preparar} other {# pedidos por preparar}}",
-      "preparando": "{n, plural, =0 {} one {y # que ya estás preparando} other {y # que ya estás preparando}}",
+      "pedidos": "{n, plural, one {# pedido para preparar} other {# pedidos para preparar}}",
+      "preparando": "{n, plural, =0 {} one {De esos, # ya está en preparación.} other {De esos, # ya están en preparación.}}",
       "pedidosLink": "Ver los pedidos",
       "preguntas": "{n, plural, one {# pregunta sin responder} other {# preguntas sin responder}}",
       "masVieja": "la más vieja, {hace}",
@@ -984,15 +984,15 @@
     "pedidos": {
       "titulo": "Pedidos",
       "filtros": {
-        "por_preparar": "Por preparar",
-        "preparando": "Preparando",
+        "por_preparar": "Sin empezar",
+        "preparando": "En preparación",
         "en_camino": "En camino o listos",
         "entregados": "Entregados",
         "todos": "Todos"
       },
       "filtrosEtiqueta": "Mostrar",
       "vacio": {
-        "por_preparar": "No hay pedidos para preparar. Cuando entre uno, aparece acá con su plazo.",
+        "por_preparar": "No hay pedidos sin empezar. Cuando entre uno, aparece acá con su plazo.",
         "otro": "No hay pedidos con este filtro."
       },
       "pedido": "Pedido {numero}",
@@ -1009,8 +1009,8 @@
       "enviar": "Marcar como enviado",
       "listo": "Marcar como listo para retirar",
       "estados": {
-        "confirmado": "Por preparar",
-        "preparando": "Preparando",
+        "confirmado": "Sin empezar",
+        "preparando": "En preparación",
         "enviado": "En camino",
         "listo_retiro": "Listo para retirar",
         "entregado": "Entregado",

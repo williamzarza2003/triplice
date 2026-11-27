@@ -57,6 +57,7 @@ async function Contenido() {
   const mejor = r.serie.reduce((m, p) => (p.monto > m.monto ? p : m), r.serie[0])
   const dia = (d: string) => new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${d}T12:00:00Z`))
   const maxTop = Math.max(1, ...r.top.map((x) => x.unidades))
+  // "Para preparar" son los que todavía no salieron: sin empezar y empezados. El mismo número en el saludo y en la lista.
   const porPreparar = r.pedidos.por_preparar + r.pedidos.preparando
 
   return (
@@ -65,7 +66,7 @@ async function Contenido() {
         <div>
           <h1>{t(`saludo.${momentoDelDia()}`, { tienda: r.tienda.nombre })}</h1>
           {/* si el pedido más urgente ya pasó su hora límite, no tiene sentido decir "antes de las…" */}
-          <p>{t(r.pedidos.proximo_limite && new Date(r.pedidos.proximo_limite).getTime() < Date.now() ? 'bajadaAtrasado' : 'bajada', {
+          <p>{t(r.pedidos.atrasado ? 'bajadaAtrasado' : 'bajada', {
             n: porPreparar, hora: r.pedidos.proximo_limite ? hora(r.pedidos.proximo_limite) : '',
             fecha: hoy.charAt(0).toUpperCase() + hoy.slice(1),
           })}</p>
@@ -128,7 +129,7 @@ async function Contenido() {
                 {porPreparar > 0 && (
                   <li className={s.tareaUrgente}>
                     <Icono nombre="caja" />
-                    <span>{t('tareas.pedidos', { n: r.pedidos.por_preparar })} <small>{t('tareas.preparando', { n: r.pedidos.preparando })}</small></span>
+                    <span>{t('tareas.pedidos', { n: porPreparar })} {r.pedidos.preparando > 0 && <small>{t('tareas.preparando', { n: r.pedidos.preparando })}</small>}</span>
                     <Link href={ruta(ctx.idioma, '/vender/pedidos')}>{t('tareas.pedidosLink')}</Link>
                   </li>
                 )}

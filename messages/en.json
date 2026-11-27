@@ -784,7 +784,7 @@
     "tareas": {
       "titulo": "To do today",
       "pedidos": "{n, plural, one {# order to prepare} other {# orders to prepare}}",
-      "preparando": "{n, plural, =0 {} one {and # you are already preparing} other {and # you are already preparing}}",
+      "preparando": "{n, plural, =0 {} one {# of them is already being prepared.} other {# of them are already being prepared.}}",
       "pedidosLink": "See orders",
       "preguntas": "{n, plural, one {# unanswered question} other {# unanswered questions}}",
       "masVieja": "the oldest, {hace}",
@@ -984,15 +984,15 @@
     "pedidos": {
       "titulo": "Orders",
       "filtros": {
-        "por_preparar": "To prepare",
-        "preparando": "Preparing",
+        "por_preparar": "Not started",
+        "preparando": "Being prepared",
         "en_camino": "On the way or ready",
         "entregados": "Delivered",
         "todos": "All"
       },
       "filtrosEtiqueta": "Show",
       "vacio": {
-        "por_preparar": "No orders to prepare. When one comes in, it shows up here with its deadline.",
+        "por_preparar": "No orders waiting to be started. When one comes in, it shows up here with its deadline.",
         "otro": "No orders match this filter."
       },
       "pedido": "Order {numero}",
@@ -1009,8 +1009,8 @@
       "enviar": "Mark as shipped",
       "listo": "Mark as ready for pickup",
       "estados": {
-        "confirmado": "To prepare",
-        "preparando": "Preparing",
+        "confirmado": "Not started",
+        "preparando": "Being prepared",
         "enviado": "On the way",
         "listo_retiro": "Ready for pickup",
         "entregado": "Delivered",

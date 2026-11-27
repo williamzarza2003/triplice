@@ -784,7 +784,7 @@
     "tareas": {
       "titulo": "Para fazer hoje",
       "pedidos": "{n, plural, one {# pedido para preparar} other {# pedidos para preparar}}",
-      "preparando": "{n, plural, =0 {} one {e # que você já está preparando} other {e # que você já está preparando}}",
+      "preparando": "{n, plural, =0 {} one {Desses, # já está em preparação.} other {Desses, # já estão em preparação.}}",
       "pedidosLink": "Ver os pedidos",
       "preguntas": "{n, plural, one {# pergunta sem resposta} other {# perguntas sem resposta}}",
       "masVieja": "a mais antiga, {hace}",
@@ -984,15 +984,15 @@
     "pedidos": {
       "titulo": "Pedidos",
       "filtros": {
-        "por_preparar": "Para preparar",
-        "preparando": "Preparando",
+        "por_preparar": "Não iniciados",
+        "preparando": "Em preparação",
         "en_camino": "A caminho ou prontos",
         "entregados": "Entregues",
         "todos": "Todos"
       },
       "filtrosEtiqueta": "Mostrar",
       "vacio": {
-        "por_preparar": "Não há pedidos para preparar. Quando entrar um, ele aparece aqui com o prazo.",
+        "por_preparar": "Não há pedidos não iniciados. Quando entrar um, ele aparece aqui com o prazo.",
         "otro": "Não há pedidos com este filtro."
       },
       "pedido": "Pedido {numero}",
@@ -1009,8 +1009,8 @@
       "enviar": "Marcar como enviado",
       "listo": "Marcar como pronto para retirada",
       "estados": {
-        "confirmado": "Para preparar",
-        "preparando": "Preparando",
+        "confirmado": "Não iniciado",
+        "preparando": "Em preparação",
         "enviado": "A caminho",
         "listo_retiro": "Pronto para retirada",
         "entregado": "Entregue",

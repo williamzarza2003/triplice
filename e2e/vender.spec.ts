@@ -79,7 +79,7 @@ test('métricas, alta de producto con variantes y foto, respuesta y pedido despa
   await page.goto('/es/vender/pedidos')
   await page.locator(`#pedido-${numero}`).getByRole('button', { name: 'Empezar a preparar' }).click()
   await expect(page).toHaveURL(/filtro=preparando/)
-  await expect(page.getByText(`el pedido ${numero} pasó a «Preparando»`)).toBeVisible()
+  await expect(page.getByText(`el pedido ${numero} pasó a «En preparación»`)).toBeVisible()
   await page.locator(`#pedido-${numero}`).getByRole('button', { name: 'Marcar como enviado' }).click()
   await expect(page.getByText(`el pedido ${numero} pasó a «En camino»`)).toBeVisible()
   await page.goto('/es/vender/pedidos?filtro=en_camino')

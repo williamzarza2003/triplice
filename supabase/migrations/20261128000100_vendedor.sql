@@ -546,7 +546,11 @@ begin
         -- el plazo más cercano de lo que falta despachar
         'proximo_limite', min(pe.creado + make_interval(hours => (select max(coalesce(i.preparacion_h, 24)) from pedido_items i
                                                                    where i.pedido_id = pe.id and i.tienda_id = tid)))
-                          filter (where etapa_tienda(pe.id, tid) in (0, 1)))
+                          filter (where etapa_tienda(pe.id, tid) in (0, 1)),
+        -- si ya pasó, el saludo no dice "antes de las…" sino que está atrasado (la hora se compara acá, no en la página)
+        'atrasado', coalesce(min(pe.creado + make_interval(hours => (select max(coalesce(i.preparacion_h, 24)) from pedido_items i
+                                                                     where i.pedido_id = pe.id and i.tienda_id = tid)))
+                             filter (where etapa_tienda(pe.id, tid) in (0, 1)) < now(), false))
         from pedidos pe
        where pe.estado in ('confirmado', 'preparando')
          and exists (select 1 from pedido_items i where i.pedido_id = pe.id and i.tienda_id = tid)),
