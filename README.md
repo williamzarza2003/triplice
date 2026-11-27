@@ -8,7 +8,20 @@ Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil 
 
 > Proyecto de portafolio de William Zarza. Productos, tiendas, opiniones y pagos son ficticios o de prueba.
 
-**Estado: fase 3** (cuentas, pedidos, devoluciones y opiniones). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha), `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento) y `fase-2` (carrito, impuestos y pago).
+**Estado: fase 4** (panel del vendedor y reputación calculada). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha), `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento), `fase-2` (carrito, impuestos y pago) y `fase-3` (cuentas, pedidos, devoluciones y opiniones).
+
+| Panel del vendedor: ventas y reputación | Celular: el mismo resumen |
+| --- | --- |
+| ![Resumen del panel: ventas de 30 días con su gráfico, lo que hay que hacer hoy, lo más vendido y la reputación explicada](docs/capturas/vender-resumen-1440.webp) | ![Resumen del panel en el celular](docs/capturas/vender-resumen-390.webp) |
+
+## Qué hay en la fase 4
+
+- **Panel del vendedor** (`/vender`) para el dueño de una tienda: ventas de los últimos 30 días (monto en la moneda del mercado, pedidos y ticket promedio, contra el período anterior), un **gráfico de ventas por día** dibujado a mano en SVG, lo más vendido, pedidos por preparar con su plazo, preguntas sin responder y poco stock. Todos los números salen de la base, no del navegador.
+- **Reputación calculada y explicada**: la que ven los compradores en la ficha y en la tienda ya no se carga a mano. Sale de cinco datos de los últimos 12 meses (opiniones, entregas a tiempo contra el plazo prometido, devoluciones, preguntas respondidas y tiempo de respuesta), y el panel muestra cuánto aporta cada uno y qué conviene mejorar.
+- **Productos**: búsqueda y filtros (activos, pausados, sin stock), stock rápido desde la lista, pausar y volver a vender; **alta y edición con variantes** (color, memoria, talle…), precio en dólares sin impuestos con la vista del precio final en los tres países, y fotos que el servidor achica, limpia de datos de ubicación y pasa a WebP.
+- **Pedidos**: cada tienda marca su parte como "preparando" y "enviado" (o "listo para retirar"), y el comprador lo ve en la línea de tiempo de su pedido.
+- **Preguntas**: las de los productos de la tienda, sin responder primero, con la respuesta publicada en la ficha con el sello de vendedor.
+- **RLS**: una tienda no ve ni toca productos, ofertas, pedidos ni preguntas de otra, y un comprador no entra al panel. Sin Supabase hay un **vendedor de prueba** (Casa Nubla) en `/entrar`.
 
 | Mis pedidos | Pedido con devolución | Opinar con fotos |
 | --- | --- | --- |
@@ -103,7 +116,15 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 
 *Portfolio project. Products, sellers, reviews and payments are fictional or test-only.*
 
-**Status: phase 3** — accounts, orders, returns and reviews (earlier phases live on the `fase-0`, `fase-1`, `fase-1-ajustes` and `fase-2` branches).
+**Status: phase 4** — seller dashboard and calculated reputation (earlier phases live on the `fase-0`, `fase-1`, `fase-1-ajustes`, `fase-2` and `fase-3` branches).
+
+![Seller dashboard: 30-day sales with a hand-drawn chart, today's to-dos, best sellers and the reputation breakdown](docs/capturas/vender-resumen-1440.webp)
+
+- **Seller dashboard** (`/vender`) for store owners: last-30-day sales in the market's currency (revenue, orders, average order value, versus the previous period), a **hand-drawn SVG sales chart**, best sellers, orders to prepare with their deadline, unanswered questions and low stock. Every number is computed in SQL; sales charged in other currencies are converted with their frozen rate.
+- **Calculated, explainable reputation**: the number shoppers see is no longer seeded by hand. It is a materialized view built from five figures over 12 months (reviews, on-time deliveries against the promised time, returns, questions answered and reply time), and the dashboard shows what each one adds and what to improve.
+- **Products**: search, filters (active, paused, out of stock), quick stock edits, pause/resume, and **create/edit with variants** (color, storage, size…), a base price in US dollars before tax with a live preview of the final price in each country, and photos resized, EXIF-stripped and converted to WebP on the server.
+- **Orders**: each store moves *its* part to "preparing" and "shipped" (or "ready for pickup"), which is what the shopper sees on their order timeline. **Questions**: unanswered first, answered with the seller badge.
+- **RLS**: a store can't read or change another store's products, offers, orders or questions, and shoppers can't open the dashboard — all tested in Vitest against real Postgres (PGlite). Without Supabase there is a **test seller** (Casa Nubla) on the sign-in page.
 
 - **Accounts with Supabase Auth**: sign in with **Google** or an **email link** (no passwords). Without Supabase, the preview offers a **test account** with orders in every state. Same SQL and RLS in both modes: account functions run as the signed-in user (JWT in Supabase; `auth.uid()` from a transaction setting in the embedded database).
 - **Profile and preferences** (region, currency and language applied on sign-in) and **saved addresses** with each country's fields; checkout comes pre-filled and the order lands in the account.
