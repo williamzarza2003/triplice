@@ -331,7 +331,7 @@ describe('RLS: una tienda no ve ni toca lo de otra', () => {
     expect((await db.query<{ marca: string }>(`select marca from productos where id = $1`, [productoA.id])).rows[0].marca).toBe('Ondatec')
     expect((await db.query(`select 1 from variantes where producto_id = $1`, [productoA.id])).rows).toHaveLength(2)
     // y no puede publicar a nombre de otra tienda
-    await expect(sql(BETO, `insert into productos (slug, categoria_id, marca, titulo, tienda_id) select 'x-falso', id, 'X', '{"es":"x"}', $1 from categorias limit 1`, [TA]))
+    await expect(sql(BETO, `insert into productos (slug, categoria_id, marca, titulo, tienda_id) select 'x-falso', id, 'Falsa', '{"es":"Producto falso de prueba"}', $1 from categorias limit 1`, [TA]))
       .rejects.toThrow(/row-level security/)
   })
 
@@ -358,6 +358,65 @@ describe('RLS: una tienda no ve ni toca lo de otra', () => {
     expect(a).toEqual({ es_vendedor: true, autor_nombre: 'Tienda A' })
     const sin = await como<{ cuentas: { sin_responder: number } }>(ANA, 'vendedor_preguntas', {})
     expect(sin.cuentas.sin_responder).toBe(1)
+  })
+})
+
+// Lo que encontró la revisión de seguridad de la fase 4 (etapa 13 del informe). Todo escrito como lo haría alguien
+// con la clave pública de Supabase: directo en las tablas, sin pasar por el servidor de la web.
+describe('revisión de seguridad: escrituras directas y casos borde', () => {
+  it('todas las tablas del esquema public tienen RLS', async () => {
+    const { rows } = await db.query<{ tabla: string }>(`select c.relname as tabla from pg_class c join pg_namespace n on n.oid = c.relnamespace
+                                                         where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity`)
+    expect(rows).toEqual([])
+  })
+
+  it('la tienda no toca las columnas que mantiene la base (ventas, búsqueda) ni muda una oferta de variante', async () => {
+    await expect(sql(ANA, `update productos set ventas_30d = 99999 where id = $1`, [productoA.id])).rejects.toThrow(/permission denied/)
+    await expect(sql(ANA, `update ofertas set variante_id = variante_id where id = $1`, [ofertasA[0].id])).rejects.toThrow(/permission denied/)
+    await expect(sql(ANA, `update ofertas set preparacion_h = 0 where id = $1`, [ofertasA[0].id])).rejects.toThrow(/ofertas_preparacion/)
+  })
+
+  it('lo que el servidor valida también lo valida la base', async () => {
+    const larga = JSON.stringify({ es: 'x'.repeat(2001) })
+    await expect(sql(ANA, `update productos set descripcion = $2::jsonb where id = $1`, [productoA.id, larga])).rejects.toThrow(/descripcion/)
+    await expect(sql(ANA, `update productos set titulo = '{"es":"Corto"}' where id = $1`, [productoA.id])).rejects.toThrow(/titulo/)
+  })
+
+  it('las fotos de otra tienda no se usan: ni escribiendo en la tabla ni con el id de una variante ajena', async () => {
+    const deBeto = await como<{ id: string }>(BETO, 'guardar_producto', producto(TB, { titulo: { es: 'Celular de la tienda B con fotos propias' } }))
+    const [vb] = (await db.query<{ id: string }>(`select id from variantes where producto_id = $1 order by orden limit 1`, [deBeto.id])).rows
+    await expect(sql(ANA, `update variantes set imagenes = array[$2] where producto_id = $1`, [productoA.id, FOTO(TB)])).rejects.toThrow(/foto_ajena/)
+    const base = producto(TA, { titulo: { es: 'Celular con las fotos de la tienda B' } })
+    const intento = { ...base, variantes: [{ ...base.variantes[0], id: vb.id, imagenes: [FOTO(TB)] }, base.variantes[1]] }
+    expect(await como(ANA, 'guardar_producto', intento)).toMatchObject({ error: 'foto_ajena' })
+  })
+
+  it('ser dueña de una tienda con perfil de compradora no alcanza para escribir directo', async () => {
+    const [v] = (await db.query<{ id: string }>(`select id from variantes where producto_id = $1 limit 1`, [productoA.id])).rows
+    await expect(sql(DORA, `insert into ofertas (variante_id, tienda_id, precio_usd_cent, stock) values ($1, $2, 100, 1)`, [v.id, TD]))
+      .rejects.toThrow(/row-level security/)
+    await expect(sql(DORA, `insert into storage.objects (bucket_id, name) values ('productos', $1)`, [`${TD}/foto.webp`]))
+      .rejects.toThrow(/row-level security/)
+  })
+
+  it('una tienda suspendida no publica ni sube fotos, pero sigue con sus ofertas', async () => {
+    await db.query(`update tiendas set estado = 'suspendida' where id = $1`, [TA])
+    try {
+      expect(await como(ANA, 'guardar_producto', producto(TA, { titulo: { es: 'Producto nuevo de una tienda suspendida' } }))).toEqual({ error: 'suspendida' })
+      expect(await como(ANA, 'guardar_producto', producto(TA, { id: productoA.id }))).toEqual({ error: 'suspendida' })
+      await expect(sql(ANA, `insert into storage.objects (bucket_id, name) values ('productos', $1)`, [`${TA}/foto.webp`])).rejects.toThrow(/row-level security/)
+      expect(await como(ANA, 'guardar_stock', { stocks: [{ oferta: ofertasA[0].id, stock: 5 }] })).toMatchObject({ ofertas: 1 })
+    } finally {
+      await db.query(`update tiendas set estado = 'aprobada' where id = $1`, [TA])
+    }
+    await sql(ANA, `insert into storage.objects (bucket_id, name) values ('productos', $1)`, [`${TA}/foto.webp`])
+    await expect(sql(ANA, `insert into storage.objects (bucket_id, name) values ('productos', $1)`, [`${TB}/foto.webp`])).rejects.toThrow(/row-level security/)
+  })
+
+  it('la tienda ve los pedidos con lo suyo, pero no la clave de invitado que abre el comprobante entero', async () => {
+    expect((await sql(BETO, `select numero from pedidos`)).length).toBeGreaterThan(0)
+    await expect(sql(BETO, `select clave from pedidos`)).rejects.toThrow(/permission denied/)
+    await expect(sql(BETO, `select * from pedidos`)).rejects.toThrow(/permission denied/)
   })
 })
 

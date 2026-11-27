@@ -977,6 +977,7 @@
       "foto_muchas": "Up to 4 photos per variant: remove some.",
       "foto_ilegible": "We could not open one of the photos. Try another or take it again.",
       "foto_ajena": "That photo is not from your store. Upload it again from your computer or phone.",
+      "suspendida": "Your store is suspended: you can still change prices and stock on what you already sell, but you can't publish or edit listings. Contact support to reactivate it.",
       "servidor": "We could not save because of a problem on our side. Try again in a moment: what you wrote is still here.",
       "no_existe": "That product is no longer one of yours. Go back to the list and choose it again."
     },

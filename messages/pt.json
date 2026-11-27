@@ -977,6 +977,7 @@
       "foto_muchas": "Até 4 fotos por variação: remova alguma.",
       "foto_ilegible": "Não conseguimos abrir uma das fotos. Tente outra ou tire de novo.",
       "foto_ajena": "Essa foto não é da sua loja. Envie de novo do seu computador ou celular.",
+      "suspendida": "Sua loja está suspensa: você pode mudar preços e estoque do que já vende, mas não publicar nem editar anúncios. Fale com o suporte para reativá-la.",
       "servidor": "Não conseguimos salvar por um problema nosso. Tente de novo em instantes: o que você escreveu continua aqui.",
       "no_existe": "Esse produto não está mais entre os seus. Volte para a lista e escolha de novo."
     },

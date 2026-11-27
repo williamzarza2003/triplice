@@ -8,7 +8,7 @@ export type AtributoForm = { clave: string; tipo: TipoAtributo }
 export type CodigoError =
   | 'categoria' | 'titulo' | 'titulo_largo' | 'marca' | 'descripcion' | 'vinetas' | 'garantia' | 'peso' | 'preparacion' | 'condicion'
   | 'ejes' | 'variantes' | 'precio' | 'lista' | 'stock' | 'opcion' | 'repetida' | 'numero' | 'texto'
-  | 'fotos_faltan' | 'foto_tipo' | 'foto_grande' | 'foto_muchas' | 'foto_ilegible' | 'foto_ajena' | 'servidor' | 'no_existe'
+  | 'fotos_faltan' | 'foto_tipo' | 'foto_grande' | 'foto_muchas' | 'foto_ilegible' | 'foto_ajena' | 'suspendida' | 'servidor' | 'no_existe'
 
 export type VarianteBorrador = {
   /** clave de la fila en el formulario ("v3"): los errores vuelven con esa clave */

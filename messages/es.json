@@ -977,6 +977,7 @@
       "foto_muchas": "Hasta 4 fotos por variante: quitá alguna.",
       "foto_ilegible": "No pudimos abrir una de las fotos. Probá con otra o volvé a sacarla.",
       "foto_ajena": "Esa foto no es de tu tienda. Subila de nuevo desde tu computadora o tu celular.",
+      "suspendida": "Tu tienda está suspendida: podés cambiar precios y stock de lo que ya vendés, pero no publicar ni editar fichas. Escribinos a soporte para reactivarla.",
       "servidor": "No pudimos guardar por un problema nuestro. Probá de nuevo en un momento: lo que escribiste sigue acá.",
       "no_existe": "Ese producto ya no está entre los tuyos. Volvé a la lista y elegilo de nuevo."
     },

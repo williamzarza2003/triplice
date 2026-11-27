@@ -56,7 +56,9 @@ describe('RLS: cada uno ve lo suyo', () => {
     expect(await como<unknown[]>(LORENA, 'mis_pedidos')).toHaveLength(4)
     expect(await como<unknown[]>(OTRO, 'mis_pedidos')).toHaveLength(0)
     expect(await como(OTRO, 'mi_pedido', { numero: 'TR-K7M2QA' })).toBeNull()
-    expect(await sql(OTRO, 'select * from pedidos')).toHaveLength(0)
+    expect(await sql(OTRO, 'select id, numero from pedidos')).toHaveLength(0)
+    // la clave de invitado no se lee ni del pedido propio (abre el comprobante sin cuenta)
+    await expect(sql(LORENA, 'select clave from pedidos')).rejects.toThrow(/permission denied/)
   })
 
   it('las direcciones de otro no se leen, no se editan y no se borran', async () => {
@@ -148,7 +150,11 @@ describe('preguntas y respuestas', () => {
     // la dueña de una tienda que lo vende responde como la tienda
     const [t] = await db.query<{ id: string; nombre: string }>(`select t.id, t.nombre from tiendas t join ofertas o on o.tienda_id = t.id join variantes v on v.id = o.variante_id join productos pr on pr.id = v.producto_id where pr.slug = $1 limit 1`, [slug]).then((x) => x.rows)
     await db.query(`update tiendas set duenio_id = $1 where id = $2`, [OTRO, t.id])
+    // ser dueño no alcanza: con perfil de comprador responde como cliente
+    expect(await como<{ es_vendedor: boolean }>(OTRO, 'responder', { pregunta: q.id, texto: 'Sí, el original de 25 W.' })).toMatchObject({ es_vendedor: false })
+    await db.query(`update perfiles set rol = 'vendedor' where id = $1`, [OTRO])
     expect(await como<{ es_vendedor: boolean }>(OTRO, 'responder', { pregunta: q.id, texto: 'Sí, el original de 25 W.' })).toMatchObject({ es_vendedor: true })
+    await db.query(`update perfiles set rol = 'comprador' where id = $1`, [OTRO])
     await db.query(`update tiendas set duenio_id = null where id = $1`, [t.id])
   })
 
