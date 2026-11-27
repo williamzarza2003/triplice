@@ -398,6 +398,15 @@ begin
   end if;
 end $$;
 
+-- Mi tienda (para el marco del panel y la carpeta de las fotos). Nulo si quien llama no es vendedor.
+create or replace function public.mi_tienda_datos(p jsonb) returns jsonb
+language sql stable
+set search_path = public
+as $$
+  select jsonb_build_object('id', t.id, 'slug', t.slug, 'nombre', t.nombre, 'color', t.color, 'pais', t.pais, 'ciudad', t.ciudad, 'estado', t.estado)
+    from tiendas t where t.id = mi_tienda()
+$$;
+
 -- La reputación de mi tienda, factor por factor (lee la vista materializada, que no es pública)
 create or replace function public.mi_reputacion(p jsonb) returns jsonb
 language sql stable security definer
@@ -546,6 +555,7 @@ set search_path = public
 as $$
   select coalesce(jsonb_agg(jsonb_build_object(
     'slug', h.slug, 'nombre', txt(h.nombre, coalesce(p->>'idioma', 'es')), 'padre', txt(c.nombre, coalesce(p->>'idioma', 'es')),
+    'padre_slug', c.slug,
     'atributos', coalesce((select jsonb_agg(jsonb_build_object('clave', a.clave, 'nombre', txt(a.nombre, coalesce(p->>'idioma', 'es')),
                                                                'tipo', a.tipo, 'unidad', a.unidad) order by a.orden)
                             from (select distinct on (clave) * from atributos where categoria_id in (h.id, c.id)
@@ -899,12 +909,12 @@ end $$;
 -- Permisos
 -- ---------------------------------------------------------------------------------------------
 revoke execute on function public.mi_tienda(), public.vende_producto(uuid), public.publica_producto(uuid), public.vendedor_refrescar(text),
-  public.mi_reputacion(jsonb), public.vendedor_resumen(jsonb), public.vendedor_productos(jsonb), public.vendedor_producto(jsonb),
+  public.mi_reputacion(jsonb), public.mi_tienda_datos(jsonb), public.vendedor_resumen(jsonb), public.vendedor_productos(jsonb), public.vendedor_producto(jsonb),
   public.vendedor_categorias(jsonb), public.guardar_producto(jsonb), public.pausar_producto(jsonb), public.guardar_stock(jsonb),
   public.vendedor_pedidos(jsonb), public.avanzar_pedido(jsonb), public.vendedor_preguntas(jsonb), public.vendedor_responder(jsonb)
   from public, anon;
 grant execute on function public.mi_tienda(), public.vendedor_refrescar(text), public.publica_producto(uuid),
-  public.mi_reputacion(jsonb), public.vendedor_resumen(jsonb), public.vendedor_productos(jsonb), public.vendedor_producto(jsonb),
+  public.mi_reputacion(jsonb), public.mi_tienda_datos(jsonb), public.vendedor_resumen(jsonb), public.vendedor_productos(jsonb), public.vendedor_producto(jsonb),
   public.vendedor_categorias(jsonb), public.guardar_producto(jsonb), public.pausar_producto(jsonb), public.guardar_stock(jsonb),
   public.vendedor_pedidos(jsonb), public.avanzar_pedido(jsonb), public.vendedor_preguntas(jsonb), public.vendedor_responder(jsonb)
   to authenticated;

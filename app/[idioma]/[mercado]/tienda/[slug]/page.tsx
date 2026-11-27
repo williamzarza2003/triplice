@@ -51,7 +51,8 @@ async function Contenido({ params, searchParams }: Props) {
   const numero = new Intl.NumberFormat(LOCALE[ctx.idioma])
   const base = ruta(ctx.idioma, `/tienda/${slug}`)
   const rep = x.reputacion
-  const respuesta = rep ? (rep.respuesta_min < 60 ? `${rep.respuesta_min} min` : `${Math.round(rep.respuesta_min / 60)} h`) : null
+  // la reputación es calculada (fase 4): una tienda nueva todavía no tiene tiempo de respuesta ni entregas medidas
+  const respuesta = rep?.respuesta_min == null ? '—' : rep.respuesta_min < 60 ? `${rep.respuesta_min} min` : `${Math.round(rep.respuesta_min / 60)} h`
   const mapa = x.lat && x.lng ? `https://www.openstreetmap.org/?mlat=${x.lat}&mlon=${x.lng}#map=17/${x.lat}/${x.lng}` : null
   const iniciales = x.nombre.split(' ').map((w) => w[0]).slice(0, 2).join('')
 
@@ -81,7 +82,7 @@ async function Contenido({ params, searchParams }: Props) {
           <div><b className={s.verde}>{numero.format(Number(rep.recomendacion))} %</b><span>{t('recomienda', { n: numero.format(rep.opiniones) })}</span></div>
           <div><b>{numero.format(rep.ventas_12m)}</b><span>{t('ventas')}</span></div>
           <div><b>{respuesta}</b><span>{t('responde')}</span></div>
-          <div><b>{numero.format(Number(rep.a_tiempo))} %</b><span>{t('aTiempo')}</span></div>
+          <div><b>{rep.a_tiempo == null ? '—' : `${numero.format(Number(rep.a_tiempo))} %`}</b><span>{t('aTiempo')}</span></div>
         </section>
       )}
 

@@ -28,6 +28,10 @@ const TRAZOS = {
   camara: <><path d="M4 8h3.2L9 5.5h6L16.8 8H20v11H4z" /><circle cx="12" cy="13.2" r="3.4" /></>,
   devolver: <path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />,
   pulgar: <path d="M7.5 10.5v9.5h-3v-9.5zM7.5 19.5h9.2a2 2 0 0 0 2-1.6l1.1-5.6a2 2 0 0 0-2-2.3H13l.8-3.6A1.8 1.8 0 0 0 12 4.2l-4.5 6.3" />,
+  // panel del vendedor (fase 4)
+  grafico: <path d="M4 20h16M7 16.5V11M12 16.5V6M17 16.5v-8" />,
+  mas: <path d="M12 5v14M5 12h14" />,
+  externo: <path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5" />,
   // categorías
   celular: <><rect x="7" y="2.5" width="10" height="19" rx="2.2" /><path d="M11 18.5h2" /></>,
   notebook: <><rect x="5" y="5" width="14" height="10" rx="1.2" /><path d="M2.5 18.5h19L20 15H4z" /></>,

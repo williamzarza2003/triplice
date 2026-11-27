@@ -21,6 +21,8 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   experimental: {
+    // fotos de opiniones y de productos: el navegador ya las achica, pero un producto con varias variantes pasa 1 MB
+    serverActions: { bodySizeLimit: '12mb' },
     // El CSS va incrustado en el HTML: el primer pintado no espera otro archivo.
     inlineCss: true,
     // Por defecto Turbopack junta el CSS de todas las páginas en un solo bloque (72 KB en cada página con la fase 3).
