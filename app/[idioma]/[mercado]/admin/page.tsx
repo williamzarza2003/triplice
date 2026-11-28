@@ -102,9 +102,12 @@ async function Contenido() {
                   <dt><b>{SIMBOLO[c.moneda]}</b>{t(`moneda.${c.moneda}`)}</dt>
                   <dd className={a.valor}>{valor(c.moneda, c.por_usd)}</dd>
                   <dd className={a.detalle}>{t(c.fuente === 'cambio-cde' ? 'deCambioCde' : 'aMano', { hace: hace(c.desde, ctx.idioma) })}</dd>
-                  <dd className={a.variacion} data-signo={v === null || Math.abs(v) < 0.05 ? undefined : v > 0 ? 'sube' : 'baja'}>
-                    {v === null ? t('sinAnterior') : Math.abs(v) < 0.05 ? t('igual') : t('variacion', { v: porcentaje.format(v) })}
-                  </dd>
+                  {/* sin una carga anterior no hay variación que mostrar */}
+                  {v !== null && (
+                    <dd className={a.variacion} data-signo={Math.abs(v) < 0.05 ? undefined : v > 0 ? 'sube' : 'baja'}>
+                      {Math.abs(v) < 0.05 ? t('igual') : t('variacion', { v: porcentaje.format(v) })}
+                    </dd>
+                  )}
                 </div>
               )
             })}
