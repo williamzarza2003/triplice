@@ -26,8 +26,8 @@ async function baseLocal() {
   local ??= (async () => {
     const { abrirBase } = await import('./pglite')
     const db = await abrirBase()
-    // la cuenta de prueba con las fechas de hoy (ver supabase/pglite/90_cuenta_demo.sql)
-    await db.exec('select public.demo_al_dia()')
+    // las cuentas de prueba con las fechas de hoy (ver supabase/pglite/90_cuenta_demo.sql y 92_admin_demo.sql)
+    await db.exec('select public.demo_admin_al_dia(); select public.demo_al_dia()')
     // mismo permiso que un visitante sin cuenta en Supabase
     await db.exec('set role anon')
     return db
@@ -82,6 +82,13 @@ export type FuncionCuenta = 'mi_cuenta' | 'guardar_perfil' | 'mis_pedidos' | 'mi
   | 'mi_tienda_datos' | 'mi_reputacion' | 'vendedor_resumen' | 'vendedor_productos' | 'vendedor_producto' | 'vendedor_categorias'
   | 'guardar_producto' | 'pausar_producto' | 'guardar_stock' | 'vendedor_pedidos' | 'avanzar_pedido' | 'vendedor_preguntas'
   | 'vendedor_responder'
+  // administración (fase 5): cada función empieza comprobando es_admin(); denunciar es del comprador
+  | FuncionAdmin
+
+export type FuncionAdmin = 'admin_resumen' | 'admin_tiendas' | 'admin_estado_tienda' | 'admin_buscar_cuenta' | 'admin_alta_vendedor'
+  | 'admin_moderacion' | 'admin_moderar' | 'denunciar' | 'admin_categorias' | 'admin_categoria' | 'admin_guardar_categoria'
+  | 'admin_ordenar' | 'admin_borrar_categoria' | 'admin_guardar_atributo' | 'admin_borrar_atributo' | 'admin_impuestos' | 'admin_ejemplo'
+  | 'admin_guardar_impuesto' | 'admin_borrar_impuesto' | 'admin_cotizaciones' | 'admin_guardar_cotizacion' | 'admin_registro'
 
 /**
  * En la base embebida: la función corre con el rol `authenticated` y el id del usuario en la variable que lee
@@ -97,8 +104,8 @@ export async function rpcEmbebidaComo<T>(uid: string, funcion: FuncionCuenta, p:
   })
 }
 
-/** Las dos cuentas de prueba de la base embebida: la compradora (fase 3) y el vendedor de Casa Nubla (fase 4). */
-export const CUENTAS_DEMO = { compradora: 'lorena@triplice.example', vendedor: 'casa-nubla@triplice.example' } as const
+/** Las cuentas de prueba de la base embebida: la compradora (fase 3), el vendedor de Casa Nubla (fase 4) y la admin (fase 5). */
+export const CUENTAS_DEMO = { compradora: 'lorena@triplice.example', vendedor: 'casa-nubla@triplice.example', admin: 'admin@triplice.example' } as const
 
 /** Cuenta de prueba (solo en la base embebida): sus datos públicos para iniciar la sesión. */
 export async function cuentaDemo(cual: keyof typeof CUENTAS_DEMO = 'compradora') {

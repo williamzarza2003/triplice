@@ -18,6 +18,8 @@ export async function construirBase({ conSeed = true } = {}) {
     await db.exec(await leer('supabase/pglite/90_cuenta_demo.sql'))
     // vendedor de prueba de la fase 4 (Casa Nubla), con pedidos y preguntas de hoy
     await db.exec(await leer('supabase/pglite/91_vendedor_demo.sql'))
+    // admin de prueba de la fase 5 (Mirta Giménez), con tiendas por aprobar y contenido denunciado
+    await db.exec(await leer('supabase/pglite/92_admin_demo.sql'))
   }
   return db
 }
