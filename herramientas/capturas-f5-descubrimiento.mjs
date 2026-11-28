@@ -76,7 +76,12 @@ await navegador.close()
 if (process.env.WEBP !== '0') {
   for (const f of (await readdir(salida)).filter((x) => /^descubrimiento-.*\.png$/.test(x))) {
     const png = path.join(salida, f)
-    await sharp(png).resize({ width: 1440, withoutEnlargement: true }).webp({ quality: 74 }).toFile(png.replace(/\.png$/, '.webp'))
+    // WebP no pasa de 16.383 px de alto: la ficha entera del celular es más larga y se le corta el pie
+    const img = sharp(png)
+    const { width, height } = await img.metadata()
+    const alto = Math.min(height, Math.floor(16000 * width / Math.min(width, 1440)))
+    await img.extract({ left: 0, top: 0, width, height: alto }).resize({ width: 1440, withoutEnlargement: true }).webp({ quality: 74 })
+      .toFile(png.replace(/\.png$/, '.webp'))
     await unlink(png)
   }
 }

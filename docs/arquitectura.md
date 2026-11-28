@@ -273,4 +273,15 @@ Pruebas de esta fase:
 
 Pruebas de esta fase:
 - **Vitest** (`tests/descubrimiento.test.ts`, contra PGlite con los permisos de Supabase): otro usuario y un anónimo no leen ni tocan listas, favoritos, vistos ni alertas ajenas (ni con funciones ni escribiendo directo); el token lo genera la base, funciona sin sesión y deja de funcionar al revocarlo; "comprados juntos" con números exactos sobre pedidos armados a mano (3 pedidos ⇒ par; 2 con uno cancelado ⇒ no; uno pendiente no cuenta); la alerta se cumple al bajar el precio, una sola vez, en reales con la cotización del día; el comparador alinea atributos; límites de listas e ítems; cookies y montos.
+- **Lighthouse** (build de producción en local, puerto 3202; rendimiento / accesibilidad / buenas prácticas / SEO):
+
+| Página | Celular | Escritorio |
+| --- | --- | --- |
+| Ficha del celular de gama alta (3 corridas en celular) | 89 · 81 · 91 → **mediana 89**, mejor 91 (antes: mediana 77, mejor 91) / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Comparador (3 celulares) | 76 y 100 en dos corridas / 100 / 100 / 66 | 100 / 100 / 100 / 66 |
+| Mis listas (sesión de Lorena) | 92 y 99 / 100 / 100 / 66 | 100 / 100 / 100 / 66 |
+
+  El SEO de 66 es el `noindex` del comparador y de la cuenta (a propósito). La primera medición del comparador dio un
+  CLS de 0,126: el pie subía cuando el contenido reemplazaba al esqueleto de 480 px; ahora el esqueleto ocupa la
+  pantalla y el CLS es 0. La variación entre corridas es la de siempre en esta PC (la CPU alterna corridas lentas).
 - **Playwright** (`e2e/descubrimiento.spec.ts`, escritorio y celular): comparar 3 celulares y ver solo lo que cambia; el corazón sin cuenta pide entrar y vuelve; crear una lista, compartirla y abrirla sin sesión, y que deje de funcionar; vistos en el inicio y al pie de la ficha; "comprados juntos" al carrito; la alerta cumplida de Lorena.

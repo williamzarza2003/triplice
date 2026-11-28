@@ -1131,7 +1131,9 @@
       "objetivo_bajo": "Es menos de la décima parte del precio de hoy ({hoy}): revisá los ceros.",
       "limite_alertas": "Ya tenés 20 alertas activas. Borrá alguna en Alertas de precio para crear otra.",
       "sin_precio": "Hoy no hay stock de este producto: no se puede crear la alerta."
-    }
+    },
+    "listasSinCuenta": "Las listas se guardan en tu cuenta: entrá y volvés a este producto.",
+    "entrarParaListas": "Entrar para guardar"
   },
   "comparar": {
     "titulo": "Comparar productos",

@@ -1131,7 +1131,9 @@
       "objetivo_bajo": "That’s less than a tenth of today’s price ({hoy}): check the zeros.",
       "limite_alertas": "You already have 20 active alerts. Delete one in Price alerts to create another.",
       "sin_precio": "This product is out of stock today: the alert can’t be created."
-    }
+    },
+    "listasSinCuenta": "Lists are saved to your account: sign in and you’ll come back to this product.",
+    "entrarParaListas": "Sign in to save"
   },
   "comparar": {
     "titulo": "Compare products",

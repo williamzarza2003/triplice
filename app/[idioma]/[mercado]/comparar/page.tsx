@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function PaginaComparar(props: PageProps<'/[idioma]/[mercado]/comparar'>) {
   return (
     <main id="contenido" className="contenedor">
-      <Suspense fallback={<div className="panel" style={{ minHeight: 480, marginTop: 24 }} aria-hidden="true" />}>
+      <Suspense fallback={<div className="panel" style={{ minHeight: '100vh', marginTop: 24 }} aria-hidden="true" />}>
         <Contenido {...props} />
       </Suspense>
     </main>

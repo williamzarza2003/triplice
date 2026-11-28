@@ -62,6 +62,7 @@
 /* Fase 5: avisos de baja de precio sin leer, sobre el ícono de la cuenta. En el celular la cuenta vive en el menú ☰,
    pero con un aviso pendiente el ícono aparece en la fila (sin el aviso, el encabezado queda como estaba). */
 .cuentaIcono { position: relative; display: grid; place-items: center; }
+.cuenta[data-avisos='true'] { gap: 14px; }
 .cuentaIcono .contador { top: -9px; right: -11px; background: var(--lapacho-700); color: #fff; }
 @media (max-width: 860px) {
   .cuenta[data-avisos='true'] { display: flex; width: 44px; padding: 0; justify-content: center; }

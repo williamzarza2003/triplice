@@ -93,10 +93,15 @@ function EnLista({ slug, idioma, listas, sesion, setListas, ocultos, volver }: {
 
   if (!sesion) {
     // sin cuenta: el enlace lleva a entrar y vuelve a esta ficha
+    // el mismo desplegable: adentro, entrar (y volver a esta ficha). Si la sesión se confirma mientras tanto, cambia solo
     return (
-      <Link className={s.corazonAncho} href={`/${idioma}/entrar?volver=${encodeURIComponent(volver)}`} prefetch={false}>
-        <Icono nombre="lista" tam={18} />{t('guardarEnLista')}
-      </Link>
+      <details className={s.desplegable}>
+        <summary><Icono nombre="lista" tam={18} />{t('guardarEnLista')}</summary>
+        <div className={s.cajon}>
+          <p>{t('listasSinCuenta')}</p>
+          <Link className="boton boton--sec" href={`/${idioma}/entrar?volver=${encodeURIComponent(volver)}`} prefetch={false}>{t('entrarParaListas')}</Link>
+        </div>
+      </details>
     )
   }
   const guardadas = (listas ?? []).filter((l) => l.tiene && !l.favoritos).length

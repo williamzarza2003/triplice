@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export type MiLista = { id: string; nombre: string; favoritos: boolean; token: string | null; n: number; fotos: string[]; actualizado: string }
 
 export default function PaginaListas(props: PageProps<'/[idioma]/[mercado]/cuenta/listas'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 320 }} aria-hidden="true" />}><Listas {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Listas {...props} /></Suspense>
 }
 
 async function Listas({ searchParams }: PageProps<'/[idioma]/[mercado]/cuenta/listas'>) {

@@ -30,7 +30,7 @@ export function generateStaticParams() {
 export default function PaginaCompartida(props: PageProps<'/[idioma]/[mercado]/lista/[token]'>) {
   return (
     <main id="contenido" className="contenedor">
-      <Suspense fallback={<div className="panel" style={{ minHeight: 420, marginTop: 24 }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
+      <Suspense fallback={<div className="panel" style={{ minHeight: '100vh', marginTop: 24 }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
     </main>
   )
 }

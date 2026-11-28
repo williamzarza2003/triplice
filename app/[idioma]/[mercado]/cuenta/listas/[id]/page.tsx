@@ -37,7 +37,7 @@ export function generateStaticParams() {
 }
 
 export default function PaginaLista(props: PageProps<'/[idioma]/[mercado]/cuenta/listas/[id]'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 320 }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Contenido {...props} /></Suspense>
 }
 
 async function Contenido({ params, searchParams }: PageProps<'/[idioma]/[mercado]/cuenta/listas/[id]'>) {

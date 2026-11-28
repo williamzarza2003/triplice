@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function PaginaAlertas(props: PageProps<'/[idioma]/[mercado]/cuenta/alertas'>) {
-  return <Suspense fallback={<div className="panel" style={{ minHeight: 320 }} aria-hidden="true" />}><Alertas {...props} /></Suspense>
+  return <Suspense fallback={<div className="panel" style={{ minHeight: '100vh' }} aria-hidden="true" />}><Alertas {...props} /></Suspense>
 }
 
 async function Alertas({ searchParams }: PageProps<'/[idioma]/[mercado]/cuenta/alertas'>) {

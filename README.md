@@ -8,11 +8,24 @@ Marketplace multivendedor pensado para la **triple frontera** (Paraguay, Brasil 
 
 > Proyecto de portafolio de William Zarza. Productos, tiendas, opiniones y pagos son ficticios o de prueba.
 
-**Estado: fase 4** (panel del vendedor y reputación calculada). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha), `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento), `fase-2` (carrito, impuestos y pago) y `fase-3` (cuentas, pedidos, devoluciones y opiniones).
+**Estado: fase 5** (descubrimiento: comparador, vistos, comprados juntos, listas y alertas; la administración va en otra rama). Las fases anteriores están en sus ramas: `fase-0` (marca, diseño y arquitectura), `fase-1` (catálogo, búsqueda y ficha), `fase-1-ajustes` (catálogo de Ciudad del Este y rendimiento), `fase-2` (carrito, impuestos y pago) y `fase-3` (cuentas, pedidos, devoluciones y opiniones).
 
 | Panel del vendedor: ventas y reputación | Celular: el mismo resumen |
 | --- | --- |
 | ![Resumen del panel: ventas de 30 días con su gráfico, lo que hay que hacer hoy, lo más vendido y la reputación explicada](docs/capturas/vender-resumen-1440.webp) | ![Resumen del panel en el celular](docs/capturas/vender-resumen-390.webp) |
+
+## Qué hay en la fase 5 (descubrimiento)
+
+| Comparador: lo que cambia, resaltado | Celular: primera columna pegada |
+| --- | --- |
+| ![Comparador de tres celulares: lo igual en una sola celda apagada, lo que cambia con una raya lapacho y barras proporcionales](docs/capturas/descubrimiento-comparar-1440.webp) | ![El comparador en el celular, con la columna de los datos fija y desplazamiento horizontal](docs/capturas/descubrimiento-comparar-390.webp) |
+
+- **Comparador** (`/comparar?p=…`, compartible): hasta 4 productos de la misma categoría o de categorías hermanas, lado a lado, con el precio final en tu moneda, la reputación de la tienda de la mejor oferta y los atributos de la categoría alineados. Lo igual en todos se junta en una celda apagada; lo que cambia queda resaltado, con barras proporcionales en los números, y hay un «Solo lo que cambia». Se arma en el servidor con la cookie del comparador.
+- **Vistos recientemente** en el inicio y al pie de la ficha (cookie sin cuenta; base con cuenta, y al entrar se suman), como una isla que no frena la ficha.
+- **"Quienes compraron esto también compraron"**: vista materializada de pares que aparecen en el mismo pedido (mínimo 3 pedidos), con el total del combo y «Agregar los dos al carrito» (el precio lo calcula el servidor).
+- **Favoritos y listas** (corazón en la tarjeta y la ficha, listas con nombre, mover, renombrar, borrar) y **compartir una lista** por un enlace de solo lectura que se puede revocar.
+- **Alertas de precio simuladas**: «Avisame si baja de X» en la moneda que estás viendo; se comparan con el precio final de hoy en esa moneda y con la cotización de hoy, y el aviso aparece en la cuenta y en el encabezado (sin correos, y la página lo dice).
+- Todo con RLS, permisos por columna y límites en la base, probado en Vitest contra Postgres y en Playwright (escritorio y celular). Detalle en [`docs/arquitectura.md`](docs/arquitectura.md) y [`docs/seguridad.md`](docs/seguridad.md).
 
 ## Qué hay en la fase 4
 
@@ -116,9 +129,13 @@ npm run fotos:web                     # WebP en 240, 480 y 800 px
 
 *Portfolio project. Products, sellers, reviews and payments are fictional or test-only.*
 
-**Status: phase 4** — seller dashboard and calculated reputation (earlier phases live on the `fase-0`, `fase-1`, `fase-1-ajustes`, `fase-2` and `fase-3` branches).
+**Status: phase 5** — discovery (comparison, recently viewed, bought together, lists and price alerts) (earlier phases live on the `fase-0`, `fase-1`, `fase-1-ajustes`, `fase-2` and `fase-3` branches).
 
 ![Seller dashboard: 30-day sales with a hand-drawn chart, today's to-dos, best sellers and the reputation breakdown](docs/capturas/vender-resumen-1440.webp)
+
+**Phase 5 (discovery):** a **side-by-side comparison** of up to 4 products from the same (or a sibling) category at a shareable URL, where identical values collapse into one muted cell and differences stand out (with an "only differences" switch and a sticky first column on phones); **recently viewed** items (cookie for guests, database for accounts, merged on sign-in); **"customers who bought this also bought"** from a materialized view of products that appear in the same orders, with an "add both to cart" combo priced on the server; **favorites and named lists** with a revocable **view-only share link**; and **simulated price alerts** compared against today's final price in the currency the shopper chose, at today's exchange rate, shown in the account and the header (no emails). All with RLS, column-level grants and limits enforced in the database.
+
+![Product comparison with the differences highlighted](docs/capturas/descubrimiento-comparar-1440.webp)
 
 - **Seller dashboard** (`/vender`) for store owners: last-30-day sales in the market's currency (revenue, orders, average order value, versus the previous period), a **hand-drawn SVG sales chart**, best sellers, orders to prepare with their deadline, unanswered questions and low stock. Every number is computed in SQL; sales charged in other currencies are converted with their frozen rate.
 - **Calculated, explainable reputation**: the number shoppers see is no longer seeded by hand. It is a materialized view built from five figures over 12 months (reviews, on-time deliveries against the promised time, returns, questions answered and reply time), and the dashboard shows what each one adds and what to improve.
