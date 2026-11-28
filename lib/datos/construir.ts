@@ -18,6 +18,8 @@ export async function construirBase({ conSeed = true } = {}) {
     await db.exec(await leer('supabase/pglite/90_cuenta_demo.sql'))
     // vendedor de prueba de la fase 4 (Casa Nubla), con pedidos y preguntas de hoy
     await db.exec(await leer('supabase/pglite/91_vendedor_demo.sql'))
+    // fase 5: listas, favoritos, vistos y dos alertas de precio de Lorena (una ya cumplida)
+    await db.exec(await leer('supabase/pglite/92_descubrir_demo.sql'))
   }
   return db
 }

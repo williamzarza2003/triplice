@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { Encabezado } from '@/components/encabezado/Encabezado'
 import { Pie } from '@/components/Pie'
+import { BarraComparar } from '@/components/descubrir/BarraComparar'
 import { contexto } from '@/lib/contexto'
 import { IDIOMAS, LOCALE } from '@/lib/i18n/idiomas'
 import { Textos } from '@/lib/i18n/textos'
@@ -38,7 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Solo los textos que usan los componentes del navegador en todas las páginas: el buscador, el selector de región
 // y la página de error. La ficha suma los suyos (compra y opiniones) con otro <Textos>; el resto se queda en el servidor.
-const PARA_EL_NAVEGADOR = ['encabezado', 'sugerencias', 'region', 'error'] as const
+// fase 5: `descubrir` (corazón, comparar, vistos y la barra del comparador, que están en las tarjetas de todas las páginas).
+const PARA_EL_NAVEGADOR = ['encabezado', 'sugerencias', 'region', 'error', 'descubrir'] as const
 
 export default async function Raiz({ children }: LayoutProps<'/[idioma]/[mercado]'>) {
   const ctx = await contexto()
@@ -55,6 +57,7 @@ export default async function Raiz({ children }: LayoutProps<'/[idioma]/[mercado
           <Encabezado ctx={ctx} />
           {children}
           <Pie ctx={ctx} />
+          <BarraComparar idioma={ctx.idioma} />
         </Textos>
       </body>
     </html>

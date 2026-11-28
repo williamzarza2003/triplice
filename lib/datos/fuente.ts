@@ -8,6 +8,8 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 export type Funcion = 'buscar' | 'sugerir' | 'categorias_arbol' | 'inicio' | 'ficha' | 'tienda' | 'tiendas_lista'
   | 'productos_slugs' | 'cotizaciones_vigentes' | 'impuestos_vigentes' | 'compra_datos' | 'zonas_envio_lista' | 'validar_cupon'
   | 'pedido_publico'
+  // fase 5 (descubrimiento): comparador, vistos de la cookie, "comprados juntos" y la lista compartida por enlace
+  | 'comparar' | 'tarjetas_slugs' | 'comprados_juntos' | 'ofertas_baratas' | 'lista_compartida'
 /** Las que solo puede correr el servidor con el rol de servicio (crean y confirman pedidos). */
 export type FuncionServicio = 'registrar_pedido' | 'confirmar_pago'
 
@@ -82,6 +84,10 @@ export type FuncionCuenta = 'mi_cuenta' | 'guardar_perfil' | 'mis_pedidos' | 'mi
   | 'mi_tienda_datos' | 'mi_reputacion' | 'vendedor_resumen' | 'vendedor_productos' | 'vendedor_producto' | 'vendedor_categorias'
   | 'guardar_producto' | 'pausar_producto' | 'guardar_stock' | 'vendedor_pedidos' | 'avanzar_pedido' | 'vendedor_preguntas'
   | 'vendedor_responder'
+  // descubrimiento (fase 5): vistos, listas, favoritos y alertas de precio
+  | 'registrar_vistos' | 'mis_vistos' | 'mis_listas' | 'mi_lista' | 'guardar_lista' | 'borrar_lista' | 'lista_agregar'
+  | 'lista_quitar' | 'lista_mover' | 'alternar_favorito' | 'compartir_lista' | 'crear_alerta' | 'borrar_alerta'
+  | 'revisar_alertas' | 'mis_alertas' | 'leer_avisos' | 'ficha_descubrir' | 'estado_descubrir'
 
 /**
  * En la base embebida: la función corre con el rol `authenticated` y el id del usuario en la variable que lee

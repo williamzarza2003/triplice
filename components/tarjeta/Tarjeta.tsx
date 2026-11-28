@@ -10,6 +10,8 @@ import { descuento } from '@/lib/precios'
 import { FotoDiferida } from '../FotoDiferida'
 import { Icono } from '../Icono'
 import { Estrellas } from '../Estrellas'
+import { BotonComparar } from '../descubrir/BotonComparar'
+import { BotonFavorito } from '../descubrir/BotonFavorito'
 import s from './Tarjeta.module.css'
 
 type Props = { p: TarjetaDatos; ctx: Contexto; nivel?: 2 | 3 | 4; prioridad?: 'alta' | 'eager' | false; diferida?: boolean }
@@ -38,6 +40,8 @@ export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false, diferida =
         {desc > 0 && <span className={`sello sello--oferta ${s.sello}`}>−{desc} %</span>}
         {p.condicion !== 'nuevo' && <span className={`sello sello--neutro ${s.condicion}`}>{tc(`condicion.${p.condicion}`)}</span>}
       </Link>
+      {/* fase 5: favorito y comparar quedan por encima del enlace que cubre toda la tarjeta */}
+      <BotonFavorito slug={p.slug} idioma={ctx.idioma} titulo={p.titulo} />
       <div className={s.cuerpo}>
         <Titulo className={s.titulo}><Link href={href}>{p.titulo}</Link></Titulo>
         <Estrellas valor={Number(p.promedio)} n={p.resenas} coma={ctx.idioma !== 'en'} etiqueta={p.resenas
@@ -57,6 +61,7 @@ export async function Tarjeta({ p, ctx, nivel = 3, prioridad = false, diferida =
           {p.ofertas > 1 && <span className={s.mas}> · {t('mas', { n: p.ofertas - 1 })}</span>}
         </p>
         {p.stock > 0 && p.stock <= 3 && <p className={s.ultimas}>{t('ultimas', { n: p.stock })}</p>}
+        <BotonComparar slug={p.slug} familia={p.categoria_padre ?? p.categoria} idioma={ctx.idioma} titulo={p.titulo} />
       </div>
     </article>
   )

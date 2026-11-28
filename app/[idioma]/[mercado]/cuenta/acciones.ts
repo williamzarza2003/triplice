@@ -10,6 +10,7 @@ import {
   alEntrar, entrarDemo, ErrorCuenta, modoCuentas, perfil, rpcCuenta, saludar, salir, usuarioActual, type Perfil,
 } from '@/lib/cuenta/sesion'
 import { cuentaDemo } from '@/lib/datos/fuente'
+import { despuesDeEntrar } from '@/lib/descubrir/servidor'
 import { esIdioma, IDIOMA_PREDETERMINADO, type Idioma } from '@/lib/i18n/idiomas'
 import { esMoneda, esRegion, type Region } from '@/lib/region'
 import { SITIO } from '@/lib/sitio'
@@ -39,6 +40,8 @@ export async function entrarDemoAccion(f: FormData) {
   if (!cuenta) redirect(`/${idioma}/entrar?error=demo`)
   await entrarDemo(cuenta)
   await alEntrar(await perfil())
+  // fase 5: los vistos de la cookie pasan a la cuenta, se guarda el favorito que tocó antes de entrar y se revisan sus alertas
+  await despuesDeEntrar()
   redirect(await volverSeguro(texto(f, 'volver'), idioma))
 }
 

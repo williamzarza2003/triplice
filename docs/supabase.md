@@ -25,6 +25,7 @@ En el proyecto nuevo → **SQL Editor** → **New query**, pegá y ejecutá, **e
 4. `supabase/migrations/20261126000200_precios_con_impuestos.sql` (fase 2: precios con el impuesto de la región)
 5. `supabase/migrations/20261127000100_cuentas.sql` (fase 3: perfiles, direcciones, devoluciones, opiniones con fotos, votos, preguntas y el bucket `resenas` de Storage)
 6. `supabase/migrations/20261128000100_vendedor.sql` (fase 4: panel del vendedor, reputación calculada, RLS de escritura para las tiendas y el bucket `productos` de Storage)
+6. bis. las migraciones de la fase 5, en orden de nombre: `20261130000100_…` (administración) y `20261130000200_descubrimiento.sql` (comparador, vistos, "comprados juntos", listas, favoritos y alertas de precio)
 7. `supabase/seed.sql` (323 productos, 15 tiendas, 5.500 reseñas, reglas de impuesto, zonas, cupones y un historial de
    unos 6.000 pedidos de los últimos 12 meses con 45 compradores ficticios, de donde salen las métricas y la reputación;
    pesa 2,8 MB: si el editor se queja del tamaño, usá la opción B)
@@ -103,3 +104,15 @@ pedidos ni preguntas de otra). Las fotos de los productos van al bucket `product
 fase 4 (público, 2 MB por foto, solo WebP; cada tienda sube solo a su carpeta). La reputación se recalcula sola cuando
 la tienda avanza un pedido o responde una pregunta; para que también se ponga al día con el paso del tiempo (la ventana
 es de 12 meses), programá en *Integrations → Cron* (pg_cron) cada hora: `select public.refrescar_catalogo();`.
+
+## 6. Descubrimiento (fase 5)
+
+La migración `20261130000200_descubrimiento.sql` no necesita nada a mano, salvo las tareas programadas. En
+*Integrations → Cron* (pg_cron), además de `select public.refrescar_catalogo();` cada hora (ahora también rehace
+"comprados juntos"), programá cada 30 minutos `select public.revisar_alertas_todas();`: revisa las alertas de precio
+de todos contra el precio y la cotización del momento. Si pg_cron ya estaba activado cuando corriste la migración, esa
+tarea se creó sola (`revisar-alertas`). Sin pg_cron, las alertas de cada persona se revisan igual cuando entra y cuando
+abre su cuenta (como en la vista previa).
+
+El seed suma 640 pedidos de dos productos ("canastas": el celular y su cargador, el termo y la vajilla…) para que
+"comprados juntos" tenga datos desde el primer día.
