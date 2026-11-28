@@ -32,6 +32,19 @@ function con(url: string, extra: Record<string, string>, ancla?: string) {
   return `${u.pathname}${u.search}${ancla ? `#${ancla}` : ''}`
 }
 
+/**
+ * Cambió algo que entra en TODOS los precios (cotización o impuesto): se invalidan las etiquetas que leen
+ * contexto() y la búsqueda. Ojo (lo encontró e2e/admin.spec.ts): las fichas que se arman a pedido parten del armado
+ * del build, que trae guardada la cotización de ese momento sin su etiqueta, así que esas toman la nueva cuando vence
+ * su caché (cacheLife 'minutes' de cotizaciones(): alrededor de un minuto). revalidatePath del layout las rearmaba,
+ * pero el rearmado de la ficha falla (el encabezado usa usePathname fuera de Suspense) y devolvía 500: no se usa.
+ */
+function precioCambio() {
+  updateTag('cotizaciones')
+  updateTag('impuestos')
+  updateTag('catalogo') // la búsqueda filtra y ordena con el precio final
+}
+
 async function exigirSesion(f: FormData, volver: string) {
   const u = await usuarioActual()
   if (!u) redirect(`/${idiomaDe(f)}/entrar?volver=${encodeURIComponent(volver)}`)
@@ -265,8 +278,7 @@ export async function impuestoAccion(_: EstadoImpuesto, f: FormData): Promise<Es
       const x = r as { error: string; campo?: string }
       return { error: x.error, campo: x.campo, valores }
     }
-    updateTag('impuestos')
-    updateTag('catalogo') // la búsqueda filtra y ordena por el precio con impuesto
+    precioCambio()
     redirect(`/${idioma}/admin/impuestos?guardado=${pais}#pais-${pais}`)
   }
 
@@ -295,8 +307,7 @@ export async function borrarImpuestoAccion(f: FormData) {
   await exigirSesion(f, volver)
   const r = await admin('admin_borrar_impuesto', { id: texto(f, 'id') })
   if (r.error) redirect(con(volver, { error: r.error }))
-  updateTag('impuestos')
-  updateTag('catalogo')
+  precioCambio()
   redirect(con(volver, { guardado: 'borrada' }, `pais-${texto(f, 'pais')}`))
 }
 
@@ -344,8 +355,7 @@ export async function cotizacionAccion(_: EstadoCotizacion, f: FormData): Promis
     if (!Object.keys(confirmadas).length) return { error: 'vacio', valores }
     const r = await admin<{ ok: boolean }>('admin_guardar_cotizacion', { tasas: confirmadas, fuente, confirmar: true })
     if (r.error) return { error: r.error, moneda: (r as { moneda?: string }).moneda, valores }
-    updateTag('cotizaciones')
-    updateTag('catalogo') // la búsqueda convierte los filtros de precio con la cotización
+    precioCambio()
     redirect(`/${idioma}/admin/cotizaciones?guardado=${fuente}`)
   }
   if (!Object.keys(tasas).length) return { error: 'sin_cambios', valores }

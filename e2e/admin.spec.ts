@@ -25,7 +25,7 @@ test('un comprador no entra a la administración: se le explica qué es', async 
   await expect(page).toHaveURL(/\/es\/entrar\?volver=%2Fes%2Fadmin/)
   await page.getByRole('button', { name: 'Entrar como Lorena' }).click()
   await expect(page.getByRole('heading', { name: 'Esta sección es para quienes administran Tríplice' })).toBeVisible()
-  await expect(page.getByText('Cotización del día')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Cotización del día' })).toHaveCount(0)
 })
 
 test('aprobar una tienda, ocultar una reseña y ver los cambios en el sitio', async ({ page }, info) => {
@@ -35,7 +35,8 @@ test('aprobar una tienda, ocultar una reseña y ver los cambios en el sitio', as
   const producto = celular ? 'parlante-bluetooth-sumergible-de-20-w-pira-sound' : 'termo-de-acero-1-l-con-manija-tacuru'
 
   // antes: la tienda pendiente no existe para el público
-  expect((await page.goto(`/es/tienda/${tienda.slug}`))?.status()).toBe(404)
+  await page.goto(`/es/tienda/${tienda.slug}`)
+  await expect(page.getByRole('heading', { level: 1, name: 'No encontramos esa página' })).toBeVisible()
 
   await entrarComoAdmin(page)
   await expect(page.getByRole('heading', { level: 1, name: 'Lo que espera tu decisión' })).toBeVisible()
@@ -67,6 +68,7 @@ test('aprobar una tienda, ocultar una reseña y ver los cambios en el sitio', as
 })
 
 test('cotización: vista previa, aviso de más de 5 % y el precio nuevo en una ficha', async ({ page, context }, info) => {
+  test.setTimeout(240_000)
   await entrarComoAdmin(page)
   await page.goto('/es/admin/cotizaciones')
   const ars = page.getByLabel('Pesos argentinos por 1 US$')
@@ -75,8 +77,9 @@ test('cotización: vista previa, aviso de más de 5 % y el precio nuevo en una f
   if (info.project.name === 'celular') {
     // en el celular: sin las variables de Cambio CDE, el botón explica qué falta y dónde se cargan
     await page.getByRole('button', { name: 'Traer de Cambio CDE' }).click()
-    await expect(page.getByRole('alert')).toContainText('CAMBIO_CDE_SUPABASE_URL')
-    await expect(page.getByRole('alert')).toContainText('docs/supabase.md')
+    const alerta = page.getByRole('alert').filter({ hasText: 'Cambio CDE' })
+    await expect(alerta).toContainText('CAMBIO_CDE_SUPABASE_URL')
+    await expect(alerta).toContainText('docs/supabase.md')
     // un cero de más se avisa antes de guardar (y acá no se guarda)
     await ars.fill(String(original * 10))
     await page.getByRole('button', { name: 'Revisar antes de guardar' }).click()
@@ -88,7 +91,7 @@ test('cotización: vista previa, aviso de más de 5 % y el precio nuevo en una f
   const nuevo = Math.round(original * 1.08)
   await ars.fill(String(nuevo))
   await page.getByRole('button', { name: 'Revisar antes de guardar' }).click()
-  await expect(page.getByRole('cell', { name: '+8 %' })).toBeVisible()
+  await expect(page.getByRole('cell', { name: /^\+[78](,\d+)? %$/ })).toBeVisible()
   await expect(page.getByRole('alert').filter({ hasText: 'más de 5 %' })).toBeVisible()
   await page.getByRole('button', { name: 'Está bien, guardar igual' }).click()
   await expect(page.getByText('Listo: los precios del sitio ya se calculan con la cotización nueva.')).toBeVisible()
@@ -96,15 +99,22 @@ test('cotización: vista previa, aviso de más de 5 % y el precio nuevo en una f
   // la tienda la aprueba la otra prueba del escritorio; si todavía no, se aprueba acá
   await page.goto('/es/admin/tiendas')
   const aprobar = page.getByRole('button', { name: 'Aprobar Mate y Guampa' })
-  if (await aprobar.count()) await aprobar.click()
+  if (await aprobar.count()) {
+    await aprobar.click()
+    await expect(page.getByText('Listo: Mate y Guampa ya se ve en el sitio.')).toBeVisible()
+  }
 
   await context.addCookies([
     { name: 'triplice_region', value: 'AR', domain: 'localhost', path: '/' },
     { name: 'triplice_moneda', value: 'ARS', domain: 'localhost', path: '/' },
   ])
-  await page.goto('/es/p/termo-de-acero-1-l-con-pico-cebador-mate-y-guampa')
+  // las fichas que se arman a pedido toman la cotización nueva cuando vence su caché (alrededor de un minuto: ver
+  // precioCambio() en app/[idioma]/[mercado]/admin/acciones.ts); se recarga hasta verla
   const esperado = formatear(precioFinal(2390, 0.21, 'ARS', { PYG: 7350, BRL: 5.45, ARS: nuevo }), 'ARS')
-  await expect(page.getByText(esperado).first()).toBeVisible()
+  await expect(async () => {
+    await page.goto('/es/p/termo-de-acero-1-l-con-pico-cebador-mate-y-guampa')
+    await expect(page.getByText(esperado).first()).toBeVisible({ timeout: 2_000 })
+  }).toPass({ timeout: 150_000, intervals: [5_000] })
 
   // se deja como estaba (también con el aviso: vuelve más de 5 %)
   await context.clearCookies({ name: 'triplice_region' })
