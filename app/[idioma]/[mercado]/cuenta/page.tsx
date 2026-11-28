@@ -12,6 +12,11 @@ import { trayecto, type PedidoResumen } from '@/lib/cuenta/pedidos'
 import { rpcCuenta } from '@/lib/cuenta/sesion'
 import { contexto, ruta } from '@/lib/contexto'
 import { foto } from '@/lib/imagenes'
+import { Icono } from '@/components/Icono'
+import l from '@/components/descubrir/Listas.module.css'
+import { revisarMisAlertas } from '@/lib/descubrir/servidor'
+import { formatearMinimo } from '@/lib/descubrir/alertas'
+import type { Moneda } from '@/lib/region'
 import { LOCALE } from '@/lib/i18n/idiomas'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,12 +32,20 @@ export default function PaginaPedidos() {
 async function Pedidos() {
   const ctx = await contexto()
   const { demo } = await conSesion(ctx.idioma, '/cuenta')
-  const [t, pedidos] = await Promise.all([
+  // fase 5: al abrir la cuenta se revisan las alertas de precio (en la vista previa no hay pg_cron)
+  const [t, ta, pedidos, avisos] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'cuenta' }),
+    getTranslations({ locale: ctx.idioma, namespace: 'alertas' }),
     rpcCuenta<PedidoResumen[]>('mis_pedidos'),
+    revisarMisAlertas(),
   ])
   const fecha = new Intl.DateTimeFormat(LOCALE[ctx.idioma], { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'America/Asuncion' })
   const lista = pedidos ?? []
+  // "Bajó el precio de …: ahora ₲ …" (si es una sola, con su nombre y su precio)
+  const cumplidas = avisos > 0
+    ? ((await rpcCuenta<{ titulo: string; moneda: Moneda; precio_cumplida: number | null; cumplida: string | null; leida: boolean }[]>('mis_alertas', { idioma: ctx.idioma })) ?? [])
+        .filter((a) => a.cumplida && !a.leida)
+    : []
   return (
     <>
       <div className={s.cabeza}>
@@ -40,6 +53,16 @@ async function Pedidos() {
         {lista.length > 0 && <p>{t('pedidos.cantidad', { n: lista.length })}</p>}
       </div>
       {demo && <AvisoDemo texto={t('demo')} />}
+      {avisos > 0 && (
+        <p className={l.avisoPrecio} role="status">
+          <span><Icono nombre="campana" tam={20} />
+            {cumplidas.length === 1 && cumplidas[0].precio_cumplida !== null
+              ? ta('avisoCuenta', { titulo: cumplidas[0].titulo, precio: formatearMinimo(Number(cumplidas[0].precio_cumplida), cumplidas[0].moneda) })
+              : ta('avisoCuentaVarios', { n: avisos })}
+          </span>
+          <Link href={ruta(ctx.idioma, '/cuenta/alertas')}>{ta('verAvisos')}</Link>
+        </p>
+      )}
       {lista.length === 0 ? (
         <section className={`panel ${s.vacio}`}>
           <h2>{t('pedidos.vacio')}</h2>

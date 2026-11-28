@@ -18,6 +18,8 @@ export default async function MarcoCuenta({ children }: LayoutProps<'/[idioma]/[
       <MenuCuenta idioma={ctx.idioma} hola={t('hola')} salir={t('salir')} salirAccion={salirAccion}
         admin={{ href: r('/admin'), texto: ta('menu.enlaceCuenta'), icono: 'escudo' }} enlaces={[
         { href: r('/cuenta'), texto: t('menu.pedidos'), icono: 'caja' },
+        { href: r('/cuenta/listas'), texto: t('menu.listas'), icono: 'corazon' },
+        { href: r('/cuenta/alertas'), texto: t('menu.alertas'), icono: 'campana' },
         { href: r('/cuenta/opiniones'), texto: t('menu.opiniones'), icono: 'estrella' },
         { href: r('/cuenta/direcciones'), texto: t('menu.direcciones'), icono: 'mapa' },
         { href: r('/cuenta/datos'), texto: t('menu.datos'), icono: 'persona' },

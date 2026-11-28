@@ -10,6 +10,11 @@ import { FormPregunta, FormRespuesta } from '@/components/ficha/Preguntar'
 import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
 import { Migas } from '@/components/Migas'
+import { ComboJuntos } from '@/components/descubrir/ComboJuntos'
+import { PersonalFicha } from '@/components/descubrir/PersonalFicha'
+import { Vistos } from '@/components/descubrir/Vistos'
+import { aMinimo } from '@/lib/descubrir/alertas'
+import { compradosJuntos } from '@/lib/descubrir/servidor'
 import { valor } from '@/lib/catalogo/valores'
 import { foto } from '@/lib/imagenes'
 import { contexto, precio, precioNumero, ruta, type Contexto } from '@/lib/contexto'
@@ -118,7 +123,7 @@ function vistas(f: Ficha, ctx: Contexto): { variantes: VarianteVista[]; tiendas:
 
 async function Contenido({ params }: Props) {
   const [{ slug }, ctx] = await Promise.all([params, contexto()])
-  const f = await ficha(slug, ctx.idioma)
+  const [f, juntos] = await Promise.all([ficha(slug, ctx.idioma), compradosJuntos(slug, ctx.idioma)])
   if (!f) notFound()
   const [t, tc, tp, mensajes] = await Promise.all([
     getTranslations({ locale: ctx.idioma, namespace: 'ficha' }),
@@ -172,6 +177,12 @@ async function Contenido({ params }: Props) {
     [t('sku'), f.variantes[0]?.sku ?? '—'],
   ]
 
+  // fase 5: el precio de hoy para la alerta (la oferta más barata con stock, el de la tarjeta) y la familia del comparador
+  const cat = { sub: f.categoria.slug, padre: f.categoria_padre?.slug ?? null }
+  const precios = f.variantes.flatMap((v) => v.ofertas.filter((o) => o.stock > 0).map((o) => precioNumero(ctx, o.precio, cat)))
+  const precioHoy = precios.length ? aMinimo(Math.min(...precios), ctx.moneda) : null
+  const mercado = segmentoMercado(ctx)
+
   return (
     <>
       <Migas etiqueta={t('migas')} items={[
@@ -184,7 +195,9 @@ async function Contenido({ params }: Props) {
       <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
         <Compra idioma={ctx.idioma} titulo={f.titulo} {...vistas(f, ctx)} info={info} detalles={detalles}
           impuesto={ctx.region === 'XX' ? tp('sinImpuesto') : tp('incluido', { impuesto: reglaDe(ctx.impuestos, { sub: f.categoria.slug, padre: f.categoria_padre?.slug ?? null }).nombre })}
-          agregar={agregarAlCarrito} carrito={r('/carrito')} />
+          agregar={agregarAlCarrito} carrito={r('/carrito')}
+          personal={<PersonalFicha slug={slug} titulo={f.titulo} familia={f.categoria_padre?.slug ?? f.categoria.slug} idioma={ctx.idioma}
+            mercado={mercado} moneda={ctx.moneda} precioHoy={precioHoy} />} />
       </Textos>
 
       <div className={s.bloques}>
@@ -207,6 +220,8 @@ async function Contenido({ params }: Props) {
           )}
         </div>
       </div>
+
+      {juntos && <ComboJuntos datos={juntos} ctx={ctx} />}
 
       <section id="opiniones" className="seccion fuera-de-pantalla" aria-labelledby="t-opiniones">
         <div className="seccion__cabeza"><h2 id="t-opiniones">{t('opinionesTitulo')}</h2></div>
@@ -250,6 +265,9 @@ async function Contenido({ params }: Props) {
           <Grilla items={f.relacionados.slice(0, 6)} ctx={ctx} fila diferirDesde={0} />
         </section>
       )}
+
+      {/* fase 5: lo último que viste (isla del navegador: no bloquea la foto ni el prearmado de la ficha) */}
+      <Vistos idioma={ctx.idioma} mercado={mercado} actual={slug} />
     </>
   )
 }
