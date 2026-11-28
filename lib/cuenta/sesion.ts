@@ -9,7 +9,7 @@ import { origenDatos, rpcEmbebidaComo, type FuncionCuenta } from '../datos/fuent
 import { COOKIE_IDIOMA, COOKIE_MONEDA, COOKIE_REGION } from '../region'
 import { abrirSello, sellar } from '../sello'
 import { supabaseServidor } from '../supabase/servidor'
-import { COOKIE_HOLA } from './hola'
+import { COOKIE_ADMIN, COOKIE_HOLA } from './hola'
 
 export type Usuario = { id: string; email: string }
 export type Perfil = {
@@ -77,6 +77,9 @@ export async function alEntrar(p: Perfil | null) {
   const opciones = { path: '/', sameSite: 'lax' as const, secure: seguro, maxAge: DURACION }
   if (!p) return
   c.set(COOKIE_HOLA, encodeURIComponent(nombreCorto(p.nombre)), opciones)
+  // el enlace a la administración en el menú de la cuenta (la base decide igual en cada página del admin)
+  if (p.rol === 'admin') c.set(COOKIE_ADMIN, '1', opciones)
+  else c.delete(COOKIE_ADMIN)
   const anio = { ...opciones, maxAge: 60 * 60 * 24 * 365 }
   c.set(COOKIE_REGION, p.region, anio)
   c.set(COOKIE_MONEDA, p.moneda, anio)
@@ -98,6 +101,7 @@ export async function salir() {
   const c = await cookies()
   c.delete(COOKIE_SESION)
   c.delete(COOKIE_HOLA)
+  c.delete(COOKIE_ADMIN)
 }
 
 /** Actualiza el saludo del encabezado (por ejemplo, si cambió el nombre). */

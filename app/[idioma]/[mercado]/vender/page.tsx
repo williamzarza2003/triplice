@@ -7,7 +7,7 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { AvisoDemo } from '@/components/cuenta/AvisoDemo'
 import { Icono } from '@/components/Icono'
-import { NoVendedor } from '@/components/vender/Comunes'
+import { Alerta, NoVendedor } from '@/components/vender/Comunes'
 import { GraficoVentas } from '@/components/vender/GraficoVentas'
 import { ReputacionExplicada } from '@/components/vender/ReputacionExplicada'
 import s from '@/components/vender/Vender.module.css'
@@ -17,7 +17,7 @@ import { contexto, ruta } from '@/lib/contexto'
 import { LOCALE } from '@/lib/i18n/idiomas'
 import { foto } from '@/lib/imagenes'
 import { hace, momentoDelDia, montoCorto, variacion } from '@/lib/vender/formato'
-import { sinTienda, type Resumen } from '@/lib/vender/tipos'
+import { sinTienda, type Resumen, type TiendaPanel } from '@/lib/vender/tipos'
 
 export async function generateMetadata(): Promise<Metadata> {
   const ctx = await contexto()
@@ -46,6 +46,9 @@ async function Contenido() {
     rpcCuenta<Resumen>('vendedor_resumen', { moneda: ctx.moneda, idioma: ctx.idioma, dias: 30 }),
   ])
   if (!r || sinTienda(r)) return <NoVendedor idioma={ctx.idioma} />
+  // fase 5: si un admin suspendió la tienda (o todavía no la aprobó), lo dice arriba de todo, con el motivo
+  const estadoTienda = r.tienda.estado === 'aprobada' ? null
+    : await Promise.all([rpcCuenta<TiendaPanel & { estado_motivo: string | null }>('mi_tienda_datos'), getTranslations({ locale: ctx.idioma, namespace: 'admin.tiendaVe' })])
 
   const loc = LOCALE[ctx.idioma]
   const zona = { timeZone: 'America/Asuncion' } as const
@@ -74,6 +77,9 @@ async function Contenido() {
         <Link className="boton boton--accion" href={ruta(ctx.idioma, '/vender/productos/nuevo')}><Icono nombre="mas" tam={18} />{t('publicar')}</Link>
       </div>
 
+      {estadoTienda && <Alerta texto={estadoTienda[0]?.estado === 'suspendida'
+        ? estadoTienda[1]('suspendida', { motivo: estadoTienda[0]?.estado_motivo ?? estadoTienda[1]('sinMotivo') })
+        : estadoTienda[1]('pendiente')} />}
       <section className={`panel ${s.ventas}`} aria-labelledby="t-ventas">
         <div className={s.ventasCabeza}>
           <h2 id="t-ventas" className={s.panelTitulo}>{t('ventas.titulo')}</h2>
