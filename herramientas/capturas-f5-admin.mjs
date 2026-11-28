@@ -14,7 +14,7 @@ const PANTALLAS = [
   ['tiendas', '/es/admin/tiendas', null],
   ['moderacion', '/es/admin/moderacion', null],
   ['categorias', '/es/admin/categorias', null],
-  ['categoria', '/es/admin/categorias/2', null],
+  ['categoria', '/es/admin/categorias/1', null],
   ['impuestos', '/es/admin/impuestos', async (p) => {
     // la vista previa de subir el IVA general de Paraguay al 12 %
     const regla = p.locator('#pais-PY details').first()

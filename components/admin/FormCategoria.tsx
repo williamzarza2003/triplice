@@ -84,14 +84,15 @@ export function FormCategoria({ accion, idioma, categoria, principales, iconos }
           )}
           {error('padre')}
         </div>
-        <div className={v.campo}>
+        {/* el ícono solo se ve en las principales: en una subcategoría no se ofrece */}
+        {!categoria?.padre && <div className={v.campo}>
           <label htmlFor={`${p}-icono`}>{t('categorias.icono')}</label>
           <select id={`${p}-icono`} name="icono" defaultValue={val('icono', categoria?.icono ?? '')}>
             <option value="">{t('categorias.sinIcono')}</option>
             {iconos.map((i) => <option key={i} value={i}>{i}</option>)}
           </select>
           <small>{t('categorias.iconoAyuda')}</small>
-        </div>
+        </div>}
       </div>
       {general}
       <div><button type="submit" className="boton boton--marca" disabled={enviando}>{categoria ? t('categorias.guardar') : t('categorias.crear')}</button></div>
