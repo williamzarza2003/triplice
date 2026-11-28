@@ -417,6 +417,13 @@ describe('revisión de seguridad: escrituras directas y casos borde', () => {
     await expect(sql(ANA, `insert into storage.objects (bucket_id, name) values ('productos', $1)`, [`${TB}/foto.webp`])).rejects.toThrow(/row-level security/)
   })
 
+  it('una tienda sin ningún dato no tiene reputación (antes daba 100 %)', async () => {
+    await db.exec('refresh materialized view reputacion_calculo')
+    const [r] = (await db.query<{ reputacion: string | null; p_respuesta: string | null }>(
+      `select reputacion, p_respuesta from reputacion_calculo where tienda_id = $1`, [TD])).rows
+    expect(r).toEqual({ reputacion: null, p_respuesta: null })
+  })
+
   it('la tienda ve los pedidos con lo suyo, pero no la clave de invitado que abre el comprobante entero', async () => {
     expect((await sql(BETO, `select numero from pedidos`)).length).toBeGreaterThan(0)
     await expect(sql(BETO, `select clave from pedidos`)).rejects.toThrow(/permission denied/)

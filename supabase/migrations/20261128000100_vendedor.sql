@@ -425,7 +425,9 @@ with partes as ( -- una fila por pedido y tienda
          round(100.0 * en.a_tiempo / nullif(en.cerradas, 0), 1) as p_a_tiempo,
          round(100.0 * (1 - d.devueltos::numeric / nullif(d.entregados, 0)), 1) as p_devoluciones,
          round(100.0 * q.respondidas / nullif(q.total, 0), 1) as p_respondidas,
-         round(greatest(0, least(100, 100 * (2880 - q.mediana_min) / 2820))::numeric, 1) as p_respuesta
+         -- greatest/least ignoran los nulos: sin preguntas respondidas daba 100. Sin datos, el factor no cuenta.
+         case when q.mediana_min is null then null
+              else round(greatest(0, least(100, 100 * (2880 - q.mediana_min) / 2820))::numeric, 1) end as p_respuesta
     from tiendas t
     left join opin o on o.tienda_id = t.id
     left join entregas en on en.tienda_id = t.id
