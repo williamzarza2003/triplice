@@ -515,6 +515,76 @@ select h.id, i.id, pe.comprador_id, (array['fallado', 'distinto', 'incompleto', 
 insert into public.pedido_eventos (pedido_id, estado, creado)
 select d.pedido_id, 'devolucion_solicitada', d.creado from public.devoluciones d join hist h on h.id = d.pedido_id;`)
 
+// ------------------------------------------------------------------ fase 5: canastas (pedidos con dos productos)
+// El historial de arriba tiene un producto por pedido (es lo que mide a cada tienda). Para "comprados juntos" hacen
+// falta pedidos con más de uno: 640 canastas entregadas de los mismos compradores, armadas con pares de
+// subcategorías que se compran juntas en la frontera (el celular y su cargador, el termo y la vajilla, la parrilla del
+// patio y las macetas…). Dentro de cada subcategoría, los más vendidos salen más seguido, así aparecen pares fuertes.
+// Cada producto sale de su oferta más barata con stock; las fechas, entre 10 y 330 días atrás, y todo llegó a tiempo.
+const CANASTAS: [string, string, number][] = [
+  ['smartphones', 'accesorios-celular', 9], ['smartphones', 'auriculares', 6], ['smartwatches', 'smartphones', 3],
+  ['notebooks', 'perifericos', 5], ['notebooks', 'almacenamiento-y-redes', 4], ['camaras', 'almacenamiento-y-redes', 3],
+  ['videojuegos', 'auriculares', 4], ['parlantes', 'energia', 2], ['termos-y-jarras', 'vajilla', 6],
+  ['ollas-y-sartenes', 'utensilios', 5], ['pequenos-de-cocina', 'vajilla', 3], ['comedor', 'vajilla', 3],
+  ['living', 'textiles-y-cestos', 3], ['muebles-de-exterior', 'macetas-y-plantas', 4], ['macetas-y-plantas', 'riego', 4],
+  ['herramientas-de-jardin', 'riego', 3], ['electricas', 'cajas-y-escaleras', 3], ['manuales', 'cajas-y-escaleras', 4],
+  ['limpiadores', 'escobas-y-baldes', 5], ['colgantes', 'focos', 3], ['aire-libre', 'faroles-y-linternas', 3],
+  ['perfumes', 'cuidado-personal', 4], ['panaderia', 'almacen', 3], ['relojes-de-mano', 'anteojos-y-sombreros', 2],
+]
+L.push(`select setseed(0.0530);
+create temp table canasta_pares (a text, b text, desde numeric, hasta numeric) on commit drop;
+insert into canasta_pares select a, b, (sum(peso) over (order by n) - peso) / sum(peso) over (), sum(peso) over (order by n) / sum(peso) over ()
+  from (values ${CANASTAS.map(([a, b, peso], n) => `(${q(a)}, ${q(b)}, ${peso}.0, ${n})`).join(', ')}) x(a, b, peso, n);
+create temp table canasta_prod on commit drop as
+  select c.slug as cat, o.*, row_number() over (partition by c.id order by o.ventas_30d desc, o.producto_id) - 1 as n, count(*) over (partition by c.id) as total
+    from public.categorias c cross join lateral (
+      select distinct on (pr.id) pr.id as producto_id, pr.ventas_30d, pr.titulo, of.id as oferta, of.tienda_id, of.precio_usd_cent, of.preparacion_h,
+             v.opciones, c.id as cat_id, c.padre_id as padre
+        from public.productos pr join public.variantes v on v.producto_id = pr.id join public.ofertas of on of.variante_id = v.id
+        join public.tiendas t on t.id = of.tienda_id
+       where pr.categoria_id = c.id and of.activa and of.stock > 0 and t.estado = 'aprobada'
+       order by pr.id, of.precio_usd_cent, v.orden) o;
+create temp table canastas on commit drop as
+  select g, gen_random_uuid() as id, now() - make_interval(days => 10 + (random() * 320)::int, mins => (random() * 600)::int) as creado,
+         random() as r_par, random() as r_a, random() as r_b, random() as r_comprador, random() as r_modo
+    from generate_series(1, 640) g;
+create temp table canasta_items on commit drop as
+  select k.g, k.id as pedido_id, k.creado, b.region, b.id as comprador, b.email, b.nombre, k.r_modo, cp.*
+    from canastas k
+    join canasta_pares par on k.r_par >= par.desde and k.r_par < par.hasta
+    join hist_compradores b on b.region = 'PY' and b.n = floor(k.r_comprador * b.total)
+    join lateral (select * from canasta_prod x where x.cat = par.a and x.n = floor(power(k.r_a, 2.2) * x.total)
+                  union all
+                  select * from canasta_prod x where x.cat = par.b and x.n = floor(power(k.r_b, 2.2) * x.total)) cp on true;
+-- solo las canastas que quedaron con dos productos (una subcategoría vacía deja una sola)
+delete from canasta_items where pedido_id in (select pedido_id from canasta_items group by 1 having count(*) < 2);
+alter table canasta_items add column precio bigint, add column tasa numeric;
+update canasta_items set tasa = public.tasa_impuesto('PY', cat_id, padre);
+update canasta_items set precio = round(precio_usd_cent / 100.0 * (1 + tasa) * (select por_usd from public.cotizaciones where moneda = 'PYG' order by vigente_desde desc limit 1) / 1000) * 1000;
+insert into public.pedidos (id, numero, clave, comprador_id, email, region, idioma, moneda, cotizacion, productos, envio, descuento, total,
+                            impuestos, entrega, estado, proveedor_pago, referencia_pago, creado)
+select c.pedido_id, 'TR-C' || lpad(upper(to_hex(min(c.g))), 5, '0'), md5(c.pedido_id::text), min(c.comprador::text)::uuid, min(c.email), 'PY', 'es', 'PYG',
+       (select por_usd from public.cotizaciones where moneda = 'PYG' order by vigente_desde desc limit 1),
+       sum(c.precio), 25000, 0, sum(c.precio) + 25000,
+       (select jsonb_agg(jsonb_build_object('nombre', 'IVA ' || round(x.tasa * 100) || ' %', 'monto', x.monto) order by x.tasa)
+          from (select i.tasa, sum(round(i.precio * i.tasa / (1 + i.tasa))) as monto from canasta_items i where i.pedido_id = c.pedido_id group by i.tasa) x),
+       jsonb_build_object('modo', 'domicilio', 'nombre', min(c.nombre), 'zona', 'Triple frontera', 'diasMin', 1, 'diasMax', 2,
+                          'direccion', (array['Avda. San Blas 1820, Ciudad del Este', 'Calle Itá Ybaté 310, Hernandarias', 'Calle Bertoni 88, Encarnación'])[1 + (min(c.g) % 3)]),
+       'entregado', 'simulado', 'canasta-' || min(c.g), min(c.creado)
+  from canasta_items c group by c.pedido_id;
+insert into public.pedido_items (pedido_id, oferta_id, tienda_id, producto_id, titulo, opciones, cantidad, precio_unitario, tasa_impuesto, impuesto_nombre, preparacion_h)
+select c.pedido_id, c.oferta, c.tienda_id, c.producto_id, public.txt(c.titulo, 'es'), c.opciones, 1, c.precio, c.tasa, 'IVA ' || round(c.tasa * 100) || ' %', c.preparacion_h
+  from canasta_items c;
+insert into public.pedido_eventos (pedido_id, estado, tienda_id, creado)
+select pedido_id, estado, tienda, creado from (
+  select distinct c.pedido_id, 'pendiente_pago' as estado, null::uuid as tienda, c.creado from canasta_items c
+  union all select distinct c.pedido_id, 'confirmado', null::uuid, c.creado + interval '2 minutes' from canasta_items c
+  union all select distinct c.pedido_id, 'preparando', c.tienda_id, c.creado + make_interval(secs => least(c.preparacion_h, 48) * 900) from canasta_items c
+  union all select distinct c.pedido_id, 'enviado', c.tienda_id, c.creado + make_interval(secs => least(c.preparacion_h, 48) * 2160) from canasta_items c
+  union all select distinct c.pedido_id, 'entregado', null::uuid,
+         max(c.creado + make_interval(secs => least(c.preparacion_h, 48) * 2160)) over (partition by c.pedido_id) + interval '30 hours' from canasta_items c
+) e;`)
+
 // estadísticas al día: sin esto el planificador cree que las tablas están vacías y arma las tarjetas en segundos
 // en vez de milisegundos (lo mismo hace solo el autovacuum de Supabase un rato después)
 L.push('analyze;')

@@ -11,7 +11,9 @@ import { LOCALE } from '@/lib/i18n/idiomas'
 import { COOKIE_HOLA, leerHola } from '@/lib/cuenta/hola'
 import { urlFotoResena } from '@/lib/cuenta/url-foto'
 import type { FichaUsuario, Voto } from '@/app/[idioma]/[mercado]/cuenta/acciones'
+import type { EstadoDenuncia } from '@/app/[idioma]/[mercado]/cuenta/denunciar'
 import { EstrellasCompletas } from '../Estrellas'
+import { Denunciar } from './Denunciar'
 import { Icono } from '../Icono'
 import s from './Opiniones.module.css'
 
@@ -23,11 +25,13 @@ type Props = {
   paises: Record<string, string>
   votar: (f: FormData) => Promise<Voto>
   personal: (slug: string) => Promise<FichaUsuario>
+  /** fase 5: denunciar una opinión (solo con sesión) */
+  denunciar?: (e: EstadoDenuncia, f: FormData) => Promise<EstadoDenuncia>
 }
 
 const conSesion = () => !!leerHola(document.cookie.split('; ').find((x) => x.startsWith(`${COOKIE_HOLA}=`))?.slice(COOKIE_HOLA.length + 1))
 
-export function Opiniones({ idioma, slug, resenas, resumen, paises, votar, personal }: Props) {
+export function Opiniones({ idioma, slug, resenas, resumen, paises, votar, personal, denunciar }: Props) {
   const t = useTextos('ficha')
   const tc = useTextos('comun')
   const [filtro, setFiltro] = useState<number | null>(null)
@@ -146,6 +150,7 @@ export function Opiniones({ idioma, slug, resenas, resumen, paises, votar, perso
                   <Icono nombre="pulgar" tam={16} />{t('meFueUtil')}{utiles > 0 && <span className="numero">{utiles}</span>}
                 </button>
               </form>
+              {denunciar && <Denunciar accion={denunciar} tipo="resena" id={r.id} slug={slug} idioma={idioma} />}
             </li>
           )
         })}

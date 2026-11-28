@@ -10,7 +10,7 @@
 .foto img { width: 100%; height: 100%; object-fit: contain; padding: 6%; transition: transform var(--dur-media) var(--curva); }
 .tarjeta:hover .foto img { transform: scale(1.03); }
 .sello { position: absolute; left: 10px; top: 10px; }
-.condicion { position: absolute; right: 10px; top: 10px; font-size: var(--t-11); }
+.condicion { position: absolute; left: 10px; bottom: 10px; font-size: var(--t-11); } /* arriba a la derecha va el corazón */
 
 .cuerpo { padding: var(--e-3) var(--e-3) var(--e-4); display: grid; gap: 4px; align-content: start; }
 .titulo {
@@ -37,5 +37,5 @@
   .cuerpo { padding: 10px 10px 12px; }
   .precio { font-size: var(--t-16); }
   .sello { left: 6px; top: 6px; }
-  .condicion { right: 6px; top: 6px; }
+  .condicion { left: 6px; bottom: 6px; }
 }

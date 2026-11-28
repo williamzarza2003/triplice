@@ -7,7 +7,7 @@ import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { AvisoDemo } from '@/components/cuenta/AvisoDemo'
 import { Icono } from '@/components/Icono'
-import { NoVendedor } from '@/components/vender/Comunes'
+import { Alerta, NoVendedor } from '@/components/vender/Comunes'
 import { GraficoVentas } from '@/components/vender/GraficoVentas'
 import { ReputacionExplicada } from '@/components/vender/ReputacionExplicada'
 import s from '@/components/vender/Vender.module.css'
@@ -17,7 +17,7 @@ import { contexto, ruta } from '@/lib/contexto'
 import { LOCALE } from '@/lib/i18n/idiomas'
 import { foto } from '@/lib/imagenes'
 import { hace, momentoDelDia, montoCorto, variacion } from '@/lib/vender/formato'
-import { sinTienda, type Resumen } from '@/lib/vender/tipos'
+import { sinTienda, type Resumen, type TiendaPanel } from '@/lib/vender/tipos'
 
 export async function generateMetadata(): Promise<Metadata> {
   const ctx = await contexto()
@@ -46,6 +46,9 @@ async function Contenido() {
     rpcCuenta<Resumen>('vendedor_resumen', { moneda: ctx.moneda, idioma: ctx.idioma, dias: 30 }),
   ])
   if (!r || sinTienda(r)) return <NoVendedor idioma={ctx.idioma} />
+  // fase 5: si un admin suspendió la tienda (o todavía no la aprobó), lo dice arriba de todo, con el motivo
+  const estadoTienda = r.tienda.estado === 'aprobada' ? null
+    : await Promise.all([rpcCuenta<TiendaPanel & { estado_motivo: string | null }>('mi_tienda_datos'), getTranslations({ locale: ctx.idioma, namespace: 'admin.tiendaVe' })])
 
   const loc = LOCALE[ctx.idioma]
   const zona = { timeZone: 'America/Asuncion' } as const
@@ -57,6 +60,7 @@ async function Contenido() {
   const mejor = r.serie.reduce((m, p) => (p.monto > m.monto ? p : m), r.serie[0])
   const dia = (d: string) => new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(`${d}T12:00:00Z`))
   const maxTop = Math.max(1, ...r.top.map((x) => x.unidades))
+  // "Para preparar" son los que todavía no salieron: sin empezar y empezados. El mismo número en el saludo y en la lista.
   const porPreparar = r.pedidos.por_preparar + r.pedidos.preparando
 
   return (
@@ -65,7 +69,7 @@ async function Contenido() {
         <div>
           <h1>{t(`saludo.${momentoDelDia()}`, { tienda: r.tienda.nombre })}</h1>
           {/* si el pedido más urgente ya pasó su hora límite, no tiene sentido decir "antes de las…" */}
-          <p>{t(r.pedidos.proximo_limite && new Date(r.pedidos.proximo_limite).getTime() < Date.now() ? 'bajadaAtrasado' : 'bajada', {
+          <p>{t(r.pedidos.atrasado ? 'bajadaAtrasado' : 'bajada', {
             n: porPreparar, hora: r.pedidos.proximo_limite ? hora(r.pedidos.proximo_limite) : '',
             fecha: hoy.charAt(0).toUpperCase() + hoy.slice(1),
           })}</p>
@@ -73,6 +77,9 @@ async function Contenido() {
         <Link className="boton boton--accion" href={ruta(ctx.idioma, '/vender/productos/nuevo')}><Icono nombre="mas" tam={18} />{t('publicar')}</Link>
       </div>
 
+      {estadoTienda && <Alerta texto={estadoTienda[0]?.estado === 'suspendida'
+        ? estadoTienda[1]('suspendida', { motivo: estadoTienda[0]?.estado_motivo ?? estadoTienda[1]('sinMotivo') })
+        : estadoTienda[1]('pendiente')} />}
       <section className={`panel ${s.ventas}`} aria-labelledby="t-ventas">
         <div className={s.ventasCabeza}>
           <h2 id="t-ventas" className={s.panelTitulo}>{t('ventas.titulo')}</h2>
@@ -128,7 +135,7 @@ async function Contenido() {
                 {porPreparar > 0 && (
                   <li className={s.tareaUrgente}>
                     <Icono nombre="caja" />
-                    <span>{t('tareas.pedidos', { n: r.pedidos.por_preparar })} <small>{t('tareas.preparando', { n: r.pedidos.preparando })}</small></span>
+                    <span>{t('tareas.pedidos', { n: porPreparar })} {r.pedidos.preparando > 0 && <small>{t('tareas.preparando', { n: r.pedidos.preparando })}</small>}</span>
                     <Link href={ruta(ctx.idioma, '/vender/pedidos')}>{t('tareas.pedidosLink')}</Link>
                   </li>
                 )}

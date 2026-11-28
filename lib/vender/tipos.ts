@@ -20,7 +20,7 @@ export type Resumen = {
   anterior: { monto: number; pedidos: number }
   serie: { dia: string; monto: number; pedidos: number }[]
   top: { slug: string; titulo: string; unidades: number; monto: number; imagen: string | null }[]
-  pedidos: { por_preparar: number; preparando: number; proximo_limite: string | null }
+  pedidos: { por_preparar: number; preparando: number; proximo_limite: string | null; atrasado: boolean }
   preguntas: { sin_responder: number; mas_vieja: string | null }
   poco_stock: { id: string; titulo: string; opciones: Record<string, string>; stock: number }[]
   reputacion: Reputacion | null

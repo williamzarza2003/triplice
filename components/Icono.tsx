@@ -5,6 +5,7 @@ const TRAZOS = {
   buscar: <><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></>,
   carrito: <><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2" /><circle cx="9.5" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /></>,
   abajo: <path d="m6 9 6 6 6-6" />,
+  arriba: <path d="m6 15 6-6 6 6" />,
   derecha: <path d="m9 6 6 6-6 6" />,
   izquierda: <path d="m15 6-6 6 6 6" />,
   estrella: <path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />,
@@ -32,6 +33,13 @@ const TRAZOS = {
   grafico: <path d="M4 20h16M7 16.5V11M12 16.5V6M17 16.5v-8" />,
   mas: <path d="M12 5v14M5 12h14" />,
   externo: <path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5" />,
+  // descubrimiento (fase 5)
+  corazon: <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" />,
+  comparar: <><rect x="3.5" y="4.5" width="7" height="15" rx="1.5" /><rect x="13.5" y="4.5" width="7" height="15" rx="1.5" /><path d="M6 9h2M16 9h2M6 13h2M16 13h2" /></>,
+  campana: <><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z" /><path d="M10 20.5a2.2 2.2 0 0 0 4 0" /></>,
+  lista: <path d="M9 6h11M9 12h11M9 18h11M4.5 6h.5M4.5 12h.5M4.5 18h.5" />,
+  enlace: <><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></>,
+  historial: <><path d="M4 12a8 8 0 1 0 2.4-5.7L4 8.5" /><path d="M4 4v4.5h4.5M12 8v4.5l3 1.8" /></>,
   // categorías
   celular: <><rect x="7" y="2.5" width="10" height="19" rx="2.2" /><path d="M11 18.5h2" /></>,
   notebook: <><rect x="5" y="5" width="14" height="10" rx="1.2" /><path d="M2.5 18.5h19L20 15H4z" /></>,

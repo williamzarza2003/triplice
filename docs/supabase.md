@@ -25,7 +25,9 @@ En el proyecto nuevo → **SQL Editor** → **New query**, pegá y ejecutá, **e
 4. `supabase/migrations/20261126000200_precios_con_impuestos.sql` (fase 2: precios con el impuesto de la región)
 5. `supabase/migrations/20261127000100_cuentas.sql` (fase 3: perfiles, direcciones, devoluciones, opiniones con fotos, votos, preguntas y el bucket `resenas` de Storage)
 6. `supabase/migrations/20261128000100_vendedor.sql` (fase 4: panel del vendedor, reputación calculada, RLS de escritura para las tiendas y el bucket `productos` de Storage)
-7. `supabase/seed.sql` (323 productos, 15 tiendas, 5.500 reseñas, reglas de impuesto, zonas, cupones y un historial de
+7. `supabase/migrations/20261130000100_admin.sql` (fase 5: administración, moderación con denuncias, registro de auditoría)
+8. `supabase/migrations/20261130000200_descubrimiento.sql` (fase 5: comparador, vistos, comprados juntos, listas, favoritos y alertas de precio)
+9. `supabase/seed.sql` (323 productos, 15 tiendas, 5.500 reseñas, reglas de impuesto, zonas, cupones y un historial de
    unos 6.000 pedidos de los últimos 12 meses con 45 compradores ficticios, de donde salen las métricas y la reputación;
    pesa 2,8 MB: si el editor se queja del tamaño, usá la opción B)
 
@@ -103,3 +105,47 @@ pedidos ni preguntas de otra). Las fotos de los productos van al bucket `product
 fase 4 (público, 2 MB por foto, solo WebP; cada tienda sube solo a su carpeta). La reputación se recalcula sola cuando
 la tienda avanza un pedido o responde una pregunta; para que también se ponga al día con el paso del tiempo (la ventana
 es de 12 meses), programá en *Integrations → Cron* (pg_cron) cada hora: `select public.refrescar_catalogo();`.
+
+## 6. Administración (fase 5)
+
+Sin Supabase, la vista previa ofrece una **admin de prueba** (Mirta Giménez) en `/entrar`. Con Supabase, la primera
+admin se nombra a mano en el SQL Editor (después, todo se hace desde `/admin`):
+
+```sql
+update public.perfiles set rol = 'admin' where id = (select id from auth.users where email = 'tu-correo@ejemplo.com');
+```
+
+Desde `/admin/tiendas` → **Dar de alta a un vendedor** se hace lo que antes eran los dos `update` del punto 5: se
+escribe el correo de la cuenta (la persona tiene que haber entrado una vez) y se elige una tienda sin dueño o se crea una.
+Una admin no se puede sacar el rol a sí misma ni dejar el sitio sin admins (lo frena la base).
+
+### Traer la cotización de Cambio CDE
+
+En `/admin/cotizaciones`, el botón **Traer de Cambio CDE** lee la vista pública `cotizaciones_actuales` del proyecto
+de Supabase de Cambio CDE (guaraníes por 1 unidad de cada moneda, con compra y venta) y la convierte a lo que guarda
+Tríplice (unidades por 1 dólar) con el promedio entre compra y venta. Muestra la vista previa (valor de hoy, valor
+nuevo, variación y la hora de la cotización de Cambio CDE) y guarda solo si confirmás.
+
+Necesita dos variables **solo del servidor** (sin `NEXT_PUBLIC_`). Las dos se copian del proyecto de Cambio CDE en
+Supabase → *Project Settings → API* (no del `.env.local` de ese repo: cada proyecto tiene las suyas):
+
+| Nombre | Valor |
+| --- | --- |
+| `CAMBIO_CDE_SUPABASE_URL` | la Project URL de Cambio CDE (`https://xxxx.supabase.co`) |
+| `CAMBIO_CDE_ANON_KEY` | la clave **anon public** de Cambio CDE (la vista es pública; nunca la `service_role`) |
+
+Se cargan en Vercel → proyecto **triplice** → *Settings → Environment Variables* (Production y Preview) y después
+**Redeploy**. Para desarrollar, en `.env.local`. Sin ellas, el botón explica cuáles faltan y la cotización se carga
+a mano. Al guardar una cotización se invalida la caché de precios: el sitio entero pasa a usar la nueva.
+
+## 7. Descubrimiento (fase 5)
+
+La migración `20261130000200_descubrimiento.sql` no necesita nada a mano, salvo las tareas programadas. En
+*Integrations → Cron* (pg_cron), además de `select public.refrescar_catalogo();` cada hora (ahora también rehace
+"comprados juntos"), programá cada 30 minutos `select public.revisar_alertas_todas();`: revisa las alertas de precio
+de todos contra el precio y la cotización del momento. Si pg_cron ya estaba activado cuando corriste la migración, esa
+tarea se creó sola (`revisar-alertas`). Sin pg_cron, las alertas de cada persona se revisan igual cuando entra y cuando
+abre su cuenta (como en la vista previa).
+
+El seed suma 640 pedidos de dos productos ("canastas": el celular y su cargador, el termo y la vajilla…) para que
+"comprados juntos" tenga datos desde el primer día.

@@ -27,7 +27,7 @@ export async function Encabezado({ ctx }: { ctx: Contexto }) {
         </Link>
         <Buscador idioma={ctx.idioma} moneda={ctx.moneda} tasas={ctx.tasas} impuestos={ctx.impuestos} />
         <SelectorRegion idioma={ctx.idioma} region={ctx.region} moneda={ctx.moneda} />
-        <BotonCuenta idioma={ctx.idioma} entrar={t('entrar')} hola={t('hola')} tuCuenta={t('tuCuenta')} />
+        <BotonCuenta idioma={ctx.idioma} entrar={t('entrar')} hola={t('hola')} tuCuenta={t('tuCuenta')} avisosTexto={t.raw('avisosPrecio') as string} />
         <BotonCarrito href={ruta(ctx.idioma, '/carrito')} etiqueta={t('carrito')} etiquetaCon={t.raw('carritoCon') as string} />
       </div>
       <nav id="categorias" className={s.categorias} aria-label={t('categorias')}>

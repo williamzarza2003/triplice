@@ -45,11 +45,13 @@ type Props = {
   /** agrega la oferta al carrito (Server Action): devuelve las unidades que quedan en el carrito */
   agregar: (oferta: string) => Promise<{ ok: boolean; unidades: number }>
   carrito: string
+  /** fase 5: favorito, listas, comparar y alerta de precio (una isla que pide lo personal después de cargar) */
+  personal?: React.ReactNode
 }
 
 const NOMBRE_COLOR = COLORES as Record<string, { hex: string; es: string; pt: string; en: string }>
 
-export function Compra({ idioma, titulo, variantes, tiendas, fronteraPaises, info, detalles, impuesto, agregar, carrito }: Props) {
+export function Compra({ idioma, titulo, variantes, tiendas, fronteraPaises, info, detalles, impuesto, agregar, carrito, personal }: Props) {
   const t = useTextos('ficha')
   const tp = useTextos('precio')
   // la oferta elegida por defecto es la primera con stock: vienen ordenadas por precio y, con el mismo precio,
@@ -182,6 +184,7 @@ export function Compra({ idioma, titulo, variantes, tiendas, fronteraPaises, inf
                 {aviso === 'listo' && <>{t('agregado')} <Link href={carrito}>{t('verCarrito')}</Link></>}
                 {aviso === 'error' && t('noSeAgrego')}
               </p>
+              {personal}
               <div className={s.vendedor}>
                 <span>{t('vendido')}</span>
                 <Link href={`/${idioma}/tienda/${tienda!.slug}`}><b>{tienda!.nombre}</b></Link>

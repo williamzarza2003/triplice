@@ -5,11 +5,13 @@ import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
 import { MapaFrontera } from '@/components/inicio/MapaFrontera'
 import { PaisesPortada } from '@/components/inicio/PaisesPortada'
+import { Vistos } from '@/components/descubrir/Vistos'
 import { categoriaDe, contexto, precio, ruta } from '@/lib/contexto'
 import { categorias, inicio } from '@/lib/datos/consultas'
 import { foto } from '@/lib/imagenes'
 import { textoSobre } from '@/lib/color'
 import { descuento } from '@/lib/precios'
+import { segmentoMercado } from '@/lib/region'
 import s from './inicio.module.css'
 
 export default async function Inicio() {
@@ -81,6 +83,9 @@ export default async function Inicio() {
         </div>
         <Grilla items={datos.vendidos.slice(0, 6)} ctx={ctx} fila diferirDesde={0} />
       </section>
+
+      {/* fase 5: lo que viste hace poco (isla: sin cookie ni cuenta no pide nada ni ocupa lugar) */}
+      <Vistos idioma={ctx.idioma} mercado={segmentoMercado(ctx)} />
 
       <section className="seccion fuera-de-pantalla" aria-labelledby="t-cerca">
         <div className="seccion__cabeza">

@@ -99,6 +99,9 @@ select i.producto_id, '00000000-0000-4000-8000-00000000de30', 'Lorena B.', 'PY',
 -- así "entregado hace 3 días" lo sigue siendo aunque el deploy tenga semanas, y la devolución se puede probar.
 create table public.demo_meta (armado timestamptz not null);
 insert into public.demo_meta values (now());
+-- solo la usa el servidor (como dueño de la base): nadie la lee ni la escribe desde una sesión
+alter table public.demo_meta enable row level security;
+revoke all on public.demo_meta from anon, authenticated;
 create or replace function public.demo_al_dia() returns void
 language plpgsql
 set search_path = public

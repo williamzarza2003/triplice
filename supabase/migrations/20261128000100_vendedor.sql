@@ -53,6 +53,21 @@ as $$
    order by t.creado, t.id limit 1
 $$;
 
+-- ¿La tienda es de quien llama y su perfil es de vendedor (o admin)? La misma regla que mi_tienda(), para todas las
+-- políticas de escritura: ser dueño de una tienda no alcanza si el perfil es de comprador.
+-- para = 'catalogo': además, que la tienda no esté suspendida. Una suspendida no publica, no edita fichas ni sube
+-- fotos, pero sigue despachando lo que ya vendió y puede pausar sus ofertas.
+-- security definer: lee el perfil y la tienda sin depender del RLS de quien llama (la usan también las de Storage).
+create or replace function public.es_mi_tienda(tid uuid, para text default 'despachar') returns boolean
+language sql stable security definer
+set search_path = public
+as $$
+  select auth.uid() is not null and exists (
+    select 1 from tiendas t join perfiles pf on pf.id = t.duenio_id
+     where t.id = tid and t.duenio_id = auth.uid() and pf.rol in ('vendedor', 'admin')
+       and (para <> 'catalogo' or t.estado <> 'suspendida'))
+$$;
+
 -- Etapa de un estado en el trayecto (la misma escala que lib/cuenta/pedidos.ts)
 create or replace function public.etapa(estado text) returns int
 language sql immutable parallel safe
@@ -100,8 +115,7 @@ create or replace function public.publica_producto(pid uuid) returns boolean
 language sql stable security definer
 set search_path = public
 as $$
-  select auth.uid() is not null
-     and exists (select 1 from productos p join tiendas t on t.id = p.tienda_id where p.id = pid and t.duenio_id = auth.uid())
+  select exists (select 1 from productos p where p.id = pid and es_mi_tienda(p.tienda_id, 'catalogo'))
 $$;
 
 -- ---------------------------------------------------------------------------------------------
@@ -117,20 +131,26 @@ create policy "variantes visibles" on public.variantes for select to anon, authe
   using (producto_visible(producto_id) or es_admin() or vende_producto(producto_id));
 
 create policy "la tienda publica productos" on public.productos for insert to authenticated
-  with check (exists (select 1 from tiendas t where t.id = tienda_id and t.duenio_id = auth.uid()));
+  with check (es_mi_tienda(tienda_id, 'catalogo'));
 create policy "la tienda edita lo que publicó" on public.productos for update to authenticated
-  using (exists (select 1 from tiendas t where t.id = tienda_id and t.duenio_id = auth.uid()))
-  with check (exists (select 1 from tiendas t where t.id = tienda_id and t.duenio_id = auth.uid()));
+  using (es_mi_tienda(tienda_id, 'catalogo')) with check (es_mi_tienda(tienda_id, 'catalogo'));
 create policy "variantes de lo que publiqué" on public.variantes for all to authenticated
   using (publica_producto(producto_id)) with check (publica_producto(producto_id));
 
-grant insert (id, slug, categoria_id, marca, titulo, vinetas, descripcion, atributos, peso_g, medidas_mm, garantia_meses,
-              condicion, pais_origen, en_caja, tienda_id) on public.productos to authenticated;
-grant update (categoria_id, marca, titulo, vinetas, descripcion, atributos, peso_g, medidas_mm, garantia_meses, condicion,
-              pais_origen, en_caja) on public.productos to authenticated;
-grant insert (id, producto_id, sku, opciones, imagenes, orden), update (opciones, imagenes, orden) on public.variantes to authenticated;
-grant delete on public.variantes to authenticated;
+-- Ofertas: la política de la fase 1 miraba solo el dueño de la tienda. Ahora también el rol (como todo lo demás).
+-- Se lee con "ofertas activas" (que ya deja ver las propias); acá solo la escritura.
+drop policy "dueño gestiona sus ofertas" on public.ofertas;
+create policy "la tienda agrega sus ofertas" on public.ofertas for insert to authenticated with check (es_mi_tienda(tienda_id));
+create policy "la tienda edita sus ofertas" on public.ofertas for update to authenticated
+  using (es_mi_tienda(tienda_id)) with check (es_mi_tienda(tienda_id));
+create policy "la tienda borra sus ofertas" on public.ofertas for delete to authenticated using (es_mi_tienda(tienda_id));
+-- Un plazo fuera de rango rompía la compra: pedido_items exige entre 1 y 720 horas y lo copia de la oferta
+alter table public.ofertas add constraint ofertas_preparacion check (preparacion_h between 1 and 720),
+  add constraint ofertas_stock_max check (stock <= 99999);
+-- (los permisos por columna de productos, variantes y ofertas están al final, en "Permisos")
 
+-- Todo lo que escribe un usuario se valida en la base, igual que en el servidor (lib/vender/producto.ts): con la
+-- clave pública de Supabase se puede escribir directo en las tablas, sin pasar por guardar_producto.
 -- Los atributos se validan contra los de la categoría (lo que hace distinta una heladera de una remera).
 -- Solo para lo que escribe un usuario: el seed y el admin cargan datos ya revisados.
 create or replace function public.productos_validar() returns trigger
@@ -143,6 +163,30 @@ declare
   tipo text;
   padre smallint := (select padre_id from categorias where id = new.categoria_id);
 begin
+  if length(new.slug) > 90 then raise exception 'slug' using hint = 'La dirección del producto es demasiado larga.'; end if;
+  if jsonb_typeof(new.titulo) <> 'object' or length(btrim(coalesce(new.titulo->>'es', ''))) not between 8 and 120
+     or exists (select 1 from jsonb_each(new.titulo) t where jsonb_typeof(t.value) <> 'string' or length(t.value #>> '{}') > 120) then
+    raise exception 'titulo' using hint = 'El título en español tiene que tener entre 8 y 120 caracteres.';
+  end if;
+  if length(btrim(new.marca)) not between 2 and 40 then
+    raise exception 'marca' using hint = 'La marca tiene que tener entre 2 y 40 caracteres.';
+  end if;
+  if jsonb_typeof(new.descripcion) <> 'object'
+     or exists (select 1 from jsonb_each(new.descripcion) d where jsonb_typeof(d.value) <> 'string' or length(d.value #>> '{}') > 2000) then
+    raise exception 'descripcion' using hint = 'La descripción puede tener hasta 2000 caracteres por idioma.';
+  end if;
+  if jsonb_typeof(new.vinetas) <> 'object'
+     or exists (select 1 from jsonb_each(new.vinetas) l where jsonb_typeof(l.value) <> 'array' or jsonb_array_length(l.value) > 6
+                   or exists (select 1 from jsonb_array_elements(l.value) x where jsonb_typeof(x) <> 'string' or length(x #>> '{}') > 120)) then
+    raise exception 'vinetas' using hint = 'Hasta 6 puntos destacados de 120 caracteres cada uno.';
+  end if;
+  if jsonb_typeof(new.atributos) <> 'object' or (select count(*) from jsonb_object_keys(new.atributos)) > 40
+     or jsonb_typeof(new.en_caja) <> 'object' or length(new.en_caja::text) > 2000 then
+    raise exception 'atributo' using hint = 'Demasiados datos técnicos.';
+  end if;
+  if new.peso_g is not null and new.peso_g not between 1 and 1000000 or new.garantia_meses not between 0 and 120 then
+    raise exception 'peso' using hint = 'El peso va en gramos (hasta 1000 kg) y la garantía, hasta 120 meses.';
+  end if;
   for k, val in select * from jsonb_each(new.atributos) loop
     select a.tipo into tipo from atributos a where a.clave = k and a.categoria_id in (new.categoria_id, padre)
      order by a.categoria_id = new.categoria_id desc limit 1;
@@ -153,11 +197,43 @@ begin
        or (tipo in ('texto', 'opcion') and jsonb_typeof(val) <> 'string') then
       raise exception 'atributo' using hint = format('«%s» tiene que ser %s.', k, tipo);
     end if;
+    if jsonb_typeof(val) = 'string' and length(val #>> '{}') > 60 then
+      raise exception 'atributo' using hint = format('«%s» puede tener hasta 60 caracteres.', k);
+    end if;
   end loop;
   return new;
 end $$;
-create trigger productos_validar before insert or update of atributos, categoria_id on public.productos for each row
+create trigger productos_validar before insert or update on public.productos for each row
   when (current_user = 'authenticated') execute function public.productos_validar();
+
+-- Variantes escritas por una tienda: opciones cortas y fotos solo de su carpeta o que ya estaban en este mismo
+-- producto (la portada que se copia a una variante nueva). Sin esto, una tienda podía escribir directo en la tabla
+-- las fotos de otra y publicarlas como propias.
+create or replace function public.variantes_validar() returns trigger
+language plpgsql security definer
+set search_path = public
+as $$
+declare
+  tid uuid := (select tienda_id from productos where id = new.producto_id);
+  img text;
+begin
+  if jsonb_typeof(new.opciones) <> 'object' or (select count(*) from jsonb_object_keys(new.opciones)) > 2
+     or exists (select 1 from jsonb_each(new.opciones) o where jsonb_typeof(o.value) <> 'string' or length(o.value #>> '{}') not between 1 and 60) then
+    raise exception 'opcion' using hint = 'Cada variante tiene hasta dos opciones de hasta 60 caracteres.';
+  end if;
+  if cardinality(new.imagenes) > 8 then
+    raise exception 'foto_muchas' using hint = 'Hasta 8 fotos por variante.';
+  end if;
+  foreach img in array new.imagenes loop
+    if not (img ~ ('^subida:' || tid::text || '/[0-9a-f-]{36}$') or (tg_op = 'UPDATE' and img = any(old.imagenes))
+            or exists (select 1 from variantes x where x.producto_id = new.producto_id and x.id <> new.id and img = any(x.imagenes))) then
+      raise exception 'foto_ajena' using hint = 'Esa foto no es de tu tienda.';
+    end if;
+  end loop;
+  return new;
+end $$;
+create trigger variantes_validar before insert or update on public.variantes for each row
+  when (current_user = 'authenticated') execute function public.variantes_validar();
 
 -- Las mismas políticas de lectura de la fase 2, con lo que es de mi tienda primero: la condición barata se resuelve
 -- antes y no hace falta revisar el pedido entero en cada renglón (el panel lee cientos de pedidos de una vez).
@@ -174,12 +250,13 @@ create policy "eventos de pedidos propios" on public.pedido_eventos for select t
 -- El resto de la línea de tiempo (pago, entrega, devolución) la escribe el sistema.
 create policy "la tienda avanza su parte" on public.pedido_eventos for insert to authenticated
   with check (estado in ('preparando', 'enviado', 'listo_retiro')
-              and exists (select 1 from tiendas t where t.id = tienda_id and t.duenio_id = auth.uid())
+              and es_mi_tienda(tienda_id)
               and exists (select 1 from pedido_items i where i.pedido_id = pedido_eventos.pedido_id and i.tienda_id = pedido_eventos.tienda_id));
-grant insert (pedido_id, estado, tienda_id) on public.pedido_eventos to authenticated;
 
 -- Antes de guardar el evento: el orden (no se prepara dos veces ni se vuelve atrás) y, si es retiro, "enviado" pasa
 -- a "listo para retirar". security definer: mira los eventos de las otras tiendas del pedido.
+-- Bloquea el pedido hasta el final de la transacción: si dos tiendas despachan a la vez, la segunda espera y ve el
+-- evento de la primera. Sin el bloqueo, cada una veía solo el suyo y el pedido quedaba "preparando" para siempre.
 create or replace function public.evento_tienda_validar() returns trigger
 language plpgsql security definer
 set search_path = public
@@ -188,11 +265,11 @@ declare
   pe pedidos;
   actual int;
 begin
-  if not exists (select 1 from pedido_items i join tiendas t on t.id = i.tienda_id
-                  where i.pedido_id = new.pedido_id and i.tienda_id = new.tienda_id and t.duenio_id = auth.uid()) then
+  if not es_mi_tienda(new.tienda_id)
+     or not exists (select 1 from pedido_items i where i.pedido_id = new.pedido_id and i.tienda_id = new.tienda_id) then
     raise exception 'no_existe' using hint = 'Ese pedido no tiene productos de tu tienda.';
   end if;
-  select * into pe from pedidos where id = new.pedido_id;
+  select * into pe from pedidos where id = new.pedido_id for update;
   if pe.estado not in ('confirmado', 'preparando', 'enviado', 'listo_retiro') then
     raise exception 'cerrado' using hint = 'Este pedido ya no se puede avanzar.';
   end if;
@@ -244,9 +321,12 @@ declare
   prod uuid := (select producto_id from preguntas where id = new.pregunta_id);
   tid uuid;
 begin
-  -- es vendedor si tiene una tienda que vende este producto
-  select t.id into tid from tiendas t join ofertas o on o.tienda_id = t.id join variantes v on v.id = o.variante_id
-   where t.duenio_id = auth.uid() and v.producto_id = prod limit 1;
+  -- responde como tienda si tiene una tienda aprobada (y perfil de vendedor) que vende este producto: una pendiente o
+  -- suspendida no lleva el sello de "la tienda" en una ficha pública
+  select t.id into tid from tiendas t
+   where t.estado = 'aprobada' and es_mi_tienda(t.id)
+     and exists (select 1 from ofertas o join variantes v on v.id = o.variante_id where o.tienda_id = t.id and v.producto_id = prod)
+   order by t.creado, t.id limit 1;
   if (select count(*) from respuestas where autor_id = auth.uid() and creado > now() - interval '1 hour')
      >= (case when tid is null then 10 else 120 end) then
     raise exception 'limite' using hint = 'Respondiste muchas preguntas seguidas: probá de nuevo en un rato.';
@@ -269,9 +349,11 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('productos', 'productos', true, 2097152, array['image/webp'])
 on conflict (id) do nothing;
 create policy "la tienda sube a su carpeta" on storage.objects for insert to authenticated
-  with check (bucket_id = 'productos' and (storage.foldername(name))[1] in (select id::text from public.tiendas where duenio_id = auth.uid()));
+  with check (bucket_id = 'productos'
+              and (storage.foldername(name))[1] in (select t.id::text from public.tiendas t where public.es_mi_tienda(t.id, 'catalogo')));
 create policy "la tienda borra de su carpeta" on storage.objects for delete to authenticated
-  using (bucket_id = 'productos' and (storage.foldername(name))[1] in (select id::text from public.tiendas where duenio_id = auth.uid()));
+  using (bucket_id = 'productos'
+         and (storage.foldername(name))[1] in (select t.id::text from public.tiendas t where public.es_mi_tienda(t.id)));
 
 -- ---------------------------------------------------------------------------------------------
 -- 4. Reputación calculada (reemplaza la tabla cargada a mano de la fase 1)
@@ -343,7 +425,9 @@ with partes as ( -- una fila por pedido y tienda
          round(100.0 * en.a_tiempo / nullif(en.cerradas, 0), 1) as p_a_tiempo,
          round(100.0 * (1 - d.devueltos::numeric / nullif(d.entregados, 0)), 1) as p_devoluciones,
          round(100.0 * q.respondidas / nullif(q.total, 0), 1) as p_respondidas,
-         round(greatest(0, least(100, 100 * (2880 - q.mediana_min) / 2820))::numeric, 1) as p_respuesta
+         -- greatest/least ignoran los nulos: sin preguntas respondidas daba 100. Sin datos, el factor no cuenta.
+         case when q.mediana_min is null then null
+              else round(greatest(0, least(100, 100 * (2880 - q.mediana_min) / 2820))::numeric, 1) end as p_respuesta
     from tiendas t
     left join opin o on o.tienda_id = t.id
     left join entregas en on en.tienda_id = t.id
@@ -464,7 +548,11 @@ begin
         -- el plazo más cercano de lo que falta despachar
         'proximo_limite', min(pe.creado + make_interval(hours => (select max(coalesce(i.preparacion_h, 24)) from pedido_items i
                                                                    where i.pedido_id = pe.id and i.tienda_id = tid)))
-                          filter (where etapa_tienda(pe.id, tid) in (0, 1)))
+                          filter (where etapa_tienda(pe.id, tid) in (0, 1)),
+        -- si ya pasó, el saludo no dice "antes de las…" sino que está atrasado (la hora se compara acá, no en la página)
+        'atrasado', coalesce(min(pe.creado + make_interval(hours => (select max(coalesce(i.preparacion_h, 24)) from pedido_items i
+                                                                     where i.pedido_id = pe.id and i.tienda_id = tid)))
+                             filter (where etapa_tienda(pe.id, tid) in (0, 1)) < now(), false))
         from pedidos pe
        where pe.estado in ('confirmado', 'preparando')
          and exists (select 1 from pedido_items i where i.pedido_id = pe.id and i.tienda_id = tid)),
@@ -600,6 +688,10 @@ begin
     end if;
     editable := publica_producto(pid);
   end if;
+  -- una tienda suspendida sigue con sus ofertas (precio, stock, pausar), pero no publica ni edita fichas
+  if (nuevo or exists (select 1 from productos where id = pid and tienda_id = tid)) and not es_mi_tienda(tid, 'catalogo') then
+    return jsonb_build_object('error', 'suspendida');
+  end if;
 
   n := jsonb_array_length(coalesce(p->'variantes', '[]'));
   if n < 1 or n > 20 then return jsonb_build_object('error', 'variantes'); end if;
@@ -639,9 +731,10 @@ begin
       if combo = any(combinaciones) then return jsonb_build_object('error', 'repetida', 'campo', format('v%s.opciones', n)); end if;
       combinaciones := combinaciones || combo;
       for img in select jsonb_array_elements_text(coalesce(v->'imagenes', '[]')) loop
-        -- fotos subidas a la carpeta de mi tienda, o las que la variante ya tenía
+        -- fotos subidas a la carpeta de mi tienda, o las que ya tenía este producto (antes alcanzaba con mandar el id
+        -- de una variante cualquiera, de otro producto y de otra tienda, para quedarse con sus fotos)
         if not (img ~ ('^subida:' || tid::text || '/[0-9a-f-]{36}$')
-                or exists (select 1 from variantes x where x.id = nullif(v->>'id', '')::uuid and img = any(x.imagenes))) then
+                or exists (select 1 from variantes x where x.producto_id = pid and img = any(x.imagenes))) then
           return jsonb_build_object('error', 'foto_ajena', 'campo', format('v%s.fotos', n));
         end if;
       end loop;
@@ -758,7 +851,7 @@ begin
   perform vendedor_refrescar('catalogo');
   return jsonb_build_object('ofertas', cambiadas,
     'slug', (select pr.slug from ofertas o join variantes v on v.id = o.variante_id join productos pr on pr.id = v.producto_id
-              where o.id = (p->'stocks'->0->>'oferta')::uuid));
+              where o.id = (p->'stocks'->0->>'oferta')::uuid and o.tienda_id = tid));
 end $$;
 
 -- ¿El pedido tiene productos de otras tiendas? (el vendedor no ve esos renglones: solo sabe que existen, porque el
@@ -791,7 +884,9 @@ begin
   ), mis_eventos as (
     select pedido_id, max(etapa(estado)) as etapa from pedido_eventos where tienda_id = tid group by pedido_id
   ), mios as (
-    select pe.*, greatest(etapa(pe.estado), coalesce(me.etapa, -1)) as mia, mi.prep_h
+    -- columnas a mano: la clave de invitado del pedido no es legible para las tiendas (ver "Permisos")
+    select pe.id, pe.numero, pe.creado, pe.moneda, pe.estado, pe.entrega, pe.comprador_id,
+           greatest(etapa(pe.estado), coalesce(me.etapa, -1)) as mia, mi.prep_h
       from pedidos pe join mis_items mi on mi.pedido_id = pe.id left join mis_eventos me on me.pedido_id = pe.id
      where pe.estado <> 'pendiente_pago'
   ), clasificados as (
@@ -908,6 +1003,45 @@ end $$;
 -- ---------------------------------------------------------------------------------------------
 -- Permisos
 -- ---------------------------------------------------------------------------------------------
+
+-- Tablas. Supabase da TODOS los permisos de cada tabla nueva del esquema public a anon y authenticated (default
+-- privileges), así que los permisos por columna de las fases 3 y 4 no limitaban nada: con la clave pública se podía,
+-- por ejemplo, subir ventas_30d de un producto propio para aparecer primero. Se quita toda escritura y se vuelve a
+-- dar solo lo que cada política necesita. (supabase/pglite/00_supabase.sql imita esos permisos por defecto, para que
+-- las pruebas corran con los mismos que Supabase.)
+revoke insert, update, delete, truncate, references, trigger on all tables in schema public from anon, authenticated;
+-- La clave de invitado de un pedido abre su comprobante entero (con lo de las otras tiendas y el email): las tiendas
+-- que ven el pedido no la leen. Tampoco la referencia del pago.
+revoke select on public.pedidos from anon, authenticated;
+grant select (id, numero, comprador_id, email, region, idioma, moneda, cotizacion, productos, envio, descuento, total, impuestos,
+              cupon, entrega, estado, proveedor_pago, creado) on public.pedidos to authenticated;
+-- fase 1 (la política decide quién: dueño o admin)
+grant update (nombre, telefono, region, idioma, moneda) on public.perfiles to authenticated;
+grant update (nombre, lema, descripcion, color, ciudad, direccion, lat, lng, horario, estado) on public.tiendas to authenticated;
+grant insert, update, delete on public.categorias, public.atributos to authenticated;
+grant insert on public.cotizaciones to authenticated;
+-- fase 2
+grant insert, update, delete on public.carritos, public.carrito_items to authenticated;
+-- fase 3
+grant insert (pedido_item_id, producto_id, autor_nombre, pais, estrellas, titulo, texto, idioma, fotos) on public.resenas to authenticated;
+grant update (estrellas, titulo, texto, fotos) on public.resenas to authenticated;
+grant insert, update, delete on public.votos_resena, public.direcciones to authenticated;
+grant insert (producto_id, autor_nombre, texto, idioma) on public.preguntas to authenticated;
+grant insert (pregunta_id, autor_nombre, texto) on public.respuestas to authenticated;
+-- fase 4: la tienda publica y edita lo suyo; no toca ventas_30d, creado ni la búsqueda (las mantiene la base)
+grant insert (id, slug, categoria_id, marca, titulo, vinetas, descripcion, atributos, peso_g, medidas_mm, garantia_meses,
+              condicion, pais_origen, en_caja, tienda_id) on public.productos to authenticated;
+grant update (categoria_id, marca, titulo, vinetas, descripcion, atributos, peso_g, medidas_mm, garantia_meses, condicion,
+              pais_origen, en_caja) on public.productos to authenticated;
+grant insert (id, producto_id, sku, opciones, imagenes, orden), update (opciones, imagenes, orden), delete on public.variantes to authenticated;
+-- una oferta no se muda de variante ni de tienda (los pedidos viejos apuntan a ella)
+grant insert (variante_id, tienda_id, precio_usd_cent, precio_lista_usd_cent, stock, envio_gratis, preparacion_h, activa),
+      update (precio_usd_cent, precio_lista_usd_cent, stock, envio_gratis, preparacion_h, activa), delete on public.ofertas to authenticated;
+grant insert (pedido_id, estado, tienda_id) on public.pedido_eventos to authenticated;
+
+-- Funciones
+revoke execute on function public.es_mi_tienda(uuid, text) from public, anon;
+grant execute on function public.es_mi_tienda(uuid, text) to authenticated;
 revoke execute on function public.mi_tienda(), public.vende_producto(uuid), public.publica_producto(uuid), public.vendedor_refrescar(text),
   public.mi_reputacion(jsonb), public.mi_tienda_datos(jsonb), public.vendedor_resumen(jsonb), public.vendedor_productos(jsonb), public.vendedor_producto(jsonb),
   public.vendedor_categorias(jsonb), public.guardar_producto(jsonb), public.pausar_producto(jsonb), public.guardar_stock(jsonb),
