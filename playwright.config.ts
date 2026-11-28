@@ -8,8 +8,11 @@ const PUERTO = process.env.PUERTO_E2E ?? '3200'
 export default defineConfig({
   testDir: 'e2e',
   timeout: 60_000,
-  // un solo servidor con la base embebida para todas las pruebas: con más de 2 a la vez, las más lentas vencen el tiempo
-  workers: 2,
+  // un solo servidor con la base embebida (una sola conexión: las consultas van en fila). Con dos navegadores a la vez,
+  // en esta notebook las acciones que refrescan el catálogo hacían vencer las esperas de 5 s de las otras pruebas.
+  // Con uno tarda más (~5 min) pero el resultado no depende de la suerte. Antes de correr: npm run build (la caché de
+  // páginas de Next queda en .next y guarda lo que cambió la corrida anterior).
+  workers: 1,
   use: { baseURL: `http://localhost:${PUERTO}`, channel: 'chrome', locale: 'es-PY' },
   projects: [
     { name: 'escritorio', use: { ...devices['Desktop Chrome'], channel: 'chrome' } },
