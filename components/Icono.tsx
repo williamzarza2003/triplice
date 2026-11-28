@@ -5,6 +5,7 @@ const TRAZOS = {
   buscar: <><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></>,
   carrito: <><path d="M3 4h2l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.6a1.5 1.5 0 0 0 1.5-1.1L21 8H6.2" /><circle cx="9.5" cy="20" r="1.3" /><circle cx="17" cy="20" r="1.3" /></>,
   abajo: <path d="m6 9 6 6 6-6" />,
+  arriba: <path d="m6 15 6-6 6 6" />,
   derecha: <path d="m9 6 6 6-6 6" />,
   izquierda: <path d="m15 6-6 6 6 6" />,
   estrella: <path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />,
