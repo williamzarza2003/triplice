@@ -5,6 +5,7 @@ import { getMessages, getTranslations } from 'next-intl/server'
 import { EstrellasCompletas } from '@/components/Estrellas'
 import { Compra, type FronteraPais, type TiendaVista, type VarianteVista } from '@/components/ficha/Compra'
 import { Opiniones } from '@/components/ficha/Opiniones'
+import { Denunciar } from '@/components/ficha/Denunciar'
 import { FormPregunta, FormRespuesta } from '@/components/ficha/Preguntar'
 import { Grilla } from '@/components/grilla/Grilla'
 import { Icono } from '@/components/Icono'
@@ -19,6 +20,7 @@ import { esIdioma, LOCALE } from '@/lib/i18n/idiomas'
 import { Textos } from '@/lib/i18n/textos'
 import { agregarAlCarrito } from '../../carrito/acciones'
 import { fichaUsuarioAccion, preguntarAccion, responderAccion, votarAccion } from '../../cuenta/acciones'
+import { denunciarAccion } from '../../cuenta/denunciar'
 import { masBarata, ordenarOfertas } from '@/lib/ofertas'
 import { descuento, formatear, precioEn } from '@/lib/precios'
 import { MONEDA_DE, mercadoPredeterminado, MONEDAS, segmentoMercado } from '@/lib/region'
@@ -125,7 +127,9 @@ async function Contenido({ params }: Props) {
     getMessages({ locale: ctx.idioma }),
   ])
   // textos de la compra y de las opiniones para el navegador (solo en la ficha)
-  const textosFicha = { ficha: mensajes.ficha, precio: mensajes.precio, comun: { paises: mensajes.comun.paises, idiomaDe: mensajes.comun.idiomaDe } }
+  const textosFicha = { ficha: mensajes.ficha, precio: mensajes.precio, comun: { paises: mensajes.comun.paises, idiomaDe: mensajes.comun.idiomaDe },
+    // fase 5: denunciar opiniones y preguntas
+    admin: { denunciar: mensajes.admin.denunciar, moderacion: { motivos: mensajes.admin.moderacion.motivos } } }
   const r = (c: string) => ruta(ctx.idioma, c)
   const numero = new Intl.NumberFormat(LOCALE[ctx.idioma])
   const promedio = Number(f.resumen.promedio)
@@ -207,7 +211,7 @@ async function Contenido({ params }: Props) {
       <section id="opiniones" className="seccion fuera-de-pantalla" aria-labelledby="t-opiniones">
         <div className="seccion__cabeza"><h2 id="t-opiniones">{t('opinionesTitulo')}</h2></div>
         <Textos locale={LOCALE[ctx.idioma]} mensajes={textosFicha}>
-          <Opiniones idioma={ctx.idioma} slug={slug} resenas={f.resenas} resumen={f.resumen} paises={paises} votar={votarAccion} personal={fichaUsuarioAccion} />
+          <Opiniones idioma={ctx.idioma} slug={slug} resenas={f.resenas} resumen={f.resumen} paises={paises} votar={votarAccion} personal={fichaUsuarioAccion} denunciar={denunciarAccion} />
         </Textos>
       </section>
 
@@ -229,6 +233,7 @@ async function Contenido({ params }: Props) {
                     </p>
                   )) : <p className={s.respuesta}>{t('sinRespuesta')}</p>}
                   <FormRespuesta accion={responderAccion} slug={slug} idioma={ctx.idioma} pregunta={q.id} />
+                  <Denunciar accion={denunciarAccion} tipo="pregunta" id={q.id} slug={slug} idioma={ctx.idioma} />
                 </li>
               ))}
             </ul>

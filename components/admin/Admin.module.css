@@ -1,0 +1,230 @@
+/* Panel de administración. Usa lo del panel del vendedor (Vender.module.css: cabeza, avisos, filtros, tablas,
+   campos) y agrega lo propio. La idea fuerte es una sola: la pizarra de cambio del resumen, como las de las casas de
+   cambio de la avenida Monseñor Rodríguez. El resto, sobrio: listas con bordes finos, sin sombras. */
+
+/* ---------- Pizarra de cambio (resumen) ---------- */
+.pizarra { background: var(--agua-900); color: #fff; border-radius: var(--r-panel); padding: var(--e-6); display: grid; gap: var(--e-4); }
+.pizarraCabeza { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px var(--e-4); }
+.pizarraCabeza h2 { font-size: var(--t-19); color: #fff; }
+.pizarraCabeza p { margin: 0; color: var(--agua-100); font-size: var(--t-14); }
+.tablero { margin: 0; display: grid; }
+.tablero > div {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'moneda valor' 'detalle variacion';
+  align-items: baseline; gap: 2px var(--e-4); padding: var(--e-4) 0; border-top: 1px solid rgb(255 255 255 / 0.16);
+}
+.tablero > div:first-child { border-top: 0; padding-top: 0; }
+.tablero dt { grid-area: moneda; display: flex; align-items: baseline; gap: 10px; font-size: var(--t-16); color: var(--agua-100); }
+.tablero dt b { font-family: var(--f-titulo); font-size: var(--t-23); font-weight: 800; color: #fff; min-width: 2.2ch; }
+.tablero .valor {
+  grid-area: valor; margin: 0; font-family: var(--f-titulo); font-weight: 800; font-size: var(--t-40); letter-spacing: -0.02em;
+  line-height: 1; text-align: right; color: #fff;
+  /* cifras proporcionales: con las tabulares, el punto de miles de Schibsted queda como un hueco ("7 . 350") */
+  font-variant-numeric: proportional-nums;
+}
+.tablero .detalle { grid-area: detalle; margin: 0; font-size: var(--t-13); color: var(--agua-100); }
+.tablero .variacion { grid-area: variacion; margin: 0; font-family: var(--f-titulo); font-size: var(--t-14); font-weight: 600; text-align: right;
+  font-variant-numeric: tabular-nums; color: var(--agua-100); }
+.tablero .variacion[data-signo='sube'] { color: #9fe0bf; }
+.tablero .variacion[data-signo='baja'] { color: #ffc2bd; }
+.vieja { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-4); align-items: center; justify-content: space-between; padding: 12px 14px;
+  border-radius: var(--r-tarjeta); background: var(--ipe-100); color: var(--ipe-900); font-size: var(--t-14); font-weight: 700; }
+.vieja a { color: var(--tinta); }
+.pizarra > a { color: #fff; font-weight: 700; justify-self: start; }
+.pizarra :focus-visible { box-shadow: var(--foco-oscuro); outline: none; border-radius: 4px; }
+
+/* ---------- Resumen ---------- */
+.resumen { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-areas: 'pendiente pizarra' 'registro pizarra';
+  grid-template-rows: auto 1fr; gap: var(--e-5); align-items: start; }
+.areaPendiente { grid-area: pendiente; }
+.areaRegistro { grid-area: registro; }
+.resumen > .pizarra { grid-area: pizarra; }
+.columna { display: grid; gap: var(--e-5); }
+.pendientes { list-style: none; margin: var(--e-3) 0 0; padding: 0; }
+.pendientes li { display: grid; grid-template-columns: 3.6rem minmax(0, 1fr) auto; gap: var(--e-3); align-items: center; padding: var(--e-4) 0; border-top: 1px solid var(--linea-2); }
+.pendientes li:first-child { border-top: 0; padding-top: 0; }
+.pendientes .n { font-family: var(--f-titulo); font-weight: 800; font-size: var(--t-28); font-variant-numeric: tabular-nums; color: var(--tinta); text-align: right; line-height: 1; }
+.pendientes li[data-cero='true'] .n { color: var(--tinta-3); }
+.pendientes small { display: block; color: var(--tinta-2); font-size: var(--t-13); margin-top: 2px; }
+.pendientes a { font-weight: 700; font-size: var(--t-14); white-space: nowrap; }
+.registro { list-style: none; margin: var(--e-3) 0 0; padding: 0; display: grid; }
+.registro li { padding: var(--e-3) 0; border-top: 1px solid var(--linea-2); font-size: var(--t-14); display: grid; gap: 2px; }
+.registro li:first-child { border-top: 0; padding-top: 0; }
+.registro q { color: var(--tinta-2); }
+.registro small { color: var(--tinta-3); font-size: var(--t-13); }
+.verTodo { display: inline-block; margin-top: var(--e-3); font-weight: 700; font-size: var(--t-14); }
+
+/* ---------- Tiendas ---------- */
+.tiendas { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-3); }
+.tienda { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: var(--e-4); align-items: start; padding: var(--e-5); }
+.marca { width: 48px; height: 48px; border-radius: var(--r-tarjeta); display: grid; place-items: center; color: #fff; font-family: var(--f-titulo);
+  font-weight: 800; font-size: var(--t-16); letter-spacing: 0.02em; }
+.tienda h2 { font-size: var(--t-19); }
+.tienda h2 a { color: inherit; }
+.lugar { color: var(--tinta-2); font-size: var(--t-14); margin-top: 2px; }
+.numeros { display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-6); margin: var(--e-3) 0 0; }
+.numeros div { display: grid; }
+.numeros dt { font-size: var(--t-13); color: var(--tinta-2); }
+.numeros dd { margin: 0; font-family: var(--f-titulo); font-weight: 700; font-size: var(--t-19); font-variant-numeric: proportional-nums; }
+.numeros dd small { font-family: var(--f-texto); font-weight: 400; font-size: var(--t-13); color: var(--tinta-3); }
+.motivo { margin-top: var(--e-3); padding: var(--e-3) var(--e-4); border-left: 3px solid var(--error); background: var(--error-100); border-radius: 0 var(--r-control) var(--r-control) 0; font-size: var(--t-14); }
+.motivo b { display: block; color: var(--error); margin-bottom: 2px; }
+.decidir { display: grid; gap: var(--e-2); justify-items: end; min-width: 190px; }
+.decidir form { display: contents; }
+.decidir :global(.boton) { min-height: 40px; font-size: var(--t-14); padding: 0 14px; white-space: nowrap; }
+.suspender > summary { list-style: none; cursor: pointer; color: var(--error); font-weight: 700; font-size: var(--t-14); min-height: 40px; display: flex; align-items: center; }
+.suspender > summary::-webkit-details-marker { display: none; }
+.suspender[open] { grid-column: 1 / -1; justify-self: stretch; }
+.formMotivo { display: grid; gap: var(--e-2); margin-top: var(--e-2); padding: var(--e-4); border: 1px solid var(--linea); border-radius: var(--r-tarjeta); background: var(--neblina); }
+.formMotivo label { font-weight: 700; font-size: var(--t-14); }
+.formMotivo textarea, .formMotivo select, .formMotivo input[type='text'] {
+  width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #a9b8b4; border-radius: var(--r-control); background: var(--papel); font: inherit;
+}
+.formMotivo textarea { min-height: 84px; resize: vertical; }
+.formMotivo small { color: var(--tinta-3); font-size: var(--t-13); }
+.formMotivo :global(.boton) { justify-self: start; }
+.botonPeligro { background: var(--error); color: #fff; }
+.botonPeligro:hover { background: #8f1e18; color: #fff; }
+/* en la cola de moderación se repite en cada renglón: borde, no relleno, para que mande lo denunciado y no el botón */
+.botonQuitar { background: var(--papel); border-color: var(--error); color: var(--error); }
+.botonQuitar:hover { background: var(--error-100); color: var(--error); }
+
+/* alta de un vendedor */
+.alta { display: grid; gap: var(--e-4); }
+.alta > summary { cursor: pointer; font-family: var(--f-titulo); font-weight: 700; font-size: var(--t-19); width: fit-content; }
+.alta[open] > summary { margin-bottom: var(--e-2); }
+.modos { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.grupoTienda { display: grid; gap: var(--e-4); }
+/* sin JavaScript se ven los dos grupos; con :has se ve solo el elegido */
+.alta:has(input[value='existente']:checked) .grupoNueva, .alta:has(input[value='nueva']:checked) .grupoExistente { display: none; }
+.hecho { display: grid; gap: var(--e-2); padding: var(--e-4); border-radius: var(--r-tarjeta); background: var(--exito-100); color: var(--exito); }
+.hecho b { font-size: var(--t-16); }
+.hecho p { color: var(--tinta); margin: 0; font-size: var(--t-14); }
+
+/* ---------- Moderación ---------- */
+.cola { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-3); }
+.contenido { padding: var(--e-5); display: grid; gap: var(--e-3); }
+.contenidoCabeza { display: flex; flex-wrap: wrap; gap: 6px var(--e-3); align-items: center; font-size: var(--t-14); color: var(--tinta-2); }
+.tipo { display: inline-block; padding: 2px 8px; border-radius: var(--r-control); background: var(--agua-100); color: var(--agua-900); font-weight: 700; font-size: var(--t-13); }
+.contenido blockquote { margin: 0; padding: 0; font-size: var(--t-16); line-height: var(--lh-texto); max-width: 70ch; }
+.contenido blockquote b { display: block; font-family: var(--f-titulo); font-size: var(--t-16); margin-bottom: 2px; }
+.contexto { font-size: var(--t-13); color: var(--tinta-2); }
+.denuncias { list-style: none; margin: 0; padding: var(--e-3) var(--e-4); border-radius: var(--r-tarjeta); background: var(--lapacho-100); display: grid; gap: 4px; font-size: var(--t-14); }
+.denuncias b { color: var(--lapacho-800); }
+.denuncias small { color: var(--tinta-2); }
+.oculta { padding: var(--e-3) var(--e-4); border-radius: var(--r-tarjeta); background: var(--linea-2); font-size: var(--t-14); }
+.moderar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: var(--e-3); align-items: end; }
+.moderar label { display: grid; gap: 4px; font-size: var(--t-13); font-weight: 700; }
+.moderar select, .moderar input { min-height: 40px; padding: 0 10px; border: 1px solid #a9b8b4; border-radius: var(--r-control); background: var(--papel); font: inherit; font-weight: 400; width: 100%; }
+.moderarBotones { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.moderarBotones :global(.boton) { min-height: 40px; font-size: var(--t-14); padding: 0 14px; }
+
+/* ---------- Categorías ---------- */
+.arbol { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--e-3); }
+.principal { padding: 0; overflow: hidden; }
+.fila { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--e-3); align-items: center; padding: var(--e-3) var(--e-5); }
+.principal > .fila { background: var(--agua-50); border-bottom: 1px solid var(--linea-2); }
+.principal > .fila h2 { font-size: var(--t-16); display: flex; align-items: center; gap: var(--e-2); }
+.hijas { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--linea-2); }
+.desplegar > summary { cursor: pointer; padding: var(--e-3) var(--e-5); font-size: var(--t-14); font-weight: 700; color: var(--agua-900); min-height: 44px; display: flex; align-items: center; }
+.desplegar > summary:hover { background: var(--agua-50); }
+.hijas > li + li { border-top: 1px solid var(--linea-2); }
+.fila p { margin: 0; font-size: var(--t-13); color: var(--tinta-2); }
+.fila code, .clave { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: var(--t-13); color: var(--tinta-2); }
+.herramientas { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; justify-content: flex-end; }
+.herramientas form { display: contents; }
+.chico { min-height: 36px; min-width: 36px; padding: 0 10px; border: 1px solid var(--linea); border-radius: var(--r-control); background: var(--papel);
+  color: var(--agua-900); font: inherit; font-size: var(--t-14); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; gap: 4px; }
+.chico:hover { border-color: var(--agua-700); }
+.chico:disabled { opacity: .45; cursor: not-allowed; }
+.chicoPeligro { color: var(--error); }
+.enUso { margin: var(--e-2) var(--e-5) var(--e-3); }
+.atributos td { vertical-align: middle; }
+
+/* ---------- Impuestos ---------- */
+.paises { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e-4); align-items: start; }
+.pais { display: grid; gap: var(--e-3); }
+.pais h2 { font-size: var(--t-19); display: flex; align-items: baseline; justify-content: space-between; gap: var(--e-2); }
+.pais h2 small { font-family: var(--f-texto); font-weight: 400; font-size: var(--t-13); color: var(--tinta-2); }
+.reglas { list-style: none; margin: 0; padding: 0; display: grid; }
+.reglas > li { padding: var(--e-3) 0; border-top: 1px solid var(--linea-2); display: grid; gap: 4px; }
+.reglas > li:first-child { border-top: 0; padding-top: 0; }
+.regla { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--e-2); align-items: baseline; }
+.regla b { font-size: var(--t-14); }
+.regla small { display: block; color: var(--tinta-2); font-size: var(--t-13); }
+.tasa { font-family: var(--f-titulo); font-weight: 800; font-size: var(--t-23); font-variant-numeric: proportional-nums; white-space: nowrap; }
+.editar > summary { list-style: none; cursor: pointer; color: var(--agua-900); font-weight: 700; font-size: var(--t-13); width: fit-content; min-height: 32px; display: inline-flex; align-items: center; }
+.editar > summary::-webkit-details-marker { display: none; }
+.formImpuesto { display: grid; gap: var(--e-3); margin-top: var(--e-2); padding: var(--e-4); border: 1px solid var(--linea); border-radius: var(--r-tarjeta); background: var(--neblina); }
+.formImpuesto fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: var(--e-2); min-width: 0; }
+.formImpuesto legend { font-weight: 700; font-size: var(--t-14); padding: 0; margin-bottom: 4px; }
+.idiomas { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); gap: 6px var(--e-2); align-items: center; font-size: var(--t-13); color: var(--tinta-2); max-width: 560px; }
+.idiomas input { font-size: var(--t-16) !important; }
+.idiomas input, .formImpuesto input, .formImpuesto select { min-height: 40px; padding: 0 10px; border: 1px solid #a9b8b4; border-radius: var(--r-control); background: var(--papel); font: inherit; width: 100%; color: var(--tinta); }
+.porcentaje { position: relative; max-width: 140px; }
+.porcentaje input { padding-right: 32px; font-family: var(--f-titulo); font-variant-numeric: tabular-nums; }
+.porcentaje::after { content: '%'; position: absolute; right: 12px; bottom: 10px; color: var(--tinta-2); font-family: var(--f-titulo); pointer-events: none; }
+.botones { display: flex; flex-wrap: wrap; gap: var(--e-2); }
+.botones :global(.boton) { min-height: 40px; font-size: var(--t-14); padding: 0 14px; }
+.vista { display: grid; gap: var(--e-2); padding: var(--e-3); border-radius: var(--r-tarjeta); background: var(--papel); border: 1px solid var(--linea); }
+.vista > p { margin: 0; font-size: var(--t-13); color: var(--tinta-2); }
+.vista table { width: 100%; border-collapse: collapse; font-size: var(--t-14); }
+.vista th { text-align: left; font-weight: 400; font-size: var(--t-13); color: var(--tinta-2); padding: 0 0 4px; }
+.vista td { padding: 6px 0; border-top: 1px solid var(--linea-2); font-family: var(--f-titulo); font-variant-numeric: proportional-nums; white-space: nowrap; }
+.vista td:first-child { padding-right: var(--e-3); }
+.vista td:first-child { font-family: var(--f-texto); }
+.vista tr[data-cambia='true'] td { font-weight: 700; }
+.vista tr[data-cambia='true'] td:last-child { color: var(--lapacho-700); }
+.vista th:not(:first-child), .vista td:not(:first-child) { text-align: right; }
+.nueva { margin-top: var(--e-5); }
+
+/* ---------- Cotizaciones ---------- */
+.cotizar { display: grid; gap: var(--e-4); }
+.monedas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--e-4); }
+.moneda { display: grid; gap: 6px; align-content: start; }
+.moneda label { font-weight: 700; font-size: var(--t-14); }
+.moneda input { min-height: 48px; padding: 0 12px; border: 1px solid #a9b8b4; border-radius: var(--r-control); background: var(--papel);
+  font-family: var(--f-titulo); font-weight: 700; font-size: var(--t-19); font-variant-numeric: proportional-nums; width: 100%; }
+.moneda input:hover { border-color: var(--agua-700); }
+.moneda small { color: var(--tinta-3); font-size: var(--t-13); }
+.propuesta { display: grid; gap: var(--e-3); padding: var(--e-4); border: 2px solid var(--agua-900); border-radius: var(--r-tarjeta); }
+.propuesta h2 { font-size: var(--t-16); }
+.propuesta table { width: 100%; border-collapse: collapse; font-size: var(--t-14); }
+.propuesta th { text-align: left; font-weight: 400; font-size: var(--t-13); color: var(--tinta-2); padding-bottom: 6px; }
+.propuesta td { padding: 8px 0; border-top: 1px solid var(--linea-2); font-family: var(--f-titulo); font-variant-numeric: proportional-nums; }
+.propuesta th:not(:first-child), .propuesta td:not(:first-child) { text-align: right; }
+.propuesta td:first-child { font-weight: 700; }
+.grande { color: var(--error); font-weight: 800; }
+.avisoGrande { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: var(--r-tarjeta); background: var(--ipe-100); color: var(--ipe-900); font-size: var(--t-14); font-weight: 700; }
+.avisoGrande svg { flex: none; margin-top: 2px; }
+.cambioCde { display: flex; flex-wrap: wrap; gap: var(--e-3); align-items: center; justify-content: space-between; padding-top: var(--e-4); border-top: 1px solid var(--linea-2); }
+.cambioCde p { margin: 0; font-size: var(--t-14); color: var(--tinta-2); max-width: 56ch; }
+.historial td, .atributos td { font-variant-numeric: proportional-nums; }
+.historial td[data-signo='sube'] { color: var(--exito); }
+.historial td[data-signo='baja'] { color: var(--error); }
+
+@media (max-width: 1100px) {
+  /* en el celular, la pizarra va entre lo pendiente y el registro: no queda escondida al final */
+  .resumen { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'pendiente' 'pizarra' 'registro'; grid-template-rows: none; }
+  .paises { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .pizarra { padding: var(--e-4); }
+  .tablero .valor { font-size: var(--t-33); }
+  .tienda { grid-template-columns: 40px minmax(0, 1fr); padding: var(--e-4); }
+  .marca { width: 40px; height: 40px; font-size: var(--t-14); }
+  .decidir { grid-column: 1 / -1; justify-items: stretch; min-width: 0; }
+  .decidir :global(.boton) { width: 100%; }
+  .contenido { padding: var(--e-4); }
+  .moderar { grid-template-columns: minmax(0, 1fr); }
+  .moderarBotones :global(.boton) { flex: 1 1 auto; }
+  .fila { grid-template-columns: minmax(0, 1fr); padding: var(--e-3) var(--e-4); }
+  .desplegar > summary { padding: var(--e-3) var(--e-4); }
+  .herramientas { justify-content: flex-start; }
+  .monedas { grid-template-columns: minmax(0, 1fr); }
+  .pendientes li { grid-template-columns: 3.2rem minmax(0, 1fr); }
+  .pendientes li > a { grid-column: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pizarra *, .tiendas *, .cola * { transition: none !important; }
+}
+.alta select, .alta input:not([type='radio']) { width: 100%; max-width: 480px; }

@@ -15,3 +15,9 @@ export function leerHola(cookie: string | undefined): string | null {
     return null
   }
 }
+
+/**
+ * Fase 5: si la persona es admin, el menú de la cuenta muestra el enlace a la administración. Igual que el saludo: no
+ * guarda nada privado ni da acceso a nada (cada página del admin lo verifica en la base con es_admin()).
+ */
+export const COOKIE_ADMIN = 'triplice_admin'

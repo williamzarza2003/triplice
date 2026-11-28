@@ -1,0 +1,13 @@
+/* "Denunciar" en la ficha: discreto (gris chico, a la derecha del "Me fue útil"); al abrirse, un formulario corto. */
+.denunciar { font-size: var(--t-13); }
+.denunciar > summary { cursor: pointer; color: var(--tinta-3); width: fit-content; min-height: 32px; display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 2px; }
+.denunciar > summary:hover { color: var(--tinta-2); }
+.denunciar form { display: grid; gap: var(--e-2); margin-top: var(--e-2); padding: var(--e-3); border: 1px solid var(--linea); border-radius: var(--r-tarjeta); background: var(--neblina); max-width: 420px; }
+.denunciar fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 2px; }
+.denunciar legend { font-weight: 700; color: var(--tinta); margin-bottom: 4px; padding: 0; }
+.denunciar label { display: flex; gap: 8px; align-items: center; min-height: 32px; color: var(--tinta); }
+.denunciar input[type='radio'] { width: 16px; height: 16px; accent-color: var(--agua-900); margin: 0; }
+.denunciar input[name='detalle'] { min-height: 40px; padding: 0 10px; border: 1px solid #a9b8b4; border-radius: var(--r-control); background: var(--papel); font: inherit; }
+.denunciar :global(.boton) { justify-self: start; min-height: 36px; font-size: var(--t-13); padding: 0 12px; }
+.gracias { font-size: var(--t-13); color: var(--exito); margin: 0; }
+.error { font-size: var(--t-13); color: var(--error); margin: 0; }
