@@ -157,7 +157,7 @@ async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/compar
                 return (
                   <tbody key={g.clave}>
                     <tr className={s.grupo}><th scope="rowgroup" colSpan={n + 1}>{g.nombre}</th></tr>
-                    {rs.map(({ fila, extra }) => <FilaTabla key={fila.clave} fila={fila} extra={extra} n={n} t={t} />)}
+                    {rs.map(({ fila, extra }) => <FilaTabla key={fila.clave} fila={fila} extra={extra} n={n} t={t} barras={g.clave === 'caracteristicas'} />)}
                   </tbody>
                 )
               })}
@@ -181,7 +181,8 @@ async function Contenido({ searchParams }: PageProps<'/[idioma]/[mercado]/compar
   )
 }
 
-function FilaTabla({ fila, extra, n, t }: { fila: Fila; extra?: (React.ReactNode | null)[]; n: number; t: Awaited<ReturnType<typeof getTranslations>> }) {
+// barras: solo en las características de la categoría (en precio, opiniones o peso, una barra más larga no dice nada útil)
+function FilaTabla({ fila, extra, n, t, barras }: { fila: Fila; extra?: (React.ReactNode | null)[]; n: number; t: Awaited<ReturnType<typeof getTranslations>>; barras: boolean }) {
   if (fila.iguales) {
     return (
       <tr className={s.igual}>
@@ -198,7 +199,7 @@ function FilaTabla({ fila, extra, n, t }: { fila: Fila; extra?: (React.ReactNode
           <span className={fila.clave === 'precio' ? `precio ${s.precio}` : undefined}>{c.texto ?? '—'}</span>
           {fila.mejor === i && <span className={`sello sello--exito ${s.mejor}`}>{fila.clave === 'precio' ? t('masBarato') : t('mejor')}</span>}
           {extra?.[i]}
-          {fila.escala && c.numero !== null && fila.clave !== 'precio' && (
+          {barras && fila.escala && c.numero !== null && (
             <span className={s.barra} aria-hidden="true"><span style={{ width: `${Math.max(4, (c.numero / fila.escala) * 100)}%` }} /></span>
           )}
         </td>

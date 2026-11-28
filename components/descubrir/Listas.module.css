@@ -15,8 +15,12 @@
 .favoritos h2 { display: flex; align-items: center; gap: 8px; }
 .favoritos h2 svg { color: var(--lapacho-700); fill: currentColor; }
 
-.tapa { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; aspect-ratio: 16 / 10; border-radius: var(--r-tarjeta); overflow: hidden; background: var(--neblina); }
-.tapa img { width: 100%; height: 100%; object-fit: contain; background: var(--neblina); padding: 6%; }
+.tapa {
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr); gap: 4px; aspect-ratio: 16 / 10;
+  border-radius: var(--r-tarjeta); overflow: hidden; background: var(--neblina);
+}
+.tapa[data-n='3'], .tapa[data-n='4'] { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.tapa img { width: 100%; height: 100%; min-height: 0; object-fit: contain; background: var(--neblina); padding: 6%; }
 .tapa[data-n='1'] { grid-template-columns: 1fr; }
 .tapa[data-n='2'] { grid-template-columns: 1fr 1fr; }
 .tapa[data-n='3'] img:first-child { grid-row: span 2; }
@@ -42,7 +46,7 @@
 .compartir .enlace > div { display: flex; gap: 8px; }
 .compartir .enlace input { flex: 1; min-width: 0; min-height: 44px; border: 1px solid var(--linea); border-radius: var(--r-control); padding: 0 12px; color: var(--tinta-2); background: var(--neblina); }
 .fila { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
-.enlaceBoton { background: none; border: 0; padding: 0; min-height: 36px; color: var(--agua-900); text-decoration: underline; cursor: pointer; font-size: var(--t-14); }
+.enlaceBoton { background: none; border: 0; padding: 0; min-height: 36px; text-align: left; color: var(--agua-900); text-decoration: underline; cursor: pointer; font-size: var(--t-14); }
 .peligro { color: var(--error); }
 .desplegable > summary { cursor: pointer; color: var(--agua-900); font-weight: 700; font-size: var(--t-14); min-height: 36px; display: inline-flex; align-items: center; }
 .desplegable[open] > summary { margin-bottom: 8px; }

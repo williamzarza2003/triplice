@@ -80,5 +80,5 @@
   .producto img { max-width: 110px; }
   .precio { font-size: var(--t-16); }
   .vista { width: 100%; }
-  .vista a { flex: 1; justify-content: center; padding: 0 8px; }
+  .vista a { flex: 1; justify-content: center; padding: 0 8px; white-space: nowrap; font-size: var(--t-13); }
 }

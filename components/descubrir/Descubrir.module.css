@@ -73,7 +73,10 @@
   min-height: 40px; padding: 0 8px;
 }
 @media (max-width: 560px) {
-  .barra { left: 12px; right: 12px; transform: none; max-width: none; justify-content: space-between; }
+  .barra { left: 12px; right: 12px; transform: none; max-width: none; justify-content: space-between; gap: 8px; padding-left: 14px; }
+  .barra p { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: var(--t-13); }
+  .barra a { padding: 0 12px; }
+  .barra button { padding: 0 4px; }
   .puntos { display: none; }
 }
 
@@ -92,7 +95,7 @@
 .mini:has(a:focus-visible) img { box-shadow: var(--foco); }
 .mini a:focus-visible { box-shadow: none; }
 .mini .precio { font-size: var(--t-16); }
-.mini s { font-size: var(--t-13); color: var(--tinta-3); font-family: var(--f-titulo); }
+.mini s { display: block; font-size: var(--t-13); color: var(--tinta-3); font-family: var(--f-titulo); }
 .vistosNota { font-size: var(--t-13); color: var(--tinta-3); margin-top: 4px; }
 
 /* ---------------------------------------------------------------- comprados juntos */
@@ -100,7 +103,7 @@
 .juntos h2 { font-size: var(--t-23); }
 .juntosBajada { color: var(--tinta-2); font-size: var(--t-14); margin-top: 4px; }
 .combo {
-  margin-top: var(--e-4); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) minmax(220px, 280px); gap: var(--e-4);
+  margin-top: var(--e-4); display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) 300px; gap: var(--e-4);
   align-items: center; background: var(--papel); border: 1px solid var(--linea-2); border-radius: var(--r-panel); padding: var(--e-5);
 }
 .pieza { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: var(--e-3); align-items: center; }
@@ -116,7 +119,8 @@
 .total small { font-size: var(--t-13); color: var(--tinta-3); }
 .listo { font-size: var(--t-14); background: var(--exito-100); color: var(--exito); border-radius: var(--r-control); padding: 8px 10px; }
 .listo:empty { display: none; }
-.otros { list-style: none; padding: 0; margin: var(--e-4) 0 0; display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-5); font-size: var(--t-14); }
+.otrosTitulo { margin-top: var(--e-4); font-size: var(--t-14); font-weight: 700; color: var(--tinta-2); }
+.otros { list-style: none; padding: 0; margin: var(--e-2) 0 0; display: flex; flex-wrap: wrap; gap: var(--e-2) var(--e-5); font-size: var(--t-14); }
 .otros li { display: flex; gap: 8px; align-items: baseline; }
 .otros .precio { font-size: var(--t-14); }
 @media (max-width: 860px) {
@@ -159,7 +163,9 @@
 
 .alerta { display: grid; gap: 8px; }
 .alerta label { font-size: var(--t-14); font-weight: 700; }
-.alertaFila { display: flex; gap: 8px; align-items: stretch; }
+.alertaFila { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.alertaFila input { flex: 1 1 120px; }
+.alertaFila .boton { flex: 1 1 100%; }
 .moneda { display: grid; place-items: center; padding: 0 10px; border: 1px solid var(--linea); border-radius: var(--r-control); background: var(--neblina); font-family: var(--f-titulo); font-weight: 700; }
 .alertaActiva { display: grid; gap: 6px; font-size: var(--t-14); padding: 10px 12px; border-radius: var(--r-control); background: var(--agua-50); }
 .alertaActiva b { font-family: var(--f-titulo); }

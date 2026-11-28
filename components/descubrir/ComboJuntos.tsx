@@ -50,11 +50,14 @@ export async function ComboJuntos({ datos, ctx }: { datos: CompradosJuntos; ctx:
         </div>
       </div>
       {otros.length > 0 && (
-        <ul className={s.otros} aria-label={t('juntosOtros')}>
+        <>
+        <p className={s.otrosTitulo} id="t-juntos-otros">{t('juntosOtros')}</p>
+        <ul className={s.otros} aria-labelledby="t-juntos-otros">
           {otros.map((o) => (
             <li key={o.slug}><Link href={r(`/p/${o.slug}`)}>{o.titulo}</Link><span className="precio">{precio(ctx, o.precio, categoriaDe(o))}</span></li>
           ))}
         </ul>
+        </>
       )}
     </section>
   )

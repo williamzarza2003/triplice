@@ -615,7 +615,7 @@ as $$
     'region', a.region, 'moneda', a.moneda, 'objetivo', a.objetivo, 'precio_inicial', a.precio_inicial,
     'base_usd_cent', a.base_usd_cent, 'precio_hoy', precio_actual(a.producto_id, a.region, a.moneda),
     'activa', a.activa, 'cumplida', a.cumplida, 'precio_cumplida', a.precio_cumplida, 'leida', a.leida, 'creado', a.creado)
-    order by a.cumplida is not null and not a.leida desc, a.activa desc, coalesce(a.cumplida, a.creado) desc), '[]')
+    order by a.cumplida is not null and not a.leida desc, a.cumplida is not null desc, a.activa desc, coalesce(a.cumplida, a.creado) desc), '[]')
   from alertas_precio a join productos pr on pr.id = a.producto_id
   where a.usuario_id = auth.uid()
 $$;
